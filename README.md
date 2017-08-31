@@ -4,6 +4,8 @@ Any students in that class follow the instructions at [**Github Setup**](https:/
 
 Read through the Wiki on this repository to understand how each class works. This Wiki focuses on the code in PA1.
 
+This repository has been forked and is now used by Alexander Novotny.
+
 # Projects
 
 ## PA0: Triangle
