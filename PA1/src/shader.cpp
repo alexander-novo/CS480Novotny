@@ -39,38 +39,11 @@ bool Shader::AddShader(GLenum ShaderType)
 
   if(ShaderType == GL_VERTEX_SHADER)
   {
-    s = "#version 330\n \
-          \
-          layout (location = 0) in vec3 v_position; \
-          layout (location = 1) in vec3 v_color; \
-          \
-          smooth out vec3 color; \
-          \
-          uniform mat4 projectionMatrix; \
-          uniform mat4 viewMatrix; \
-          uniform mat4 modelMatrix; \
-          \
-          void main(void) \
-          { \
-            vec4 v = vec4(v_position, 1.0); \
-            gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * v; \
-            color = v_color; \
-          } \
-          ";
+    s = Shader::getShaderList()["GL_VERTEX_SHADER"];
   }
   else if(ShaderType == GL_FRAGMENT_SHADER)
   {
-    s = "#version 330\n \
-          \
-          smooth in vec3 color; \
-          \
-          out vec4 frag_color; \
-          \
-          void main(void) \
-          { \
-             frag_color = vec4(color.rgb, 1.0); \
-          } \
-          ";
+    s = Shader::getShaderList()["GL_FRAGMENT_SHADER"];
   }
 
   GLuint ShaderObj = glCreateShader(ShaderType);
@@ -162,4 +135,42 @@ GLint Shader::GetUniformLocation(const char* pUniformName)
     }
 
     return Location;
+}
+
+//Static function rather than static variable
+//to avoid static member initialization order problems
+std::map<std::string,std::string>& Shader::getShaderList() {
+    static std::map<std::string,std::string> shaderList;
+    return shaderList;
+}
+
+//This line needed to run loader
+Shader::ShaderLoader Shader::shaderLoader;
+
+//Shader loader constructor
+Shader::ShaderLoader::ShaderLoader() {
+    std::ifstream loadFile(SHADER_FILE);
+    
+    if(!loadFile.is_open()) {
+        std::cerr << "Could not find shaders file";
+        throw "Could not find shaders file";
+    }
+
+    std::string name;
+    int size;
+
+    while(loadFile >> name){
+        //Open shader file as defined by name
+        std::ifstream shaderFile(SHADER_DIR + name);
+        if(!shaderFile.is_open()) {
+            std::cerr << "Could not find shader file: " << name << std::endl;
+            continue;
+        }
+
+        //Read contents of shader file into string
+        std::string code(std::istreambuf_iterator<char>(shaderFile), {});
+
+        //Add shader to list
+        Shader::getShaderList()[name] = code;
+    }
 }

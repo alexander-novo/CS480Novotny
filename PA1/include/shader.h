@@ -2,8 +2,13 @@
 #define SHADER_H
 
 #include <vector>
+#include <fstream>
+#include <map>
 
 #include "graphics_headers.h"
+
+#define SHADER_DIR "shaders/"
+#define SHADER_FILE "shaders/shaderList"
 
 class Shader
 {
@@ -17,6 +22,15 @@ class Shader
     GLint GetUniformLocation(const char* pUniformName);
 
   private:
+    //Separate class, for a static constructor
+    static class ShaderLoader {
+        public: 
+            ShaderLoader();
+    } shaderLoader;
+    friend class ShaderLoader;
+
+    static std::map<std::string,std::string>& getShaderList();
+
     GLuint m_shaderProg;    
     std::vector<GLuint> m_shaderObjList;
 };
