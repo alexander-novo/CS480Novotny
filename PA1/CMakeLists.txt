@@ -27,6 +27,9 @@ INCLUDE_DIRECTORIES(
   ${GLM_INCLUDE_DIRS}
 )
 
+# Copy shader directory
+FILE(COPY src/shaders DESTINATION .)
+
 
 # Set Includes
 SET(INCLUDES ${PROJECT_SOURCE_DIR}/include)
