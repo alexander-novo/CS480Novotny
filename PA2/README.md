@@ -40,6 +40,7 @@ make
 `down arrow` - Increase orbit radius  
 `left arrow` - Slow down  
 `right arrow` - Speed up  
+`r` - Reverse  
 `s` - Stop
 
 Hold `shift` to only affect the circular movement  
