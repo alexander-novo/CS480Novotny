@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include <vector>
+#include <cmath>
 #include "graphics_headers.h"
 
 class Object
@@ -21,7 +22,7 @@ class Object
     GLuint VB;
     GLuint IB;
 
-    float angle;
+    double time;
 };
 
 #endif /* OBJECT_H */

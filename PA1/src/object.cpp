@@ -60,7 +60,7 @@ Object::Object()
     Indices[i] = Indices[i] - 1;
   }
 
-  angle = 0.0f;
+  time = 0.0;
 
   glGenBuffers(1, &VB);
   glBindBuffer(GL_ARRAY_BUFFER, VB);
@@ -79,8 +79,18 @@ Object::~Object()
 
 void Object::Update(unsigned int dt)
 {
-  angle += dt * M_PI/1000;
-  model = glm::rotate(glm::mat4(1.0f), (angle), glm::vec3(0.0, 1.0, 0.0));
+  float angle, xcoord, zcoord;
+
+  time += dt / 500.0;
+
+  //Paramaterized path
+  angle = time * M_PI;
+  xcoord = 10 * sin(time);
+  zcoord = 10 * cos(time);
+  
+  model = glm::translate(glm::mat4(1.0f), glm::vec3(xcoord, 0, zcoord));
+  model = glm::rotate(model, (angle), glm::vec3(0.0, 1.0, 0.0));
+  
 }
 
 glm::mat4 Object::GetModel()
