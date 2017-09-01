@@ -22,7 +22,7 @@ class Object
     GLuint VB;
     GLuint IB;
 
-    double time;
+    double time, timescale, moveScale, spinScale, distance;
 };
 
 #endif /* OBJECT_H */
