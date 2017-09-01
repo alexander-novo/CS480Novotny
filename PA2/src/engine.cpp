@@ -82,6 +82,20 @@ void Engine::Keyboard()
   }
   else if (m_event.type == SDL_KEYDOWN)
   {
+    double* scaleHandler;
+    bool backwards;
+
+    //Use keyboard mods to determine what property to change
+    if(SDL_GetModState() & KMOD_SHIFT) {
+      scaleHandler = &m_graphics->getCube()->moveScale;
+    } else if(SDL_GetModState() & KMOD_CTRL) {
+      scaleHandler = &m_graphics->getCube()->spinScale;
+    } else {
+      scaleHandler = &m_graphics->getCube()->timeScale;
+    }
+
+    backwards = *scaleHandler < 0.0;
+
     // handle key down events here
     switch(m_event.key.keysym.sym) {
       //Stop program
@@ -103,10 +117,15 @@ void Engine::Keyboard()
 
       //Change overall speed
       case SDLK_LEFT:
-        m_graphics->getCube()->timeScale -= .05;
+        *scaleHandler += .05 * (backwards ? 1 : -1);
         break;
       case SDLK_RIGHT:
-        m_graphics->getCube()->timeScale += .05;
+        *scaleHandler += .05 * (backwards ? -1 : 1);
+        break;
+
+      //Reverse direction
+      case SDLK_r:
+        *scaleHandler *= -1.0;
         break;
     }
 

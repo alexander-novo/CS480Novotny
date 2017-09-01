@@ -24,7 +24,9 @@ class Object
     GLuint VB;
     GLuint IB;
 
-    double time;
+    struct Time {
+        float spin, move;
+    } time;
 };
 
 #endif /* OBJECT_H */

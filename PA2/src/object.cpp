@@ -60,7 +60,7 @@ Object::Object(double a, double b, double c, double d) : timeScale(a), moveScale
     Indices[i] = Indices[i] - 1;
   }
 
-  time = 0.0;
+  time.spin = time.move = 0.0;
 
   glGenBuffers(1, &VB);
   glBindBuffer(GL_ARRAY_BUFFER, VB);
@@ -79,13 +79,14 @@ Object::~Object()
 
 void Object::Update(unsigned int dt)
 {
-  float angle, xcoord, zcoord;
+  float timeMod = dt / 500.0 * timeScale;
 
-  time += dt / 500.0 * timeScale;
+  time.spin += timeMod * spinScale;
+  time.move += timeMod * moveScale;
   
-  model = glm::rotate(glm::mat4(1.0f), (float)(time * moveScale), glm::vec3(0.0, 1.0, 0.0));
+  model = glm::rotate(glm::mat4(1.0f), time.move, glm::vec3(0.0, 1.0, 0.0));
   model = glm::translate(model, glm::vec3(distance, 0.0, 0.0));
-  model = glm::rotate(model, (float)(time * M_PI * spinScale), glm::vec3(0.0, 1.0, 0.0));
+  model = glm::rotate(model, time.spin, glm::vec3(0.0, 1.0, 0.0));
   
 }
 
