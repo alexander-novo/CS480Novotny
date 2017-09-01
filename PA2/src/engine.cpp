@@ -76,26 +76,29 @@ void Engine::Run()
 
 void Engine::Keyboard()
 {
+  double* scaleHandler;
+  bool backwards;
+
+  //Use keyboard mods to determine what property to change
+  if(SDL_GetModState() & KMOD_SHIFT) {
+    scaleHandler = &m_graphics->getCube()->moveScale;
+  } else if(SDL_GetModState() & KMOD_CTRL) {
+    scaleHandler = &m_graphics->getCube()->spinScale;
+  } else {
+    scaleHandler = &m_graphics->getCube()->timeScale;
+  }
+
+  backwards = *scaleHandler < 0.0;
+
   if(m_event.type == SDL_QUIT)
   {
     m_running = false;
   }
+
+  //Keyboard
+
   else if (m_event.type == SDL_KEYDOWN)
   {
-    double* scaleHandler;
-    bool backwards;
-
-    //Use keyboard mods to determine what property to change
-    if(SDL_GetModState() & KMOD_SHIFT) {
-      scaleHandler = &m_graphics->getCube()->moveScale;
-    } else if(SDL_GetModState() & KMOD_CTRL) {
-      scaleHandler = &m_graphics->getCube()->spinScale;
-    } else {
-      scaleHandler = &m_graphics->getCube()->timeScale;
-    }
-
-    backwards = *scaleHandler < 0.0;
-
     // handle key down events here
     switch(m_event.key.keysym.sym) {
       //Stop program
@@ -134,6 +137,13 @@ void Engine::Keyboard()
         break;
     }
 
+  }
+
+  //Mouse
+
+  else if(m_event.type == SDL_MOUSEBUTTONDOWN) {
+    //Reverse object direction
+    *scaleHandler *= -1.0;
   }
 }
 

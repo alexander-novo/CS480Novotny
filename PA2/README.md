@@ -34,7 +34,7 @@ make
 ./Tutorial
 ```
 
-# Keyboard Shortcuts
+# Controls
 
 `up arrow` - Decrease orbit radius  
 `down arrow` - Increase orbit radius  
@@ -42,6 +42,8 @@ make
 `right arrow` - Speed up  
 `r` - Reverse  
 `s` - Stop
+
+`left click` - Reverse
 
 Hold `shift` to only affect the circular movement  
 Hold `ctrl` to only affect the spinning movement
