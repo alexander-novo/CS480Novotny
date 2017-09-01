@@ -87,6 +87,16 @@ void Engine::Keyboard()
     {
       m_running = false;
     }
+    else if(m_event.key.keysym.sym == SDLK_UP) {
+      m_graphics->getCube()->distance -= .5;
+      if(m_graphics->getCube()->distance < 0.0)
+        m_graphics->getCube()->distance = 0.0;
+    }
+    else if(m_event.key.keysym.sym == SDLK_DOWN) {
+      m_graphics->getCube()->distance += .5;
+      if(m_graphics->getCube()->distance > 20.0)
+        m_graphics->getCube()->distance = 20.0;
+    }
   }
 }
 

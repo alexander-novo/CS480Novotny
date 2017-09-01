@@ -8,12 +8,14 @@
 class Object
 {
   public:
-    Object();
+    Object(double = 1.0, double = 1.0, double = 1.0, double = 10.0);
     ~Object();
     void Update(unsigned int dt);
     void Render();
 
     glm::mat4 GetModel();
+
+    double timeScale, moveScale, spinScale, distance;
 
   private:
     glm::mat4 model;
@@ -22,7 +24,7 @@ class Object
     GLuint VB;
     GLuint IB;
 
-    double time, timescale, moveScale, spinScale, distance;
+    double time;
 };
 
 #endif /* OBJECT_H */

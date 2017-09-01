@@ -1,6 +1,6 @@
 #include "object.h"
 
-Object::Object()
+Object::Object(double a, double b, double c, double d) : timeScale(a), moveScale(b), spinScale(c), distance(d)
 {  
   /*
     # Blender File for a Cube
@@ -61,8 +61,6 @@ Object::Object()
   }
 
   time = 0.0;
-  timescale = moveScale = spinScale = 1.0;
-  distance = 10.0;
 
   glGenBuffers(1, &VB);
   glBindBuffer(GL_ARRAY_BUFFER, VB);
@@ -83,7 +81,7 @@ void Object::Update(unsigned int dt)
 {
   float angle, xcoord, zcoord;
 
-  time += dt / 500.0 * timescale;
+  time += dt / 500.0 * timeScale;
   
   model = glm::rotate(glm::mat4(1.0f), (float)(time * moveScale), glm::vec3(0.0, 1.0, 0.0));
   model = glm::translate(model, glm::vec3(distance, 0.0, 0.0));

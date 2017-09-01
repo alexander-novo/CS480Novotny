@@ -17,6 +17,7 @@ class Graphics
     bool Initialize(int width, int height);
     void Update(unsigned int dt);
     void Render();
+    Object* getCube();
 
   private:
     std::string ErrorString(GLenum error);
