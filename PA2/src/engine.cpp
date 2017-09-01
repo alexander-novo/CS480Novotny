@@ -127,6 +127,11 @@ void Engine::Keyboard()
       case SDLK_r:
         *scaleHandler *= -1.0;
         break;
+
+      //Stop object
+      case SDLK_s:
+        *scaleHandler = 0.0;
+        break;
     }
 
   }

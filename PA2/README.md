@@ -38,8 +38,9 @@ make
 
 `up arrow` - Decrease orbit radius  
 `down arrow` - Increase orbit radius  
-`left arrow` - Slow down time  
-`right arrow` - Speed up time  
+`left arrow` - Slow down
+`right arrow` - Speed up
+`s` - Stop
 
 Hold `shift` to only affect the circular movement
 Hold `ctrl` to only affect the spinning movement

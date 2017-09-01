@@ -8,7 +8,8 @@
 class Object
 {
   public:
-    Object(double = 1.0, double = 1.0, double = 1.0, double = 10.0);
+    //     timeScale     moveScale     spinScale     distance
+    Object(double = 1.0, double = 1.0, double = 2.0, double = 10.0);
     ~Object();
     void Update(unsigned int dt);
     void Render();

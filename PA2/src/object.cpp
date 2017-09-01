@@ -86,7 +86,7 @@ void Object::Update(unsigned int dt)
   
   model = glm::rotate(glm::mat4(1.0f), time.move, glm::vec3(0.0, 1.0, 0.0));
   model = glm::translate(model, glm::vec3(distance, 0.0, 0.0));
-  model = glm::rotate(model, time.spin, glm::vec3(0.0, 1.0, 0.0));
+  model = glm::rotate(model, time.spin - time.move, glm::vec3(0.0, 1.0, 0.0));
   
 }
 
