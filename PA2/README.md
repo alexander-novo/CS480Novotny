@@ -44,6 +44,7 @@ make
 `s` - Stop
 
 `left click` - Reverse
+`right click` - Stop
 
 Hold `shift` to only affect the circular movement  
 Hold `ctrl` to only affect the spinning movement

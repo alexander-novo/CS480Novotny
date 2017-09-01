@@ -142,8 +142,16 @@ void Engine::Keyboard()
   //Mouse
 
   else if(m_event.type == SDL_MOUSEBUTTONDOWN) {
-    //Reverse object direction
-    *scaleHandler *= -1.0;
+    switch(m_event.button) {
+      case SDL_BUTTON_LEFT:
+        //Reverse object direction
+        *scaleHandler *= -1.0;
+        break;
+      case SDL_BUTTON_RIGHT:
+        //Stop object
+        *scaleHandler = 0.0;
+        break;
+    }
   }
 }
 
