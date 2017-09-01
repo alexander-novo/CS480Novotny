@@ -85,11 +85,10 @@ void Object::Update(unsigned int dt)
 
   //Paramaterized path
   angle = time * M_PI;
-  xcoord = 10 * sin(time);
-  zcoord = 10 * cos(time);
   
-  model = glm::translate(glm::mat4(1.0f), glm::vec3(xcoord, 0, zcoord));
-  model = glm::rotate(model, (angle), glm::vec3(0.0, 1.0, 0.0));
+  model = glm::rotate(glm::mat4(1.0f), (float)(time), glm::vec3(0.0, 1.0, 0.0));
+  model = glm::translate(model, glm::vec3(10, 0, 0));
+  model = glm::rotate(model, (float)(time * M_PI), glm::vec3(0.0, 1.0, 0.0));
   
 }
 
