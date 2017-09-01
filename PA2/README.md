@@ -38,3 +38,5 @@ make
 
 `up arrow` - Decrease orbit radius
 `down arrow` - Increase orbit radius
+`left arrow` - Slow down time
+`right arrow` - Speed up time

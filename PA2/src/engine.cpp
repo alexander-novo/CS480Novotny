@@ -83,20 +83,33 @@ void Engine::Keyboard()
   else if (m_event.type == SDL_KEYDOWN)
   {
     // handle key down events here
-    if (m_event.key.keysym.sym == SDLK_ESCAPE)
-    {
-      m_running = false;
+    switch(m_event.key.keysym.sym) {
+      //Stop program
+      case SDLK_ESCAPE:
+        m_running = false;
+        break;
+
+      //Change orbit radius
+      case SDLK_UP:
+        m_graphics->getCube()->distance -= .5;
+        if(m_graphics->getCube()->distance < 0.0)
+          m_graphics->getCube()->distance = 0.0;
+        break;
+      case SDLK_DOWN:
+        m_graphics->getCube()->distance += .5;
+        if(m_graphics->getCube()->distance > 20.0)
+          m_graphics->getCube()->distance = 20.0;
+        break;
+
+      //Change overall speed
+      case SDLK_LEFT:
+        m_graphics->getCube()->timeScale -= .05;
+        break;
+      case SDLK_RIGHT:
+        m_graphics->getCube()->timeScale += .05;
+        break;
     }
-    else if(m_event.key.keysym.sym == SDLK_UP) {
-      m_graphics->getCube()->distance -= .5;
-      if(m_graphics->getCube()->distance < 0.0)
-        m_graphics->getCube()->distance = 0.0;
-    }
-    else if(m_event.key.keysym.sym == SDLK_DOWN) {
-      m_graphics->getCube()->distance += .5;
-      if(m_graphics->getCube()->distance > 20.0)
-        m_graphics->getCube()->distance = 20.0;
-    }
+
   }
 }
 
