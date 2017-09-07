@@ -17,20 +17,11 @@ class Shader
     ~Shader();
     bool Initialize();
     void Enable();
-    bool AddShader(GLenum ShaderType);
+    bool AddShader(GLenum ShaderType, const std::string& shader);
     bool Finalize();
     GLint GetUniformLocation(const char* pUniformName);
 
   private:
-    //Separate class, for a static constructor
-    static class ShaderLoader {
-        public: 
-            ShaderLoader();
-    } shaderLoader;
-    friend class ShaderLoader;
-
-    static std::map<std::string,std::string>& getShaderList();
-
     GLuint m_shaderProg;    
     std::vector<GLuint> m_shaderObjList;
 };

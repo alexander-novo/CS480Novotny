@@ -48,3 +48,18 @@ make
 
 Hold `shift` to only affect the circular movement  
 Hold `ctrl` to only affect the spinning movement
+
+# Command Line Parameters
+
+## Command Usage
+
+`Tutorial --help` - Pull up the help menu / command usage  
+`Tutorial [options] <-f filename> <-v filename>` - Run the program with the given vertex and fragment shaders
+
+## Options
+
+```
+    --help                       Show help menu and command usage
+    -v, --vertex <filename>      Specify where to load vertex shader from
+    -f, --fragment <filename>    Specify where to load fragment shader from
+```

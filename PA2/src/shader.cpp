@@ -33,19 +33,8 @@ bool Shader::Initialize()
 }
 
 // Use this method to add shaders to the program. When finished - call finalize()
-bool Shader::AddShader(GLenum ShaderType)
+bool Shader::AddShader(GLenum ShaderType, const std::string& s)
 {
-  std::string s;
-
-  if(ShaderType == GL_VERTEX_SHADER)
-  {
-    s = Shader::getShaderList()["GL_VERTEX_SHADER"];
-  }
-  else if(ShaderType == GL_FRAGMENT_SHADER)
-  {
-    s = Shader::getShaderList()["GL_FRAGMENT_SHADER"];
-  }
-
   GLuint ShaderObj = glCreateShader(ShaderType);
 
   if (ShaderObj == 0) 
@@ -135,42 +124,4 @@ GLint Shader::GetUniformLocation(const char* pUniformName)
     }
 
     return Location;
-}
-
-//Static function rather than static variable
-//to avoid static member initialization order problems
-std::map<std::string,std::string>& Shader::getShaderList() {
-    static std::map<std::string,std::string> shaderList;
-    return shaderList;
-}
-
-//This line needed to run loader
-Shader::ShaderLoader Shader::shaderLoader;
-
-//Shader loader constructor
-Shader::ShaderLoader::ShaderLoader() {
-    std::ifstream loadFile(SHADER_FILE);
-    
-    if(!loadFile.is_open()) {
-        std::cerr << "Could not find shaders file";
-        throw "Could not find shaders file";
-    }
-
-    std::string name;
-    int size;
-
-    while(loadFile >> name){
-        //Open shader file as defined by name
-        std::ifstream shaderFile(SHADER_DIR + name);
-        if(!shaderFile.is_open()) {
-            std::cerr << "Could not find shader file: " << name << std::endl;
-            continue;
-        }
-
-        //Read contents of shader file into string
-        std::string code(std::istreambuf_iterator<char>(shaderFile), {});
-
-        //Add shader to list
-        Shader::getShaderList()[name] = code;
-    }
 }

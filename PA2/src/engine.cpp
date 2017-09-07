@@ -1,20 +1,15 @@
 
 #include "engine.h"
 
-Engine::Engine(string name, int width, int height)
+Engine::Engine(const Context& ctx)
 {
-  m_WINDOW_NAME = name;
-  m_WINDOW_WIDTH = width;
-  m_WINDOW_HEIGHT = height;
-  m_FULLSCREEN = false;
-}
+  m_WINDOW_NAME = ctx.name;
+  m_WINDOW_WIDTH = ctx.width;
+  m_WINDOW_HEIGHT = ctx.height;
+  m_FULLSCREEN = ctx.fullscreen;
 
-Engine::Engine(string name)
-{
-  m_WINDOW_NAME = name;
-  m_WINDOW_HEIGHT = 0;
-  m_WINDOW_WIDTH = 0;
-  m_FULLSCREEN = true;
+  m_vertexShader = ctx.vertex;
+  m_fragmentShader = ctx.fragment;
 }
 
 Engine::~Engine()
@@ -37,7 +32,7 @@ bool Engine::Initialize()
 
   // Start the graphics
   m_graphics = new Graphics();
-  if(!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT))
+  if(!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT, m_vertexShader, m_fragmentShader))
   {
     printf("The graphics failed to initialize.\n");
     return false;

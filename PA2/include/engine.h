@@ -7,11 +7,25 @@
 #include "window.h"
 #include "graphics.h"
 
+#define ENGINE_NAME_DEFAULT "Tutorial Window Name"
+#define ENGINE_WIDTH_DEFAULT 800
+#define ENGINE_HEIGHT_DEFAULT 600
+#define ENGINE_FULLSCREEN_DEFAULT false
+
 class Engine
 {
   public:
-    Engine(string name, int width, int height);
-    Engine(string name);
+    struct Context {
+        std::string name = ENGINE_NAME_DEFAULT;
+        int width = ENGINE_WIDTH_DEFAULT;
+        int height = ENGINE_HEIGHT_DEFAULT;
+        bool fullscreen = ENGINE_FULLSCREEN_DEFAULT;
+
+        std::string vertex = "";
+        std::string fragment = "";
+    };
+
+    Engine(const Context& ctx);
     ~Engine();
     bool Initialize();
     void Run();
@@ -32,6 +46,8 @@ class Engine
     unsigned int m_DT;
     long long m_currentTimeMillis;
     bool m_running;
+
+    std::string m_vertexShader, m_fragmentShader;
 };
 
 #endif // ENGINE_H
