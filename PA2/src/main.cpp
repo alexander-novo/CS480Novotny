@@ -2,6 +2,7 @@
 
 int main(int argc, char **argv)
 {
+  //Stores the properties of our engine, such as window name/size, fullscreen, and shader info
   Engine::Context ctx;
 
   //Do command line arguments
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
   return 0;
 }
 
+//Takes argc and argv from main and stuffs all the necessary information into ctx
 int processArgs(int argc, char** argv, Engine::Context& ctx) {
   int argIndex = 1;
   int error;
@@ -86,6 +88,7 @@ int processArgs(int argc, char** argv, Engine::Context& ctx) {
   return -1;
 }
 
+//Accepts name of file to load shader from and string reference to store into
 int loadShader(const std::string& filename, std::string& shader) {
   std::ifstream shaderFile(filename);
     
@@ -99,6 +102,7 @@ int loadShader(const std::string& filename, std::string& shader) {
   return -1;
 }
 
+//Displays command usage information to standard output
 void helpMenu() {
   std::cout << "Command Usage:" << std::endl << std::endl
             << "    " << PROGRAM_NAME << " --help" << std::endl
