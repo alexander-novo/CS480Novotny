@@ -72,6 +72,58 @@ int processArgs(int argc, char** argv, Engine::Context& ctx) {
       }
       continue;
     }
+    //WINDOW HEIGHT
+    else if (!strcmp(argv[argIndex], "-h") || !strcmp(argv[argIndex], "--height")) {
+      //Make certain this isn't the last argument
+      //The next argument should be the window height
+      if(++argIndex < argc) {
+        
+        ctx.height = strtol(argv[argIndex], nullptr, 10);
+
+        if(ctx.height < 1) {
+          std::cout << "Value '" << argv[argIndex] <<"' not a valid window height" << std::endl;
+          return 1;
+        }
+
+      } else {
+        std::cout << "Expected argument for -h";
+        return 1;
+      }
+      continue;
+    }
+    //WINDOW WIDTH
+    else if (!strcmp(argv[argIndex], "-w") || !strcmp(argv[argIndex], "--width")) {
+      //Make certain this isn't the last argument
+      //The next argument should be the window width
+      if(++argIndex < argc) {
+
+        ctx.width = strtol(argv[argIndex], nullptr, 10);
+
+        if(ctx.height < 1) {
+          std::cout << "Value '" << argv[argIndex] <<"' not a valid window width" << std::endl;
+          return 1;
+        }
+
+      } else {
+        std::cout << "Expected argument for -w";
+        return 1;
+      }
+      continue;
+    }
+    //WINDOW NAME
+    else if (!strcmp(argv[argIndex], "-n") || !strcmp(argv[argIndex], "--name")) {
+      //Make certain this isn't the last argument
+      //The next argument should be the window name
+      if(++argIndex < argc) {
+
+        ctx.name = argv[argIndex];
+
+      } else {
+        std::cout << "Expected argument for -n";
+        return 1;
+      }
+      continue;
+    }
 
     std::cout << "Unexpected argument: " << argv[argIndex] << std::endl;
   }
@@ -110,5 +162,8 @@ void helpMenu() {
             << "Options" << std::endl
             << "    --help                       Show help menu and command usage" << std::endl
             << "    -v, --vertex <filename>      Specify where to load vertex shader from" << std::endl
-            << "    -f, --fragment <filename>    Specify where to load fragment shader from" << std::endl;
+            << "    -f, --fragment <filename>    Specify where to load fragment shader from" << std::endl
+            << "    -h, --height <number>        Choose the window height" << std::endl
+            << "    -w, --width <number>         Choose the window width" << std::endl
+            << "    -n, --name <name>            Choose the window name" << std::endl;
 }

@@ -62,4 +62,7 @@ Hold `ctrl` to only affect the spinning movement
     --help                       Show help menu and command usage
     -v, --vertex <filename>      Specify where to load vertex shader from
     -f, --fragment <filename>    Specify where to load fragment shader from
+    -h, --height <number>        Choose the window height
+    -w, --width <number>         Choose the window width
+    -n, --name <name>            Choose the window name
 ```
