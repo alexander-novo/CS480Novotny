@@ -8,15 +8,32 @@
 class Object
 {
   public:
-    //     timeScale     moveScale     spinScale     distance
-    Object(double = 1.0, double = 1.0, double = 2.0, double = 10.0);
+    struct Context {
+        double timeScale = 1.0;
+        double moveScale = 1.0;
+        double spinScale = 1.0;
+        double orbitDistance = 10.0;
+
+        double scale = 1.0;
+
+        enum Direction {
+            cw,
+            ccw
+        };
+
+        Direction moveDir = cw;
+        Direction spinDir = ccw;
+    };
+    
+    Object(const Context& ctx);
     ~Object();
-    void Update(unsigned int dt);
-    void Render();
+    void Update(unsigned int dt, const glm::mat4& parentModel);
+    void Render(GLint& modelLocation);
 
     glm::mat4 GetModel();
+    Context& getContext();
 
-    double timeScale, moveScale, spinScale, distance;
+    std::vector<Object> children;
 
   private:
     glm::mat4 model;
@@ -24,6 +41,8 @@ class Object
     std::vector<unsigned int> Indices;
     GLuint VB;
     GLuint IB;
+
+    Context ctx;
 
     struct Time {
         float spin, move;

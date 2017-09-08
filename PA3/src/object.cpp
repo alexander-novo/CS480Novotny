@@ -1,6 +1,6 @@
 #include "object.h"
 
-Object::Object(double a, double b, double c, double d) : timeScale(a), moveScale(b), spinScale(c), distance(d)
+Object::Object(const Context& a) : ctx(a)
 {  
   /*
     # Blender File for a Cube
@@ -77,16 +77,23 @@ Object::~Object()
   Indices.clear();
 }
 
-void Object::Update(unsigned int dt)
+void Object::Update(unsigned int dt, const glm::mat4& parentModel)
 {
-  float timeMod = dt / 500.0 * timeScale;
+  float timeMod = dt / 500.0 * ctx.timeScale;
 
-  time.spin += timeMod * spinScale;
-  time.move += timeMod * moveScale;
+  time.spin += timeMod * ctx.spinScale;
+  time.move += timeMod * ctx.moveScale;
   
-  model = glm::rotate(glm::mat4(1.0f), time.move, glm::vec3(0.0, 1.0, 0.0));
-  model = glm::translate(model, glm::vec3(distance, 0.0, 0.0));
+  //Move into place
+  model = glm::rotate(parentModel, time.move, glm::vec3(0.0, 1.0, 0.0));
+  model = glm::translate(model, glm::vec3(ctx.orbitDistance, 0.0, 0.0));
+
+  for(int i = 0; i < children.size(); i++) {
+    children[i].Update(dt, model);
+  }
+
   model = glm::rotate(model, time.spin - time.move, glm::vec3(0.0, 1.0, 0.0));
+  model = glm::scale(model, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
   
 }
 
@@ -95,8 +102,14 @@ glm::mat4 Object::GetModel()
   return model;
 }
 
-void Object::Render()
+Object::Context& Object::getContext() {
+  return ctx;
+}
+
+void Object::Render(GLint& modelLocation)
 {
+  glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -110,5 +123,9 @@ void Object::Render()
 
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
+
+  for(int i = 0; i < children.size(); i++) {
+    children[i].Render(modelLocation);
+  }
 }
 
