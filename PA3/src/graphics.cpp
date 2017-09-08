@@ -47,6 +47,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
   // Create the object
   m_cube = new Object(Object::Context());
   m_cube->getContext().timeScale = 0.25;
+  m_cube->getContext().spinScale = -0.5;
 
   Object::Context moonCtx;
   moonCtx.scale = 0.25;
