@@ -42,6 +42,7 @@ make
 `right arrow` - Speed up  
 `r` - Reverse  
 `s` - Stop
+`esc` - Quit
 
 `left click` - Reverse
 `right click` - Stop
