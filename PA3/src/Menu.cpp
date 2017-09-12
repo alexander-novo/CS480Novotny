@@ -31,7 +31,7 @@ void Menu::update() {
 	ImGui::SliderFloat("Spin Speed", &ctx.spinScale, 0.0, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
 	if(ImGui::Button("Reset##spinScale")) ctx.spinScale = originalCtx.spinScale, ctx.spinDir = originalCtx.spinDir;
 	ImGui::RadioButton("cw##spin", &ctx.spinDir, -1); ImGui::SameLine();
-	ImGui::RadioButton("ccw##move", &ctx.spinDir, 1);
+	ImGui::RadioButton("ccw##spin", &ctx.spinDir, 1);
 	
 	ImGui::End();
 }
