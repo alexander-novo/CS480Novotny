@@ -52,13 +52,10 @@ bool Window::Initialize(const string &name, int* width, int* height)
 
   // Create context
   gContext = SDL_GL_CreateContext(gWindow);
-  if(gContext == NULL)
-  {
+  if(gContext == NULL) {
     printf("OpenGL context not created: %s\n", SDL_GetError());
     return false;
   }
-
-  ImGui_ImplSdlGL3_Init(gWindow);
 
   // Use VSync
   /*if(SDL_GL_SetSwapInterval(1) < 0)

@@ -5,48 +5,48 @@
 #include <cmath>
 #include "graphics_headers.h"
 
-class Object
-{
-  public:
-    struct Context {
-        double timeScale = 1.0;
-        double moveScale = 1.0;
-        double spinScale = 1.0;
-        double orbitDistance = 10.0;
-
-        double scale = 1.0;
-
-        enum Direction {
-            cw,
-            ccw
-        };
-
-        Direction moveDir = cw;
-        Direction spinDir = ccw;
-    };
-    
-    Object(const Context& ctx);
-    ~Object();
-    void Update(unsigned int dt, const glm::mat4& parentModel);
-    void Render(GLint& modelLocation);
-
-    glm::mat4 GetModel();
-    Context& getContext();
-
-    std::vector<Object> children;
-
-  private:
-    glm::mat4 model;
-    std::vector<Vertex> Vertices;
-    std::vector<unsigned int> Indices;
-    GLuint VB;
-    GLuint IB;
-
-    Context ctx;
-
-    struct Time {
-        float spin, move;
-    } time;
+class Object {
+	public:
+		struct Context {
+			float timeScale = 1.0;
+			float moveScale = 1.0;
+			float spinScale = 1.0;
+			float orbitDistance = 10.0;
+			
+			float scale = 1.0;
+			
+			int moveDir = -1;
+			int spinDir = -1;
+			
+			std::string name = "Planet";
+		};
+		
+		Object(const Context &ctx);
+		
+		~Object();
+		
+		void Update(float dt, const glm::mat4 &parentModel);
+		
+		void Render(GLint &modelLocation);
+		
+		glm::mat4 GetModel();
+		
+		Context ctx;
+		const Context& originalCtx;
+		std::vector<Object> children;
+	
+	private:
+		glm::mat4 model;
+		std::vector<Vertex> Vertices;
+		std::vector<unsigned int> Indices;
+		GLuint VB;
+		GLuint IB;
+		
+		Context _originalCtx;
+		
+		struct Time {
+			float spin, move;
+		} time;
 };
 
 #endif /* OBJECT_H */
