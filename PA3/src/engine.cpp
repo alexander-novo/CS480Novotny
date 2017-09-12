@@ -51,11 +51,11 @@ void Engine::Run() {
     while (m_running) {
         // Update the DT
         m_DT = getDT();
-
-        // Check the keyboard input
-        while (SDL_PollEvent(&m_event) != 0) {
-            Keyboard();
-        }
+	
+	    // Check the keyboard input
+	    while (SDL_PollEvent(&m_event) != 0) {
+		    Keyboard();
+	    }
 	    
 	    //Update the menu and get user's input options
 	    m_menu->update();
@@ -96,7 +96,7 @@ void Engine::Keyboard() {
 
         //Keyboard
 
-    else if (m_event.type == SDL_KEYDOWN) {
+    else if (m_event.type == SDL_KEYDOWN && !ImGui::GetIO().WantCaptureKeyboard) {
         // handle key down events here
         switch (m_event.key.keysym.sym) {
             //Stop program
@@ -144,8 +144,8 @@ void Engine::Keyboard() {
     }
 
         //Mouse
-	/*
-    else if (m_event.type == SDL_MOUSEBUTTONDOWN) {
+	
+    else if (m_event.type == SDL_MOUSEBUTTONDOWN && !ImGui::GetIO().WantCaptureMouse) {
         switch (m_event.button.button) {
             case SDL_BUTTON_LEFT:
                 //Reverse object direction
@@ -156,7 +156,7 @@ void Engine::Keyboard() {
                 *scaleHandler = 0.0;
                 break;
         }
-    }*/
+    }
 	
 	if(*scaleHandler < minimum) *scaleHandler = minimum;
 	if(*scaleHandler > maximum) *scaleHandler = maximum;
