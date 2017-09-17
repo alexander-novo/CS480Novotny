@@ -46,8 +46,6 @@ bool Engine::Initialize() {
 void Engine::Run() {
     m_running = true;
 
-    ImVec4 clear_color = ImColor(114, 144, 154);
-
     while (m_running) {
         // Update the DT
         m_DT = getDT();
@@ -62,7 +60,7 @@ void Engine::Run() {
 
         // Update and render the graphics
         m_graphics->Update(m_DT);
-        m_graphics->Render();
+        m_graphics->Render(*m_menu);
 
         //Render the GUI
         m_menu->render();
@@ -77,15 +75,14 @@ void Engine::Run() {
 void Engine::Keyboard() {
     float *scaleHandler;
 	float minimum = MIN_MOVE_SCALE, maximum = MAX_MOVE_SCALE;
-    bool backwards;
 
     //Use keyboard mods to determine what property to change
     if (SDL_GetModState() & KMOD_SHIFT) {
-        scaleHandler = &(m_menu->getCurrentPlanet()->ctx.moveScale);
+        scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.moveScale);
     } else if (SDL_GetModState() & KMOD_CTRL) {
-        scaleHandler = &(m_menu->getCurrentPlanet()->ctx.spinScale);
+        scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.spinScale);
     } else {
-        scaleHandler = &(m_menu->getCurrentPlanet()->ctx.timeScale);
+        scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.timeScale);
 	    minimum = MIN_TIME_SCALE;
 	    maximum = MAX_TIME_SCALE;
     }
@@ -127,11 +124,11 @@ void Engine::Keyboard() {
                 //Reverse direction
             case SDLK_r:
 	            if (SDL_GetModState() & KMOD_SHIFT) {
-		            m_menu->getCurrentPlanet()->ctx.moveDir *= -1;
+		            m_menu->getPlanet(m_menu->options.planetSelector)->ctx.moveDir *= -1;
 	            } else if (SDL_GetModState() & KMOD_CTRL) {
-		            m_menu->getCurrentPlanet()->ctx.spinDir *= -1;
+		            m_menu->getPlanet(m_menu->options.planetSelector)->ctx.spinDir *= -1;
 	            } else {
-		            m_menu->getCurrentPlanet()->ctx.timeScale *= -1;
+		            m_menu->getPlanet(m_menu->options.planetSelector)->ctx.timeScale *= -1;
 	            }
                 break;
 

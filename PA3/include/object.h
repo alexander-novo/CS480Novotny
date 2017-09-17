@@ -21,19 +21,26 @@ class Object {
 			std::string name = "Planet";
 		};
 		
-		Object(const Context &ctx);
+		struct Time {
+			float spin, move;
+		} time;
+		
+		Object(const Context &ctx, Object* parent);
 		
 		~Object();
 		
 		void Update(float dt, const glm::mat4 &parentModel);
+		void Render(GLint &modelLocation) const;
+		void addChild(const Context& ctx);
+		unsigned long getNumChildren() const;
 		
-		void Render(GLint &modelLocation);
-		
-		glm::mat4 GetModel();
+		const glm::mat4& GetModel() const;
 		
 		Context ctx;
 		const Context& originalCtx;
-		std::vector<Object> children;
+		Object* const parent;
+		
+		Object& operator[](int index);
 	
 	private:
 		glm::mat4 model;
@@ -43,10 +50,7 @@ class Object {
 		GLuint IB;
 		
 		Context _originalCtx;
-		
-		struct Time {
-			float spin, move;
-		} time;
+		std::vector<Object*> _children;
 };
 
 #endif /* OBJECT_H */

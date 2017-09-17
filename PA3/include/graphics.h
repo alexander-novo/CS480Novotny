@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "shader.h"
 #include "object.h"
+#include "Menu.h"
 
 class Graphics
 {
@@ -15,7 +16,7 @@ class Graphics
     ~Graphics();
     bool Initialize(int width, int height, std::string vertexShader, std::string fragmentShader);
     void Update(unsigned int dt);
-    void Render();
+    void Render(const Menu&);
     Object* getCube();
 
   private:

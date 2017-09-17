@@ -16,8 +16,8 @@ void Menu::update() {
 	
 	ImGui::Begin("Controls");
 	
-	Object::Context& ctx = getCurrentPlanet()->ctx;
-	const Object::Context& originalCtx = getCurrentPlanet()->originalCtx;
+	Object::Context& ctx = getPlanet(_options.planetSelector)->ctx;
+	const Object::Context& originalCtx = getPlanet(_options.planetSelector)->originalCtx;
 	
 	ImGui::Combo("Select Satellite", &_options.planetSelector, satelliteList.c_str());
 	ImGui::SliderFloat("Time Scale", &ctx.timeScale, -5.0f, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
@@ -32,6 +32,8 @@ void Menu::update() {
 	if(ImGui::Button("Reset##spinScale")) ctx.spinScale = originalCtx.spinScale, ctx.spinDir = originalCtx.spinDir;
 	ImGui::RadioButton("cw##spin", &ctx.spinDir, -1); ImGui::SameLine();
 	ImGui::RadioButton("ccw##spin", &ctx.spinDir, 1);
+	
+	if(ImGui::Button("Focus")) _options.lookingAt = _options.planetSelector;
 	
 	ImGui::End();
 }
@@ -50,11 +52,11 @@ void Menu::buildSatelliteList(Object& root, std::string pre, int& numSatellites)
 	
 	numSatellites++;
 	
-	for(int i = 0; i < root.children.size(); i++) {
-		buildSatelliteList(root.children[i], pre + '|', numSatellites);
+	for(int i = 0; i < root.getNumChildren(); i++) {
+		buildSatelliteList(root[i], pre + '|', numSatellites);
 	}
 }
 
-Object* Menu::getCurrentPlanet() {
-	return satelliteMap[_options.planetSelector];
+Object* Menu::getPlanet(int index) const {
+	return satelliteMap.at(index);
 }

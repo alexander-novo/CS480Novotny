@@ -14,13 +14,14 @@
 class Menu {
 	public:
 		struct Options {
-			int planetSelector;
-			int numPlanets;
+			int planetSelector; //Which planet is currently selected in the drop down
+			int numPlanets; //Keeps track of the number of planets in the drop down
+			int lookingAt = -1; //Which planet our camera should be looking at
 		};
 		
 		Menu(Window& window, Object& root);
 		
-		Object* getCurrentPlanet();
+		Object* getPlanet(int index) const;
 		
 		void update();
 		void render();

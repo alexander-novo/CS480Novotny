@@ -1,6 +1,6 @@
 #include "object.h"
 
-Object::Object(const Context &a) : ctx(a), _originalCtx(a), originalCtx(_originalCtx) {
+Object::Object(const Context &a, Object* b) : ctx(a), _originalCtx(a), parent(b), originalCtx(_originalCtx) {
 	/*
 	  # Blender File for a Cube
 	  o Cube
@@ -54,8 +54,8 @@ Object::Object(const Context &a) : ctx(a), _originalCtx(a), originalCtx(_origina
 	};
 	
 	// The index works at a 0th index
-	for (unsigned int i = 0; i < Indices.size(); i++) {
-		Indices[i] = Indices[i] - 1;
+	for (unsigned int &Indice : Indices) {
+		Indice = Indice - 1;
 	}
 	
 	time.spin = time.move = 0.0;
@@ -72,6 +72,10 @@ Object::Object(const Context &a) : ctx(a), _originalCtx(a), originalCtx(_origina
 Object::~Object() {
 	Vertices.clear();
 	Indices.clear();
+	for (auto &i : _children) {
+		delete i;
+	}
+	_children.clear();
 }
 
 void Object::Update(float dt, const glm::mat4 &parentModel) {
@@ -85,8 +89,8 @@ void Object::Update(float dt, const glm::mat4 &parentModel) {
 	model = glm::translate(model, glm::vec3(ctx.orbitDistance, 0.0, 0.0));
 	model = glm::rotate(model, -time.move, glm::vec3(0.0, 1.0, 0.0));
 	
-	for (int i = 0; i < children.size(); i++) {
-		children[i].Update(dt * ctx.timeScale, model);
+	for (auto &i : _children) {
+		i->Update(dt * ctx.timeScale, model);
 	}
 	
 	model = glm::rotate(model, time.spin, glm::vec3(0.0, 1.0, 0.0));
@@ -94,11 +98,11 @@ void Object::Update(float dt, const glm::mat4 &parentModel) {
 	
 }
 
-glm::mat4 Object::GetModel() {
+const glm::mat4& Object::GetModel() const {
 	return model;
 }
 
-void Object::Render(GLint &modelLocation) {
+void Object::Render(GLint &modelLocation) const {
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 	
 	glEnableVertexAttribArray(0);
@@ -115,8 +119,21 @@ void Object::Render(GLint &modelLocation) {
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	
-	for (int i = 0; i < children.size(); i++) {
-		children[i].Render(modelLocation);
+	for (const auto &i : _children) {
+		i->Render(modelLocation);
 	}
 }
 
+void Object::addChild(const Object::Context& ctx) {
+	Object* newPlanet = new Object(ctx, this);
+	_children.push_back(newPlanet);
+}
+
+unsigned long Object::getNumChildren() const {
+	return _children.size();
+}
+
+Object& Object::operator[](int index) {
+	if(index >= _children.size()) throw std::out_of_range("Received child index out of range");
+	return *_children[index];
+}

@@ -43,9 +43,10 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	Object::Context sunCtx;
 	sunCtx.spinScale = 0.25f;
 	sunCtx.spinDir = 1;
+	sunCtx.moveScale = 0.0f;
 	sunCtx.orbitDistance = 0;
 	sunCtx.name = "Sun";
-	m_cube = new Object(sunCtx);
+	m_cube = new Object(sunCtx, NULL);
 	
 	Object::Context earthCtx;
 	earthCtx.scale = 0.25;
@@ -53,7 +54,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	earthCtx.moveScale = 0.25;
 	earthCtx.name = "Earth";
 	
-	m_cube->children.emplace_back(earthCtx);
+	m_cube->addChild(earthCtx);
 	
 	Object::Context moonCtx;
 	moonCtx.scale = 0.1;
@@ -62,7 +63,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	moonCtx.orbitDistance = 1.0;
 	moonCtx.name = "The Moon";
 	
-	m_cube->children[0].children.emplace_back(moonCtx);
+	(*m_cube)[0].addChild(moonCtx);
 	
 	Object::Context marsCtx;
 	marsCtx.scale = 0.15;
@@ -70,7 +71,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	marsCtx.moveScale = 0.125;
 	marsCtx.name = "Mars";
 	
-	m_cube->children.emplace_back(marsCtx);
+	m_cube->addChild(marsCtx);
 	
 	Object::Context potatoCtx;
 	potatoCtx.scale = 0.025;
@@ -79,7 +80,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	potatoCtx.orbitDistance = .3;
 	potatoCtx.name = "Potato Moon";
 	
-	m_cube->children[1].children.emplace_back(potatoCtx);
+	(*m_cube)[1].addChild(potatoCtx);
 	
 	Object::Context almostSphereCtx;
 	almostSphereCtx.scale = 0.05;
@@ -88,7 +89,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	almostSphereCtx.orbitDistance = .4;
 	almostSphereCtx.name = "Almost a Sphere";
 	
-	m_cube->children[1].children.emplace_back(almostSphereCtx);
+	(*m_cube)[1].addChild(almostSphereCtx);
 	
 	
 	// Set up the shaders
@@ -149,13 +150,47 @@ void Graphics::Update(unsigned int dt) {
 	m_cube->Update(dt, glm::mat4(1.0f));
 }
 
-void Graphics::Render() {
+void Graphics::Render(const Menu& menu) {
 	//clear the screen
 	glClearColor(0.0, 0.0, 0.2, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	// Start the correct program
 	m_shader->Enable();
+	
+	if(menu.options.lookingAt != -1) {
+		//What we're looking at
+		glm::vec4 lookVec(0.0, 0.0, 0.0, 1.0);
+		//What should be in the background (whatever we're orbiting)
+		glm::vec4 backgroundVec(0.0, 0.0, 0.0, 1.0);
+		Object* lookingAt = menu.getPlanet(menu.options.lookingAt);
+		Object* parent = lookingAt->parent;
+		
+		//If we're orbiting something, put that something in the background of the camera
+		//Otherwise, default camera view (i.e. the sun)
+		if(parent != NULL) {
+			float scale = lookingAt->ctx.scale * 25;
+			
+			lookVec = lookingAt->GetModel() * lookVec;
+			backgroundVec = parent->GetModel() * backgroundVec;
+			
+			backgroundVec = lookVec - backgroundVec;
+			backgroundVec = glm::normalize(backgroundVec);
+			backgroundVec *= scale;
+			backgroundVec += lookVec;
+			
+			m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale, backgroundVec.z), //Eye Position
+			                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
+			                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
+		} else {
+			m_camera->GetView() = glm::lookAt( glm::vec3(0.0, 8.0, -16.0),
+			                                   glm::vec3(0.0, 0.0, 0.0),
+			                                   glm::vec3(0.0, 1.0, 0.0));
+		}
+		
+	}
+	
+	
 	
 	// Send in the projection and view to the shader
 	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));

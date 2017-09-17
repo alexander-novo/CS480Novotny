@@ -27,12 +27,12 @@ bool Camera::Initialize(int w, int h)
   return true;
 }
 
-glm::mat4 Camera::GetProjection()
+glm::mat4& Camera::GetProjection()
 {
   return projection;
 }
 
-glm::mat4 Camera::GetView()
+glm::mat4& Camera::GetView()
 {
   return view;
 }
