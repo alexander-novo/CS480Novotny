@@ -12,7 +12,7 @@
 class Graphics
 {
   public:
-    Graphics();
+    Graphics(Object* sun);
     ~Graphics();
     bool Initialize(int width, int height, std::string vertexShader, std::string fragmentShader);
     void Update(unsigned int dt);

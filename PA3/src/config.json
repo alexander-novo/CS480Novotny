@@ -1,0 +1,48 @@
+{
+  "window": {
+    "fullscreen": false,
+    "adjustable": false,
+    "height": 1500,
+    "width": 3000,
+    "name": "Solar System Simulator"
+  },
+  "shaders": {
+    "vertex": "shaders/vert",
+    "fragment": "shaders/frag"
+  },
+  "scale": {
+    "distance": 347850000,
+    "time": 2500
+  },
+  "sun": {
+    "name": "Sun",
+    "radius": 695700000,
+    "orbit": {
+      "distance": 0,
+      "year": 0
+    },
+    "day": 648,
+    "spins": "ccw",
+    "satellites": [{
+      "name": "Earth",
+      "radius": 6378000,
+      "orbit": {
+        "distance": 149600000000,
+        "year": 8764.8
+      },
+      "day": 23.9,
+      "spins": "ccw",
+      "satellites": [{
+        "name": "The Moon",
+        "radius": 1737500,
+        "orbit": {
+          "distance": 348000000,
+          "year": 655.2
+        },
+        "day": 655.7,
+        "spins": "ccw",
+        "satellites": []
+      }]
+    }]
+  }
+}

@@ -59,14 +59,6 @@ Object::Object(const Context &a, Object* b) : ctx(a), _originalCtx(a), parent(b)
 	}
 	
 	time.spin = time.move = 0.0;
-	
-	glGenBuffers(1, &VB);
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * Vertices.size(), &Vertices[0], GL_STATIC_DRAW);
-	
-	glGenBuffers(1, &IB);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
 }
 
 Object::~Object() {
@@ -76,6 +68,20 @@ Object::~Object() {
 		delete i;
 	}
 	_children.clear();
+}
+
+void Object::Init_GL() {
+	glGenBuffers(1, &VB);
+	glBindBuffer(GL_ARRAY_BUFFER, VB);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * Vertices.size(), &Vertices[0], GL_STATIC_DRAW);
+	
+	glGenBuffers(1, &IB);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
+	
+	for(auto& child : _children) {
+		child->Init_GL();
+	}
 }
 
 void Object::Update(float dt, const glm::mat4 &parentModel) {
@@ -124,9 +130,10 @@ void Object::Render(GLint &modelLocation) const {
 	}
 }
 
-void Object::addChild(const Object::Context& ctx) {
+Object& Object::addChild(const Object::Context& ctx) {
 	Object* newPlanet = new Object(ctx, this);
 	_children.push_back(newPlanet);
+	return *newPlanet;
 }
 
 unsigned long Object::getNumChildren() const {

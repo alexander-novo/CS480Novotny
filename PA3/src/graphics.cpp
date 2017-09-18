@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-Graphics::Graphics() {
+Graphics::Graphics(Object* sun) : m_cube(sun) {
 
 }
 
@@ -39,58 +39,7 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 		return false;
 	}
 	
-	// Create the object
-	Object::Context sunCtx;
-	sunCtx.spinScale = 0.25f;
-	sunCtx.spinDir = 1;
-	sunCtx.moveScale = 0.0f;
-	sunCtx.orbitDistance = 0;
-	sunCtx.name = "Sun";
-	m_cube = new Object(sunCtx, NULL);
-	
-	Object::Context earthCtx;
-	earthCtx.scale = 0.25;
-	earthCtx.orbitDistance = 10.0;
-	earthCtx.moveScale = 0.25;
-	earthCtx.name = "Earth";
-	
-	m_cube->addChild(earthCtx);
-	
-	Object::Context moonCtx;
-	moonCtx.scale = 0.1;
-	moonCtx.moveScale = 3.0;
-	moonCtx.moveDir = 1;
-	moonCtx.orbitDistance = 1.0;
-	moonCtx.name = "The Moon";
-	
-	(*m_cube)[0].addChild(moonCtx);
-	
-	Object::Context marsCtx;
-	marsCtx.scale = 0.15;
-	marsCtx.orbitDistance = 15.0;
-	marsCtx.moveScale = 0.125;
-	marsCtx.name = "Mars";
-	
-	m_cube->addChild(marsCtx);
-	
-	Object::Context potatoCtx;
-	potatoCtx.scale = 0.025;
-	potatoCtx.moveScale = 2.75;
-	potatoCtx.moveDir = 1;
-	potatoCtx.orbitDistance = .3;
-	potatoCtx.name = "Potato Moon";
-	
-	(*m_cube)[1].addChild(potatoCtx);
-	
-	Object::Context almostSphereCtx;
-	almostSphereCtx.scale = 0.05;
-	almostSphereCtx.moveScale = 2;
-	almostSphereCtx.spinDir = 1;
-	almostSphereCtx.orbitDistance = .4;
-	almostSphereCtx.name = "Almost a Sphere";
-	
-	(*m_cube)[1].addChild(almostSphereCtx);
-	
+	m_cube->Init_GL();
 	
 	// Set up the shaders
 	m_shader = new Shader();

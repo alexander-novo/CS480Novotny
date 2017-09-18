@@ -29,9 +29,10 @@ class Object {
 		
 		~Object();
 		
+		void Init_GL();
 		void Update(float dt, const glm::mat4 &parentModel);
 		void Render(GLint &modelLocation) const;
-		void addChild(const Context& ctx);
+		Object& addChild(const Context& ctx);
 		unsigned long getNumChildren() const;
 		
 		const glm::mat4& GetModel() const;

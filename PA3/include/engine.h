@@ -25,7 +25,7 @@ class Engine {
 			std::string fragment = "";
 		};
 		
-		Engine(const Context &ctx);
+		Engine(const Context &ctx, Object* sun);
 		
 		~Engine();
 		
@@ -53,6 +53,7 @@ class Engine {
 		long long m_currentTimeMillis;
 		bool m_running;
 		
+		Object* m_cube;
 		Menu *m_menu;
 		
 		std::string m_vertexShader, m_fragmentShader;

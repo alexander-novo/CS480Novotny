@@ -1,7 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &ctx) {
+Engine::Engine(const Context &ctx, Object* sun) : m_cube(sun) {
     m_WINDOW_NAME = ctx.name;
     m_WINDOW_WIDTH = ctx.width;
     m_WINDOW_HEIGHT = ctx.height;
@@ -27,7 +27,7 @@ bool Engine::Initialize() {
     }
 
     // Start the graphics
-    m_graphics = new Graphics();
+    m_graphics = new Graphics(m_cube);
     if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT, m_vertexShader, m_fragmentShader)) {
         printf("The graphics failed to initialize.\n");
         return false;
