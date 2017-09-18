@@ -23,25 +23,48 @@
     },
     "day": 648,
     "spins": "ccw",
-    "satellites": [{
-      "name": "Earth",
-      "radius": 6378000,
-      "orbit": {
-        "distance": 149600000000,
-        "year": 8764.8
-      },
-      "day": 23.9,
-      "spins": "ccw",
-      "satellites": [{
-        "name": "The Moon",
-        "radius": 1737500,
+    "satellites": [
+      {
+        "name": "Mercury",
+        "radius": 2439500,
         "orbit": {
-          "distance": 348000000,
-          "year": 655.2
+          "distance": 57900000000,
+          "year": 2112
         },
-        "day": 655.7,
+        "day": 1407.6,
         "spins": "ccw",
         "satellites": []
+      },
+      {
+        "name": "Venus",
+        "radius": 2439500,
+        "orbit": {
+          "distance": 108200000000,
+          "year": 5392.8
+        },
+        "day": 5832.5,
+        "spins": "cw",
+        "satellites": []
+      },
+      {
+        "name": "Earth",
+        "radius": 6378000,
+        "orbit": {
+          "distance": 149600000000,
+          "year": 8764.8
+        },
+        "day": 23.9,
+        "spins": "ccw",
+        "satellites": [{
+          "name": "The Moon",
+          "radius": 1737500,
+          "orbit": {
+            "distance": 348000000,
+            "year": 655.2
+          },
+          "day": 655.7,
+          "spins": "ccw",
+          "satellites": []
       }]
     }]
   }
