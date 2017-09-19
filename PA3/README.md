@@ -1,4 +1,4 @@
-# PA2: Spinning Cube w/ Keyboard Interaction
+# PA3: Spinning Cube w/ Moon
 
 # Dependencies, Building, and Running
 
