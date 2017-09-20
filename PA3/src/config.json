@@ -2,8 +2,8 @@
   "window": {
     "fullscreen": false,
     "adjustable": false,
-    "height": 1500,
-    "width": 3000,
+    "height": 850,
+    "width": 1500,
     "name": "Solar System Simulator"
   },
   "shaders": {
