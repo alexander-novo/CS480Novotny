@@ -119,7 +119,7 @@ void Graphics::Render(const Menu& menu) {
 		//Otherwise, default camera view (i.e. the sun)
 		if(parent != NULL) {
 			//Keep track of how large whatever we're looking at is
-			float scale = lookingAt->ctx.scale;
+			float scale = lookingAt->ctx.scale * 25;
 			
 			//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
 			lookVec = lookingAt->GetModel() * lookVec;
