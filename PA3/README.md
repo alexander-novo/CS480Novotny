@@ -30,7 +30,7 @@ mkdir build
 cd build
 cmake ..
 make
-./Tutorial
+./Tutorial config.json
 ```
 
 # Controls
@@ -49,20 +49,19 @@ make
 Hold `shift` to only affect the circular movement  
 Hold `ctrl` to only affect the spinning movement
 
+# Menu Usage
+
+![Menu](https://i.imgur.com/RfxHhHu.png)
+
+**Select Satellite** - Select which planet/moon the controls will affect  
+**Time Scale** - How fast the currently selected object will orbit and spin, as well as everything orbiting it  
+**Orbit Speed** - How fast the currently selected object orbits, as well as the direction  
+**Spin Speed** - How fast the currently selected object spins, as well as the direction  
+**Focus** - Will cause the camera to follow this object around. Whatever the object is currently orbiting will be in the background.
+
 # Command Line Parameters
 
 ## Command Usage
 
 `Tutorial --help` - Pull up the help menu / command usage  
-`Tutorial [options] <-f filename> <-v filename>` - Run the program with the given vertex and fragment shaders
-
-## Options
-
-```
-    --help                       Show help menu and command usage
-    -v, --vertex <filename>      Specify where to load vertex shader from
-    -f, --fragment <filename>    Specify where to load fragment shader from
-    -h, --height <number>        Choose the window height
-    -w, --width <number>         Choose the window width
-    -n, --name <name>            Choose the window name
-```
+`Tutorial <config>` - Run the program with the given config file
