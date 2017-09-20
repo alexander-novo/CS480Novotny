@@ -1,6 +1,6 @@
 #include "object.h"
 
-Object::Object(const Context &a, Object* b) : ctx(a), _originalCtx(a), parent(b), originalCtx(_originalCtx) {
+Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b) {
 	/*
 	  # Blender File for a Cube
 	  o Cube
@@ -79,6 +79,7 @@ void Object::Init_GL() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
 	
+	//Now do the same for all our children
 	for(auto& child : _children) {
 		child->Init_GL();
 	}
@@ -87,6 +88,7 @@ void Object::Init_GL() {
 void Object::Update(float dt, const glm::mat4 &parentModel) {
 	float timeMod = dt / 1000.0f * ctx.timeScale;
 	
+	//Update the timer
 	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
 	time.move += timeMod * ctx.moveScale * ctx.moveDir;
 	
@@ -95,10 +97,12 @@ void Object::Update(float dt, const glm::mat4 &parentModel) {
 	model = glm::translate(model, glm::vec3(ctx.orbitDistance, 0.0, 0.0));
 	model = glm::rotate(model, -time.move, glm::vec3(0.0, 1.0, 0.0));
 	
+	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
 		i->Update(dt * ctx.timeScale, model);
 	}
 	
+	//Then rotate and scale so the satellites are unaffected
 	model = glm::rotate(model, time.spin, glm::vec3(0.0, 1.0, 0.0));
 	model = glm::scale(model, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
 	

@@ -118,16 +118,24 @@ void Graphics::Render(const Menu& menu) {
 		//If we're orbiting something, put that something in the background of the camera
 		//Otherwise, default camera view (i.e. the sun)
 		if(parent != NULL) {
-			float scale = lookingAt->ctx.scale * 25;
+			//Keep track of how large whatever we're looking at is
+			float scale = lookingAt->ctx.scale;
 			
+			//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
 			lookVec = lookingAt->GetModel() * lookVec;
 			backgroundVec = parent->GetModel() * backgroundVec;
 			
+			//Now do some math to find where to place the camera
+			//First find the direction pointing from what we're orbiting to what we're looking at
 			backgroundVec = lookVec - backgroundVec;
 			backgroundVec = glm::normalize(backgroundVec);
+			//Then scale it depending on how large what we're looking at is
+			//We don't want to be to far away from a small object or too close to a large object
 			backgroundVec *= scale;
+			//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 			backgroundVec += lookVec;
 			
+			//Also let's try and look down from above what we're looking at
 			m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale, backgroundVec.z), //Eye Position
 			                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
 			                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
