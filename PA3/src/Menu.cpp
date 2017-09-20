@@ -14,7 +14,9 @@ void Menu::update() {
 	
 	//ImGui::ShowTestWindow();
 	
-	ImGui::Begin("Controls");
+	//Start a new window called "Controls"
+	ImGui::SetNextWindowSize(ImVec2(500, 200), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
 	Object::Context& ctx = getPlanet(_options.planetSelector)->ctx;
 	const Object::Context& originalCtx = getPlanet(_options.planetSelector)->originalCtx;
