@@ -29,6 +29,7 @@ INCLUDE_DIRECTORIES(
 
 # Copy shader directory
 FILE(COPY src/shaders DESTINATION .)
+FILE(COPY models DESTINATION .)
 FILE(COPY src/config.json DESTINATION .)
 
 

@@ -5,6 +5,7 @@
 #include "json.h"
 
 #include "engine.h"
+#include "model.h"
 
 typedef std::unordered_map<std::string, std::vector<std::string>> ArgMap;
 

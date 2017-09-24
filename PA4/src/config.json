@@ -11,7 +11,7 @@
     "fragment": "shaders/frag"
   },
   "scale": {
-    "distance": 347850000,
+    "distance": 173925000,
     "time": 2500
   },
   "sun": {
@@ -23,6 +23,7 @@
     },
     "day": 648,
     "spins": "ccw",
+    "model": "models/Planet.obj",
     "satellites": [
       {
         "name": "Mercury",
@@ -33,6 +34,7 @@
         },
         "day": 1407.6,
         "spins": "ccw",
+        "model": "models/Planet.obj",
         "satellites": []
       },
       {
@@ -44,6 +46,7 @@
         },
         "day": 5832.5,
         "spins": "cw",
+        "model": "models/Planet.obj",
         "satellites": []
       },
       {
@@ -55,6 +58,7 @@
         },
         "day": 23.9,
         "spins": "ccw",
+        "model": "models/Planet.obj",
         "satellites": [{
           "name": "The Moon",
           "radius": 1737500,
@@ -64,6 +68,7 @@
           },
           "day": 655.7,
           "spins": "ccw",
+          "model": "models/Planet.obj",
           "satellites": []
       }]
     }]

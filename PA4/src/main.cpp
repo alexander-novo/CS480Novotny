@@ -64,11 +64,13 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object*& sun) {
 		ctx.height = config["window"]["height"];
 		ctx.width  = config["window"]["width"];
 		ctx.fullscreen = config["window"]["fullscreen"];
-		ctx.name = config["window"]["name"];
 		
-		Object::Context ctx;
-		loadPlanetContext(config["sun"], ctx, config["scale"]["distance"], config["scale"]["time"]);
-		sun = new Object(ctx, NULL);
+		Object::Context sunCtx;
+		
+		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"]);
+		if (error != -1) return error;
+		
+		sun = new Object(sunCtx, NULL);
 		
 		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"]);
 		if(error != -1) return error;
@@ -102,12 +104,15 @@ int loadShader(const std::string &filename, std::string &shader) {
 
 int loadPlanets(json& config, Object& sun, float spaceScale, float timeScale) {
 	Object::Context ctx;
+	int error;
 	
 	for(auto& i : config["satellites"]) {
-		loadPlanetContext(i, ctx, spaceScale, timeScale);
+		error = loadPlanetContext(i, ctx, spaceScale, timeScale);
+		if(error != -1) return error;
 		
 		Object& newPlanet = sun.addChild(ctx);
-		loadPlanets(i, newPlanet, spaceScale, timeScale);
+		error = loadPlanets(i, newPlanet, spaceScale, timeScale);
+		if(error != -1) return error;
 	}
 	
 	return -1;
@@ -123,6 +128,14 @@ int loadPlanetContext(json& config, Object::Context& ctx, float spaceScale, floa
 	else ctx.spinDir = -1;
 	
 	ctx.name = config["name"];
+	
+	ctx.model = Model::load(config["model"]);
+	if(ctx.model == NULL) {
+		std::cout << "Could not load model file \"" << config["model"] << "\"" << std::endl;
+		return 1;
+	}
+	
+	return -1;
 }
 
 

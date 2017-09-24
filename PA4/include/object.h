@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include "graphics_headers.h"
+#include "model.h"
 
 class Object {
 	public:
@@ -20,6 +21,8 @@ class Object {
 			int spinDir = -1;
 			
 			std::string name = "Planet";
+			
+			Model* model;
 		};
 		
 		Object(const Context &ctx, Object* parent);
@@ -57,9 +60,8 @@ class Object {
 		} time;
 		
 		//OpenGL information for rendering
-		glm::mat4 model;
-		std::vector<Vertex> Vertices;
-		std::vector<unsigned int> Indices;
+		glm::mat4 modelMat;
+
 		GLuint VB;
 		GLuint IB;
 		
