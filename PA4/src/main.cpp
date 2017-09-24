@@ -55,7 +55,6 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object*& sun) {
 		json config;
 		config << configFile;
 		
-		std::cout << config["shaders"]["vertex"];
 		error = loadShader(config["shaders"]["vertex"], ctx.vertex);
 		if (error != -1) return error;
 		error = loadShader(config["shaders"]["fragment"], ctx.fragment);
@@ -129,9 +128,10 @@ int loadPlanetContext(json& config, Object::Context& ctx, float spaceScale, floa
 	
 	ctx.name = config["name"];
 	
-	ctx.model = Model::load(config["model"]);
+	std::string filename = config["model"];
+	ctx.model = Model::load("models/" + filename);
 	if(ctx.model == NULL) {
-		std::cout << "Could not load model file \"" << config["model"] << "\"" << std::endl;
+		std::cout << "Could not load model file " << config["model"] << std::endl;
 		return 1;
 	}
 	

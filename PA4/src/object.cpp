@@ -67,7 +67,13 @@ void Object::Render(GLint &modelLocation) const {
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
 	
+	/*glMaterialfv(GL_FRONT, GL_AMBIENT, &ctx.model->material.ambient.r);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, &ctx.model->material.diffuse.r);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, &ctx.model->material.specular.r);
+	glMaterialf(GL_FRONT, GL_SHININESS, ctx.model->material.shininess);*/
+	
 	glDrawElements(GL_TRIANGLES, ctx.model->_indices.size(), GL_UNSIGNED_INT, 0);
+	
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
