@@ -7,7 +7,7 @@
     "name": "Solar System Simulator"
   },
   "shaders": {
-    "vertex": "shaders/vert",
+    "vertex": "shaders/vert_smooth",
     "fragment": "shaders/frag"
   },
   "scale": {
