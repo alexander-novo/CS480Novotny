@@ -131,12 +131,12 @@ void Graphics::Render(const Menu& menu) {
 			backgroundVec = glm::normalize(backgroundVec);
 			//Then scale it depending on how large what we're looking at is
 			//We don't want to be to far away from a small object or too close to a large object
-			backgroundVec *= scale;
+			backgroundVec *= scale * menu.options.zoom;
 			//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 			backgroundVec += lookVec;
 			
 			//Also let's try and look down from above what we're looking at
-			m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale, backgroundVec.z), //Eye Position
+			m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * menu.options.zoom * menu.options.zoom, backgroundVec.z), //Eye Position
 			                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
 			                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 		} else {
