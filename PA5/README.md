@@ -1,4 +1,7 @@
-# PA3: Spinning Cube w/ Moon
+# PA5: Assimp Model Loading
+
+# Updates 
+    PA5: Moving to assimp loader. Requires installing assimp library (see updated depency instructions for Ubuntu).
 
 # Dependencies, Building, and Running
 
@@ -11,7 +14,7 @@ This project uses OpenGL 3.3. Some computers, such as virtual machines in the EC
 
 ### Ubuntu/Linux
 ```bash
-sudo apt-get install libglew-dev libglm-dev libsdl2-dev
+sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev
 ```
 
 ### Mac OSX
