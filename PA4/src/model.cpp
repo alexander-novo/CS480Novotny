@@ -9,6 +9,7 @@ Model* Model::load(std::string filename) {
 	std::string line;
 	//Maps each vertex to a list of normals, which are the normals of the faces attached to it
 	std::unordered_map<unsigned, std::vector<glm::vec3>> faceNormals;
+	std::vector<glm::vec3> vertexNormals;
 	
 	static std::unordered_map<std::string, Model*> loadedModels;
 	
@@ -41,23 +42,38 @@ Model* Model::load(std::string filename) {
 			inFile >> newVertex.vertex.z;
 
 			newModel->_vertices.push_back(newVertex);
+		} else if (line == "vn") {
+			//vertex normals - to be used by faces later
+			//vn # # #
+			glm::vec3 newVector;
+			inFile >> newVector.x;
+			inFile >> newVector.y;
+			inFile >> newVector.z;
+			
+			vertexNormals.push_back(newVector);
 		} else if(line == "f") {
 			//New face
 			//f #/#/# #/#/# #/#/#
 			unsigned int faceVertex[3];
 			std::string nextArg;
+			char* numEnding;
+			unsigned vertexIndex;
 			
 			for (unsigned int &i : faceVertex) {
 				//Just take the first number, we don't need to know texture mapping or normals
 				inFile >> nextArg;
-				i = strtol(nextArg.c_str(), NULL, 10);
+				i = strtol(nextArg.c_str(), &numEnding, 10);
 				newModel->_indices.push_back(i);
+				
+				//Scratch that I actually need the third number
+				strtol(numEnding + 1, &numEnding, 10); //just in case of the second number
+				vertexIndex = strtol(numEnding + 1, &numEnding, 10) - 1;
+				
 			}
 			
-			//Calculate face normal and add it to the list
-			glm::vec3 faceNormal = glm::normalize(glm::cross(newModel->_vertices[faceVertex[0]].vertex, newModel->_vertices[faceVertex[1]].vertex));
+			//Get the face normal and add it to the list
 			for (unsigned int i : faceVertex) {
-				faceNormals[i].push_back(faceNormal);
+				faceNormals[i].push_back(vertexNormals[vertexIndex]);
 			}
 		} else if(line == "mtllib") {
 			//Material file
