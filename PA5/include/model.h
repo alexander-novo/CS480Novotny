@@ -21,7 +21,7 @@ class Model {
 			
 			float shininess = 0.0f;                    //Ns
 		};
-		static Model* load(std::string filename);
+		static aiMesh * load(std::string filename);
 		static void loadMaterials(Model* model, std::string filename);
 		
 		std::vector<Vertex> _vertices;
