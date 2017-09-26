@@ -20,24 +20,28 @@ uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
 void main(void) {
+    //Where the light is in the world
     vec3 lightW = vec3(0.0, 0.0, 0.0);
+    //What color
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
-    float lightPower = 2.0f;
+    //How much of it
+    float lightPower = 500.0f;
 
-    vec3 materialAmbientModified = (MaterialAmbientColor + color) * MaterialDiffuseColor;
+    //Start with a basis of the diffuse color. This will later become our texture
+    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseColor;
 
+    //How far away we are - light depends on distance
     float distance = length(lightW - positionW);
 
     // Normal of the computed fragment, in camera space
     vec3 n = normalize( normalC );
-
     // Direction of the light (from the fragment to the light)
     vec3 l = normalize( lightDirC );
-    // Cosine of the angle between the normal and the light direction,
-    // clamped above 0
-    //  - light is at the vertical of the triangle -> 1
-    //  - light is perpendicular to the triangle -> 0
-    //  - light is behind the triangle -> 0
+
+    // Cosine of the angle between the normal and the light direction
+    // clamped to a minimum of 0
+    // Anything facing directly towards the light will shine the brightest
+    // and anything facing away will be black
     float cosTheta = clamp( dot( n,l ), 0,1 );
 
     // Eye vector (towards the camera)
@@ -50,15 +54,13 @@ void main(void) {
     //  - Looking elsewhere -> < 1
     float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-
-    frag_color = color * lightColor * lightPower * cosTheta;
-    /*frag_color =
+    frag_color =
         // Ambient : simulates indirect lighting
         materialAmbientModified +
         // Diffuse : "color" of the object
-        MaterialDiffuseColor * lightColor * lightPower * cosTheta +
+        MaterialDiffuseColor * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
-    MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5);*/
+        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
 
 }
 

@@ -36,7 +36,7 @@ Model* Model::load(std::string filename) {
 		} else if(line == "v") {
 			//New vertex - add it into the list
 			//v # # #
-			Vertex newVertex = {{0.0, 0.0, 0.0}, {((float) rand()) / RAND_MAX, ((float) rand()) / RAND_MAX, ((float) rand()) / RAND_MAX}};
+			Vertex newVertex = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 			inFile >> newVertex.vertex.x;
 			inFile >> newVertex.vertex.y;
 			inFile >> newVertex.vertex.z;
@@ -73,7 +73,7 @@ Model* Model::load(std::string filename) {
 			
 			//Get the face normal and add it to the list
 			for (unsigned int i : faceVertex) {
-				faceNormals[i].push_back(vertexNormals[vertexIndex]);
+				faceNormals[i - 1].push_back(vertexNormals[vertexIndex]);
 			}
 		} else if(line == "mtllib") {
 			//Material file
