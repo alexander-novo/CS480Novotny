@@ -1,0 +1,66 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+in vec3 positionW;
+in vec3 normalC;
+in vec3 eyeC;
+in vec3 lightDirC;
+smooth in vec3 color;
+
+// Ouput data
+out vec3 frag_color;
+
+// Values that stay constant for the whole mesh.
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+
+uniform vec3 MaterialDiffuseColor;
+uniform vec3 MaterialAmbientColor;
+uniform vec3 MaterialSpecularColor;
+
+void main(void) {
+    //Where the light is in the world
+    vec3 lightW = vec3(0.0, 0.0, 0.0);
+    //What color
+    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    //How much of it
+    float lightPower = 500.0f;
+
+    //Start with a basis of the diffuse color. This will later become our texture
+    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseColor;
+
+    //How far away we are - light depends on distance
+    float distance = length(lightW - positionW);
+
+    // Normal of the computed fragment, in camera space
+    vec3 n = normalize( normalC );
+    // Direction of the light (from the fragment to the light)
+    vec3 l = normalize( lightDirC );
+
+    // Cosine of the angle between the normal and the light direction
+    // clamped to a minimum of 0
+    // Anything facing directly towards the light will shine the brightest
+    // and anything facing away will be black
+    float cosTheta = clamp( dot( n,l ), 0,1 );
+
+    // Eye vector (towards the camera)
+    vec3 E = normalize(eyeC);
+    // Direction in which the triangle reflects the light
+    vec3 R = reflect(-l,n);
+    // Cosine of the angle between the Eye vector and the Reflect vector,
+    // clamped to 0
+    //  - Looking into the reflection -> 1
+    //  - Looking elsewhere -> < 1
+    float cosAlpha = clamp( dot( E,R ), 0,1 );
+
+    frag_color =
+        // Ambient : simulates indirect lighting
+        materialAmbientModified +
+        // Diffuse : "color" of the object
+        MaterialDiffuseColor * lightColor * lightPower * cosTheta / distance +
+        // Specular : reflective highlight, like a mirror
+        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
+
+}
+
