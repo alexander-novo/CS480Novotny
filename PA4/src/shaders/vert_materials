@@ -1,0 +1,36 @@
+#version 330
+
+layout (location = 0) in vec3 positionM;
+layout (location = 1) in vec3 inColor;
+layout (location = 2) in vec3 normalM;
+
+smooth out vec3 color;
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 modelMatrix;
+
+out vec3 positionW;
+out vec3 normalC;
+out vec3 eyeC;
+out vec3 lightDirC;
+
+void main(void) {
+    vec4 lightW = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 v = vec4(positionM, 1.0);
+    gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * v;
+    color = 0.1 * normalize(abs(positionM));
+    //color = vec3(0.0, 0.0, 0.0);
+
+    positionW = (modelMatrix * vec4(positionM, 1.0)).xyz;
+
+    vec3 positionC = (viewMatrix * modelMatrix * vec4(positionM ,1)).xyz;
+    eyeC = vec3(0,0,0) - positionC;
+
+    // Vector that goes from the vertex to the light, in camera space. M is ommited because it's identity.
+    vec3 lightPosC = (viewMatrix * lightW).xyz;
+    lightDirC = lightPosC + eyeC;
+
+    // Normal of the the vertex, in camera space
+    normalC = (viewMatrix * transpose(inverse(modelMatrix)) * vec4(normalM,0)).xyz;
+}

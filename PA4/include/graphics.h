@@ -36,6 +36,10 @@ class Graphics {
 		GLint m_viewMatrix;
 		GLint m_modelMatrix;
 		
+		GLint m_diffuse;
+		GLint m_ambient;
+		GLint m_specular;
+		
 		//The sun
 		Object *m_cube;
 };

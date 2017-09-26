@@ -2,13 +2,13 @@
   "window": {
     "fullscreen": false,
     "adjustable": false,
-    "height": 850,
-    "width": 1500,
+    "height": 1500,
+    "width": 3000,
     "name": "Solar System Simulator"
   },
   "shaders": {
-    "vertex": "shaders/vert_smooth",
-    "fragment": "shaders/frag"
+    "vertex": "shaders/vert_materials",
+    "fragment": "shaders/frag_materials"
   },
   "scale": {
     "distance": 173925000,
@@ -34,7 +34,7 @@
         },
         "day": 1407.6,
         "spins": "ccw",
-        "model": "Planet.obj",
+        "model": "dragon.obj",
         "satellites": []
       },
       {

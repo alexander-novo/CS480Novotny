@@ -15,10 +15,11 @@ class Menu {
 	public:
 		//All the different options the menu changes
 		struct Options {
-			int planetSelector; //Which planet is currently selected in the drop down
-			int numPlanets;     //Keeps track of the number of planets in the drop down
-			int lookingAt = -1; //Which planet our camera should be looking at
-			float zoom = 1.0;   //Keeps track of how far our camera should be away from the planet we're looking at
+			int planetSelector;   //Which planet is currently selected in the drop down
+			int numPlanets;       //Keeps track of the number of planets in the drop down
+			int lookingAt = -1;   //Which planet our camera should be looking at
+			float zoom = 1.0;     //Keeps track of how far our camera should be away from the planet we're looking at
+			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 		};
 		
 		Menu(Window& window, Object& root);

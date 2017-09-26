@@ -7,6 +7,8 @@
 Model* Model::load(std::string filename) {
 	Model* newModel = new Model();
 	std::string line;
+	//Maps each vertex to a list of normals, which are the normals of the faces attached to it
+	std::unordered_map<unsigned, std::vector<glm::vec3>> faceNormals;
 	
 	static std::unordered_map<std::string, Model*> loadedModels;
 	
@@ -42,14 +44,20 @@ Model* Model::load(std::string filename) {
 		} else if(line == "f") {
 			//New face
 			//f #/#/# #/#/# #/#/#
-			unsigned int faceVertex;
+			unsigned int faceVertex[3];
 			std::string nextArg;
 			
-			for(int i = 0; i < 3; i++) {
+			for (unsigned int &i : faceVertex) {
 				//Just take the first number, we don't need to know texture mapping or normals
 				inFile >> nextArg;
-				faceVertex = strtol(nextArg.c_str(), NULL, 10);
-				newModel->_indices.push_back(faceVertex);
+				i = strtol(nextArg.c_str(), NULL, 10);
+				newModel->_indices.push_back(i);
+			}
+			
+			//Calculate face normal and add it to the list
+			glm::vec3 faceNormal = glm::normalize(glm::cross(newModel->_vertices[faceVertex[0]].vertex, newModel->_vertices[faceVertex[1]].vertex));
+			for (unsigned int i : faceVertex) {
+				faceNormals[i].push_back(faceNormal);
 			}
 		} else if(line == "mtllib") {
 			//Material file
@@ -80,6 +88,14 @@ Model* Model::load(std::string filename) {
 	
 	for (unsigned int &Indice : newModel->_indices) {
 		Indice = Indice - 1;
+	}
+	
+	for(unsigned i = 0; i < newModel->_vertices.size(); i++) {
+		glm::vec3 sum = {0.0, 0.0, 0.0};
+		for(const glm::vec3& faceNormal : faceNormals[i]) {
+			sum += faceNormal;
+		}
+		newModel->_vertices[i].normal = glm::normalize(sum);
 	}
 	
 	

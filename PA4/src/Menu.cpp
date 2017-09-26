@@ -28,6 +28,9 @@ void Menu::update() {
 	ImGui::SliderFloat("Camera Distance", &_options.zoom, 0.1f, 10.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
 	if(ImGui::Button("Reset##zoom")) _options.zoom = 1.0;
 	
+	ImGui::SliderFloat("Camera Rotation", &_options.rotation, 0.0f, 360.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+	if(ImGui::Button("Reset##rot")) _options.rotation = 1.0;
+	
 	ImGui::Text("\nPlanet Controls");
 	
 	ImGui::BeginChild("Planet Controls", ImVec2(0, 200), true, ImGuiWindowFlags_NoScrollbar);
