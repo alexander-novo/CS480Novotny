@@ -130,7 +130,7 @@ int loadPlanetContext(json& config, Object::Context& ctx, float spaceScale, floa
 	
 	std::string filename = config["model"];
 	// ctx.model = Model::load("models/" + filename);
-	ctx.mesh = Model::load("models/" + filename);
+	ctx.model = Model::load("models/" + filename);
 	if(ctx.model == NULL) {
 		std::cout << "Could not load model file " << config["model"] << std::endl;
 		return 1;
