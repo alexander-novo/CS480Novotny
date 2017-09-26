@@ -23,6 +23,7 @@ class Object {
 			std::string name = "Planet";
 			
 			Model* model;
+			aiMesh * mesh;
 		};
 		
 		Object(const Context &ctx, Object* parent);
