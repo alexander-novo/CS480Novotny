@@ -43,7 +43,7 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object*& sun) {
 	int error = -1;
 	
 	if (!strcmp(argv[1], "--help")) {
-		helpMenu();
+		helpMenu(argv);
 		return 0;
 	} else {
 		ifstream configFile(argv[1]);
@@ -140,15 +140,11 @@ int loadPlanetContext(json& config, Object::Context& ctx, float spaceScale, floa
 
 
 //Displays command usage information to standard output
-void helpMenu() {
+void helpMenu(char **argv) {
 	std::cout << "Command Usage:" << std::endl << std::endl
 	          << "    " << PROGRAM_NAME << " --help" << std::endl
-	          << "    " << PROGRAM_NAME << " [options] <-f filename> <-v filename>" << std::endl << std::endl
+	          << "    " << PROGRAM_NAME << " <filename> (e.g. " << argv[0] << " config.json)" << std::endl << std::endl
 	          << "Options" << std::endl
 	          << "    --help                       Show help menu and command usage" << std::endl
-	          << "    -v, --vertex <filename>      Specify where to load vertex shader from" << std::endl
-	          << "    -f, --fragment <filename>    Specify where to load fragment shader from" << std::endl
-	          << "    -h, --height <number>        Choose the window height" << std::endl
-	          << "    -w, --width <number>         Choose the window width" << std::endl
-	          << "    -n, --name <name>            Choose the window name" << std::endl;
+	          << "    <filename>                   Location of config file" << std::endl;
 }
