@@ -1,7 +1,8 @@
 # PA5: Assimp Model Loading
 
 # Updates 
-    PA5: Moving to assimp loader. Requires installing assimp library (see updated depency instructions for Ubuntu).
+## PA5:    
+    Moving to assimp loader. Requires installing assimp library (see updated depency instructions for Ubuntu).  
 
 # Dependencies, Building, and Running
 
