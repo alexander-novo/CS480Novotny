@@ -97,11 +97,6 @@ Model* Model::load(std::string filename) {
 		}
 	}
 	
-	//Debug Code
-	/*std::cout << "Vertex 1: " << newModel->_vertices[0].vertex.x << ", " << newModel->_vertices[0].vertex.y << ", " << newModel->_vertices[0].vertex.z << std::endl;
-	std::cout << "Vertices: " << newModel->_vertices.size() << std::endl;
-	std::cout << "Faces: " << newModel->_indices.size() << std::endl;*/
-	
 	for (unsigned int &Indice : newModel->_indices) {
 		Indice = Indice - 1;
 	}
@@ -130,8 +125,6 @@ void Model::loadMaterials(Model* model, std::string filename) {
 		std::cout << "Could not open material file \"" << filename << "\"" << std::endl;
 		return;
 	}
-	
-	std::cout << "Loading material from " << filename << std::endl;
 	
 	while(true) {
 		getline(inFile, line, ' ');

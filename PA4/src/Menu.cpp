@@ -20,8 +20,8 @@ void Menu::update() {
 	//ImGui::ShowTestWindow();
 	
 	//Start a new window called "Controls"
-	//On first seeing this window, make it 500 x 200, but let the user resize it later
-	ImGui::SetNextWindowSize(ImVec2(500, 200), ImGuiCond_FirstUseEver);
+	//On first seeing this window, make it 650 x 400, but let the user resize it later
+	ImGui::SetNextWindowSize(ImVec2(650, 400), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
 	//Zoom slider
