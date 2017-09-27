@@ -1,4 +1,4 @@
-# PA3: Spinning Cube w/ Moon
+# PA4: Planets w/ Sun Lighting
 
 # Dependencies, Building, and Running
 
@@ -32,6 +32,16 @@ cmake ..
 make
 ./Tutorial config.json
 ```
+# Changing Models
+![Config File](https://i.imgur.com/2DV9R2d.jpg)
+
+To change the model of a planet, locate the planet in the config, and change the "model" parameter to the name of the .obj. The program will expect to find this model in the models/ directory.
+
+If you're going to test this feature with the Stanford Dragon, please use the one included in the repository (Dragon.obj), as the one provided to us has broken materials and will fail to load (as well as has missing normals).
+
+![Dragon](https://i.imgur.com/uEbMgTK.png)
+
+*An example of a test performed by replacing one of the planets with the dragon.obj file*
 
 # Controls
 
@@ -51,7 +61,12 @@ Hold `ctrl` to only affect the spinning movement
 
 # Menu Usage
 
-![Menu](https://i.imgur.com/RfxHhHu.png)
+![Menu](https://i.imgur.com/YeJxVZL.png)
+
+**Camera Distance** - Changes how far the camera is away from the current object
+**Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow
+
+### Planet Controls
 
 **Select Satellite** - Select which planet/moon the controls will affect  
 **Time Scale** - How fast the currently selected object will orbit and spin, as well as everything orbiting it  

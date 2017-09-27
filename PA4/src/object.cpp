@@ -56,7 +56,10 @@ const glm::mat4& Object::GetModel() const {
 }
 
 void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation) const {
+	//Send our shaders the model matrix
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMat));
+	
+	//Send the material information
 	glUniform3fv(ambientLocation, 1, &ctx.model->material.ambient.r);
 	glUniform3fv(diffuseLocation, 1, &ctx.model->material.diffuse.r);
 	glUniform3fv(specularLocation, 1, &ctx.model->material.specular.r);
@@ -65,25 +68,24 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	
+	//Now send vertices, colors, and normals
+	//TODO remove colors, we shouldn't need this
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
 	
+	//Send all our face information
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
 	
-	/*glMaterialfv(GL_FRONT, GL_AMBIENT, &ctx.model->material.ambient.r);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, &ctx.model->material.diffuse.r);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, &ctx.model->material.specular.r);
-	glMaterialf(GL_FRONT, GL_SHININESS, ctx.model->material.shininess);*/
-	
+	//Now draw everything
 	glDrawElements(GL_TRIANGLES, ctx.model->_indices.size(), GL_UNSIGNED_INT, 0);
-	
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	
+	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation);
 	}
