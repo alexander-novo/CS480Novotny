@@ -29,6 +29,7 @@ class Graphics {
 		std::string ErrorString(GLenum error);
 		
 		BaseCamera *m_camera;
+		void calculateCamera(const Menu &);
 		Shader *m_shader;
 		
 		//Where our matrices are in video memory
@@ -39,6 +40,8 @@ class Graphics {
 		GLint m_diffuse;
 		GLint m_ambient;
 		GLint m_specular;
+		
+		GLint m_lightSource;
 		
 		//The sun
 		Object *m_cube;

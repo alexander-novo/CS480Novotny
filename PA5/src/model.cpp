@@ -4,73 +4,13 @@
 
 #include "model.h"
 
-Model * Model::load(std::string filename) {
-
-	//code from https://nickthecoder.wordpress.com/2013/01/20/mesh-loading-with-assimp/
-	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(filename,aiProcessPreset_TargetRealtime_Fast);//aiProcessPreset_TargetRealtime_Fast has the configs you'll need
- 
-	// aiMesh *mesh = scene->mMeshes[0]; //assuming you only want the first mesh
-	// float *vertexArray;
-	// float *normalArray;
-	// float *uvArray;
- 
-	// int numVerts;
-	// numVerts = mesh->mNumFaces*3;
-	 
-	// vertexArray = new float[mesh->mNumFaces*3*3];
-	// normalArray = new float[mesh->mNumFaces*3*3];
-	// uvArray = new float[mesh->mNumFaces*3*2];
-	 
-	// for(unsigned int i=0;i<mesh->mNumFaces;i++)
-	// {
-	// const aiFace& face = mesh->mFaces[i];
-	 
-	// for(int j=0;j<3;j++)
-	// {
-	// aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[j]];
-	// memcpy(uvArray,&uv,sizeof(float)*2);
-	// uvArray+=2;
-	 
-	// aiVector3D normal = mesh->mNormals[face.mIndices[j]];
-	// memcpy(normalArray,&normal,sizeof(float)*3);
-	// normalArray+=3;
-	 
-	// aiVector3D pos = mesh->mVertices[face.mIndices[j]];
-	// memcpy(vertexArray,&pos,sizeof(float)*3);
-	// vertexArray+=3;
-	// }
-	// }
-	 
-	// uvArray-=mesh->mNumFaces*3*2;
-	// normalArray-=mesh->mNumFaces*3*3;
-	// vertexArray-=mesh->mNumFaces*3*3;
-
-
-	// glEnableClientState(GL_VERTEX_ARRAY);
-	// glEnableClientState(GL_NORMAL_ARRAY);
-	// glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	 
-	// glVertexPointer(3,GL_FLOAT,0,vertexArray);
-	// glNormalPointer(GL_FLOAT,0,normalArray);
-	 
-	// glClientActiveTexture(GL_TEXTURE0_ARB);
-	// glTexCoordPointer(2,GL_FLOAT,0,uvArray);
-	 
-	// glDrawArrays(GL_TRIANGLES,0,numVerts);
-	// glDisableClientState(GL_VERTEX_ARRAY);
-	// glDisableClientState(GL_NORMAL_ARRAY);
-	// glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	// return mesh;
-
-
-
-	
+Model* Model::load(std::string filename) {
 	Model* newModel = new Model();
 	std::string line;
 	//Maps each vertex to a list of normals, which are the normals of the faces attached to it
 	std::unordered_map<unsigned, std::vector<glm::vec3>> faceNormals;
+	//The list of vertex normals that came from our .obj file
+	//Actually face normals, but will be used to calculate vertex normals
 	std::vector<glm::vec3> vertexNormals;
 	
 	static std::unordered_map<std::string, Model*> loadedModels;
@@ -86,11 +26,11 @@ Model * Model::load(std::string filename) {
 		getline(inFile, line, ' ');
 		if(inFile.eof()) break;
 		
+		//Get rid of whitespace at the beginning of line
+		//Also just in case the file formatting is funky and we end up stuck at the end of a line instead of the beginning
 		while(std::isspace(line[0])) {
 			line.erase(0, 1);
 		}
-		
-		//std::cout << "Looking at: " << line << std::endl;
 		
 		if(line == "#") {
 			//Skip line - comment
@@ -134,6 +74,7 @@ Model * Model::load(std::string filename) {
 			}
 			
 			//Get the face normal and add it to the list
+			//Subtract 1 because indices begin at 1
 			for (unsigned int i : faceVertex) {
 				faceNormals[i - 1].push_back(vertexNormals[vertexIndex]);
 			}
@@ -144,6 +85,8 @@ Model * Model::load(std::string filename) {
 			loadMaterials(newModel, "models/" + line);
 		} else if(line == "usemtl") {
 			//Use this material for the next few faces
+			//I say that but this doesn't actually work yet - I haven't set up the rendering that way!
+			//So really just use this material for all the faces!
 			//usemtl <material name>
 			std::string mtlName;
 			inFile >> mtlName;
@@ -159,10 +102,14 @@ Model * Model::load(std::string filename) {
 		}
 	}
 	
+	//Shift our vertex indices by 1 o account for starting at 1, not 0
 	for (unsigned int &Indice : newModel->_indices) {
 		Indice = Indice - 1;
 	}
 	
+	//Turn our face normals into vertex normals by averaging the face normals on every face connected to a vertex
+	//This is important, as we can then assign these normals to a vertex and the rasterizer will interpolate them for each fragment
+	//Which gives us a smooth surface, lighting-wise
 	for(unsigned i = 0; i < newModel->_vertices.size(); i++) {
 		glm::vec3 sum = {0.0, 0.0, 0.0};
 		for(const glm::vec3& faceNormal : faceNormals[i]) {
@@ -171,7 +118,7 @@ Model * Model::load(std::string filename) {
 		newModel->_vertices[i].normal = glm::normalize(sum);
 	}
 	
-	
+	//Now save this model for later in case we need to use it again
 	loadedModels[filename] = newModel;
 	
 	return newModel;
@@ -192,6 +139,7 @@ void Model::loadMaterials(Model* model, std::string filename) {
 		getline(inFile, line, ' ');
 		if(inFile.eof()) break;
 		
+		//Get rid of whitespace at the beginning of line
 		while(std::isspace(line[0])) {
 			line.erase(0, 1);
 		}
@@ -202,6 +150,8 @@ void Model::loadMaterials(Model* model, std::string filename) {
 		} else if(line == "newmtl") {
 			//New material
 			//newmtl <name>
+			
+			//Store the previous material away
 			if(currentName != "") {
 				model->materialList[currentName] = newMaterial;
 			}
@@ -260,6 +210,7 @@ void Model::loadMaterials(Model* model, std::string filename) {
 		}
 	}
 	
+	//Store our material in the material list
 	if(currentName != "") {
 		model->materialList[currentName] = newMaterial;
 	}

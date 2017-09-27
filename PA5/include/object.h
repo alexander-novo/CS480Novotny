@@ -23,7 +23,8 @@ class Object {
 			std::string name = "Planet";
 			
 			Model* model;
-			aiMesh * mesh;
+			
+			bool isLightSource = false;
 		};
 		
 		Object(const Context &ctx, Object* parent);
@@ -35,7 +36,7 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt, const glm::mat4 &parentModel);
 		//Renders the planet on the screen
-		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation) const;
+		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites

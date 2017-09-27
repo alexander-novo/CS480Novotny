@@ -108,6 +108,13 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 		return false;
 	}
 	
+	// Locate the model matrix in the shader
+	m_lightSource = m_shader->GetUniformLocation("isLightSource");
+	if (m_lightSource == INVALID_UNIFORM_LOCATION) {
+		printf("m_lightSource not found\n");
+		return false;
+	}
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -128,52 +135,7 @@ void Graphics::Render(const Menu& menu) {
 	// Start the correct program
 	m_shader->Enable();
 	
-	if(menu.options.lookingAt != -1) {
-		//What we're looking at
-		glm::vec4 lookVec(0.0, 0.0, 0.0, 1.0);
-		//What should be in the background (whatever we're orbiting)
-		glm::vec4 backgroundVec(0.0, 0.0, 0.0, 1.0);
-		Object* lookingAt = menu.getPlanet(menu.options.lookingAt);
-		Object* parent = lookingAt->parent;
-		
-		//If we're orbiting something, put that something in the background of the camera
-		//Otherwise, default camera view (i.e. the sun)
-		if(parent != NULL) {
-			//Keep track of how large whatever we're looking at is
-			float scale = lookingAt->ctx.scale * 25;
-			
-			//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
-			lookVec = lookingAt->GetModel() * lookVec;
-			backgroundVec = parent->GetModel() * backgroundVec;
-			
-			//Now do some math to find where to place the camera
-			//First find the direction pointing from what we're orbiting to what we're looking at
-			backgroundVec = lookVec - backgroundVec;
-			backgroundVec = glm::normalize(backgroundVec);
-			
-			glm::vec3 crossVec = glm::normalize(glm::cross(glm::vec3(backgroundVec.x, backgroundVec.y, backgroundVec.z), glm::vec3(0.0, 1.0, 0.0)));
-			
-			float angle = menu.options.rotation * M_PI / 180;
-			backgroundVec = cos(angle) * backgroundVec + sin(angle) * glm::vec4(crossVec.x, crossVec.y, crossVec.z, 1.0);
-			//Then scale it depending on how large what we're looking at is
-			//We don't want to be to far away from a small object or too close to a large object
-			backgroundVec *= scale * menu.options.zoom;
-			//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
-			backgroundVec += lookVec;
-			
-			//Also let's try and look down from above what we're looking at
-			m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * menu.options.zoom * menu.options.zoom, backgroundVec.z), //Eye Position
-			                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
-			                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
-		} else {
-			m_camera->GetView() = glm::lookAt( glm::vec3(0.0, 8.0, -16.0),
-			                                   glm::vec3(0.0, 0.0, 0.0),
-			                                   glm::vec3(0.0, 1.0, 0.0));
-		}
-		
-	}
-	
-	
+	calculateCamera(menu);
 	
 	// Send in the projection and view to the shader
 	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));
@@ -182,7 +144,7 @@ void Graphics::Render(const Menu& menu) {
 	
 	// Render the object
 	//glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, glm::value_ptr(m_cube->GetModel()));
-	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular);
+	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular, m_lightSource);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();
@@ -190,6 +152,51 @@ void Graphics::Render(const Menu& menu) {
 		std::string val = ErrorString(error);
 		std::cout << "Error initializing OpenGL! " << error << ", " << val << std::endl;
 	}
+}
+
+void Graphics::calculateCamera(const Menu &menu) {
+	//What we're looking at
+	glm::vec4 lookVec(0.0, 0.0, 0.0, 1.0);
+	//What should be in the background (whatever we're orbiting)
+	glm::vec4 backgroundVec(0.0, 0.0, 0.0, 1.0);
+	Object* lookingAt = menu.getPlanet(menu.options.lookingAt);
+	Object* parent = lookingAt->parent;
+	
+	
+	
+	//Keep track of how large whatever we're looking at is
+	float scale = lookingAt->ctx.scale * 25;
+	
+	//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
+	lookVec = lookingAt->GetModel() * lookVec;
+	
+	//If we're orbiting something, put that something in the background of the camera
+	if(parent != NULL) {
+		backgroundVec = parent->GetModel() * backgroundVec;
+	} else {
+		backgroundVec = lookVec + glm::vec4(0.0, -1.0, -5.0, 1.0);
+	}
+	
+	
+	//Now do some math to find where to place the camera
+	//First find the direction pointing from what we're orbiting to what we're looking at
+	backgroundVec = lookVec - backgroundVec;
+	backgroundVec = glm::normalize(backgroundVec);
+	
+	glm::vec3 crossVec = glm::normalize(glm::cross(glm::vec3(backgroundVec.x, backgroundVec.y, backgroundVec.z), glm::vec3(0.0, 1.0, 0.0)));
+	
+	float angle = menu.options.rotation * M_PI / 180;
+	backgroundVec = cos(angle) * backgroundVec + sin(angle) * glm::vec4(crossVec.x, crossVec.y, crossVec.z, 1.0);
+	//Then scale it depending on how large what we're looking at is
+	//We don't want to be to far away from a small object or too close to a large object
+	backgroundVec *= scale * menu.options.zoom;
+	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
+	backgroundVec += lookVec;
+	
+	//Also let's try and look down from above what we're looking at
+	m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * menu.options.zoom * menu.options.zoom, backgroundVec.z), //Eye Position
+	                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
+	                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 }
 
 std::string Graphics::ErrorString(GLenum error) {
