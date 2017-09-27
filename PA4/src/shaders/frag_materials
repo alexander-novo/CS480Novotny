@@ -19,6 +19,8 @@ uniform vec3 MaterialDiffuseColor;
 uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
+uniform bool isLightSource;
+
 void main(void) {
     //Where the light is in the world
     vec3 lightW = vec3(0.0, 0.0, 0.0);
