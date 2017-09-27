@@ -50,10 +50,10 @@ If you're going to test this feature with the Stanford Dragon, please use the on
 `left arrow` - Slow down  
 `right arrow` - Speed up  
 `r` - Reverse  
-`s` - Stop
+`s` - Stop  
 `esc` - Quit
 
-`left click` - Reverse
+`left click` - Reverse  
 `right click` - Stop
 
 Hold `shift` to only affect the circular movement  
@@ -63,7 +63,7 @@ Hold `ctrl` to only affect the spinning movement
 
 ![Menu](https://i.imgur.com/YeJxVZL.png)
 
-**Camera Distance** - Changes how far the camera is away from the current object
+**Camera Distance** - Changes how far the camera is away from the current object  
 **Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow
 
 ### Planet Controls
