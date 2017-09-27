@@ -28,6 +28,8 @@ class Graphics {
 	private:
 		std::string ErrorString(GLenum error);
 		
+		void calculateCamera(const Menu &);
+		
 		Camera *m_camera;
 		Shader *m_shader;
 		
