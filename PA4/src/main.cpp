@@ -73,6 +73,9 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"]);
 		if (error != -1) return error;
 		
+		//make certain we set it to a light source
+		sunCtx.isLightSource = true;
+		
 		sun = new Object(sunCtx, NULL);
 		
 		//Now load all the rest of the planets

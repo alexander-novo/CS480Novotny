@@ -55,7 +55,7 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation) const {
+void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation) const {
 	//Send our shaders the model matrix
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMat));
 	
@@ -63,6 +63,8 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	glUniform3fv(ambientLocation, 1, &ctx.model->material.ambient.r);
 	glUniform3fv(diffuseLocation, 1, &ctx.model->material.diffuse.r);
 	glUniform3fv(specularLocation, 1, &ctx.model->material.specular.r);
+	
+	glUniform1i(sourceLocation, ctx.isLightSource);
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -87,7 +89,7 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
-		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation);
+		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation, sourceLocation);
 	}
 }
 

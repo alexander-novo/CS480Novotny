@@ -108,6 +108,13 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 		return false;
 	}
 	
+	// Locate the model matrix in the shader
+	m_lightSource = m_shader->GetUniformLocation("isLightSource");
+	if (m_lightSource == INVALID_UNIFORM_LOCATION) {
+		printf("m_lightSource not found\n");
+		return false;
+	}
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -137,7 +144,7 @@ void Graphics::Render(const Menu& menu) {
 	
 	// Render the object
 	//glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, glm::value_ptr(m_cube->GetModel()));
-	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular);
+	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular, m_lightSource);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();

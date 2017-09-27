@@ -42,6 +42,8 @@ class Graphics {
 		GLint m_ambient;
 		GLint m_specular;
 		
+		GLint m_lightSource;
+		
 		//The sun
 		Object *m_cube;
 };
