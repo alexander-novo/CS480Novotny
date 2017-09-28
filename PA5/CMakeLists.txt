@@ -43,8 +43,6 @@ FILE(COPY src/config.json DESTINATION .)
 # Set Includes
 SET(INCLUDES ${PROJECT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(${INCLUDES} ${ASSIMP_INCLUDE_DIRS})
-#target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARY})
-
 
 # Set sources
 FILE(GLOB_RECURSE SOURCES "src/*.cpp")
