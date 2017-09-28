@@ -34,7 +34,7 @@ INCLUDE_DIRECTORIES(
   ${ASSIMP_INCLUDE_DIRS}
 )
 
-# Copy shader directory
+# Copy shaders, models, and default config
 FILE(COPY src/shaders DESTINATION .)
 FILE(COPY models DESTINATION .)
 FILE(COPY src/config.json DESTINATION .)

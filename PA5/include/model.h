@@ -15,14 +15,13 @@
 class Model {
 	public:
 		struct Material {
-			glm::vec4 ambient = {0.2, 0.2, 0.2, 1.0};  //Ka
-			glm::vec4 diffuse = {0.8, 0.8, 0.8, 1.0};  //Kd
-			glm::vec4 specular = {0.0, 0.0, 0.0, 1.0}; //Ks
+			glm::vec3 ambient = {0.2, 0.2, 0.2};  //Ka
+			glm::vec3 diffuse = {0.8, 0.8, 0.8};  //Kd
+			glm::vec3 specular = {0.0, 0.0, 0.0}; //Ks
 			
-			float shininess = 0.0f;                    //Ns
+			float shininess = 0.0f;               //Ns
 		};
 		static Model* load(std::string filename);
-		static void loadMaterials(Model* model, std::string filename);
 		
 		std::vector<Vertex> _vertices;
 		std::vector<unsigned int> _indices;
