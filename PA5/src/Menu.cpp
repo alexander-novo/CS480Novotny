@@ -97,3 +97,17 @@ void Menu::buildSatelliteList(Object& root, std::string pre, int& numSatellites)
 Object* Menu::getPlanet(int index) const {
 	return satelliteMap.at(index);
 }
+
+void Menu::setZoom(float zoom) {
+	if(zoom < 0.1) zoom = 0.1;
+	else if(zoom > 10.0) zoom = 10.0;
+	
+	_options.zoom = zoom;
+}
+
+void Menu::setRotation(float rotation){
+	while(rotation < 0) rotation += 360.0f;
+	while(rotation > 360) rotation -= 360.0f;
+	
+	_options.rotation = rotation;
+}

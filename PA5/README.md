@@ -47,11 +47,13 @@ make
 `s` - Stop
 `esc` - Quit
 
-`left click` - Reverse
-`right click` - Stop
-
-Hold `shift` to only affect the circular movement  
+Hold `shift` to only affect the circular movement
 Hold `ctrl` to only affect the spinning movement
+
+`left click` - Drag to rotate camera around object
+`Scroll wheel` - Zoom in and out
+
+
 
 # Menu Usage
 

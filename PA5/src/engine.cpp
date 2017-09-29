@@ -9,6 +9,8 @@ Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun) {
 	
 	m_vertexShader = ctx.vertex;
 	m_fragmentShader = ctx.fragment;
+	
+	mouseDown = false;
 }
 
 Engine::~Engine() {
@@ -140,19 +142,34 @@ void Engine::Keyboard() {
 		
 	}
 		
-		//Mouse
+		//Mouse - click and drag rotation
 	
 	else if (m_event.type == SDL_MOUSEBUTTONDOWN && !ImGui::GetIO().WantCaptureMouse) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
-				//Reverse object direction
-				*scaleHandler *= -1.0;
-				break;
-			case SDL_BUTTON_RIGHT:
-				//Stop object
-				*scaleHandler = 0.0;
+				mouseDown = true;
 				break;
 		}
+	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
+		switch (m_event.button.button) {
+			case SDL_BUTTON_LEFT:
+				mouseDown = false;
+				break;
+		}
+	} else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
+		float scale = 360.0f / m_WINDOW_WIDTH;
+		
+		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * scale);
+	}
+	
+	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
+		float step = 0.05;
+		//Scroll down
+		if(m_event.wheel.y > 0) {
+			step = -0.05f;
+		}
+		
+		m_menu->setZoom(m_menu->options.zoom + step);
 	}
 	
 	if (*scaleHandler < minimum) *scaleHandler = minimum;

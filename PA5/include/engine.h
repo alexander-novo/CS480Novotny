@@ -56,6 +56,8 @@ class Engine {
 		Object* m_cube;
 		Menu *m_menu;
 		
+		bool mouseDown;
+		
 		std::string m_vertexShader, m_fragmentShader;
 };
 

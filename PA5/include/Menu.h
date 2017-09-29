@@ -32,6 +32,11 @@ class Menu {
 		//Draw everything
 		void render();
 		
+		//Set zoom level
+		void setZoom(float zoom);
+		//Set rotation amount
+		void setRotation(float rotation);
+		
 		//Read-only menu options
 		const Options& options;
 	private:
