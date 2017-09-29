@@ -44,13 +44,13 @@ make
 `left arrow` - Slow down  
 `right arrow` - Speed up  
 `r` - Reverse  
-`s` - Stop
+`s` - Stop  
 `esc` - Quit
 
-Hold `shift` to only affect the circular movement
+Hold `shift` to only affect the circular movement  
 Hold `ctrl` to only affect the spinning movement
 
-`left click` - Drag to rotate camera around object
+`left click` - Drag to rotate camera around object  
 `Scroll wheel` - Zoom in and out
 
 
