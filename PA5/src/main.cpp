@@ -35,9 +35,12 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 	
 	//If no arguments, tell user to look at help menu
 	if (argc == 1) {
-		std::cout << "No arguments found" << std::endl
-		          << "Please run with --help for command reference" << std::endl;
-		return 1;
+		// std::cout << "No arguments found" << std::endl
+		//           << "Please run with --help for command reference" << std::endl;
+		// return 1;
+		std::string newArgv = "./basic.json";
+		argv[1] = new char[newArgv.size()];
+		strncpy(argv[1], newArgv.c_str(), newArgv.size());
 	}
 	
 	int error = -1;

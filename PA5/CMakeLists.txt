@@ -37,7 +37,9 @@ INCLUDE_DIRECTORIES(
 # Copy shaders, models, and default config
 FILE(COPY src/shaders DESTINATION .)
 FILE(COPY models DESTINATION .)
+FILE(COPY textures DESTINATION .)
 FILE(COPY src/config.json DESTINATION .)
+FILE(COPY src/basic.json DESTINATION .)
 
 
 # Set Includes
