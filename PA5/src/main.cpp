@@ -33,11 +33,10 @@ int main(int argc, char **argv) {
 //Takes argc and argv from main and stuffs all the necessary information into ctx
 int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 	
-	//If no arguments, tell user to look at help menu
+	//If no arguments, use default (basic) config file
+	bool useDefaultConfig = false;
 	if (argc == 1) {
-		// std::cout << "No arguments found" << std::endl
-		//           << "Please run with --help for command reference" << std::endl;
-		// return 1;
+		useDefaultConfig = true;
 		std::string newArgv = "./basic.json";
 		argv[1] = new char[newArgv.size()];
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());
@@ -94,7 +93,13 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 		std::cout << "No -f option included" << std::endl;
 		return 1;
 	}
-	
+
+	// If using the basic config file, free arguments memory
+	if(useDefaultConfig)
+	{
+		delete [] argv[1];
+		argv[1] = NULL;
+	}
 	return -1;
 }
 
