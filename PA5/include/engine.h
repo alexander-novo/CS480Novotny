@@ -23,6 +23,8 @@ class Engine {
 			
 			std::string vertex = "";
 			std::string fragment = "";
+			
+			float lightStrength = 1.0f;
 		};
 		
 		Engine(const Context &ctx, Object* sun);
@@ -46,6 +48,7 @@ class Engine {
 		int m_WINDOW_WIDTH;
 		int m_WINDOW_HEIGHT;
 		bool m_FULLSCREEN;
+		float m_light;
 		SDL_Event m_event;
 		
 		Graphics *m_graphics;

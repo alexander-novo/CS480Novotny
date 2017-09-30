@@ -69,6 +69,8 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 		ctx.width = config["window"]["width"];
 		ctx.fullscreen = config["window"]["fullscreen"];
 		
+		ctx.lightStrength = config["sunlight"];
+		
 		Object::Context sunCtx;
 		
 		//Load the sun's properties

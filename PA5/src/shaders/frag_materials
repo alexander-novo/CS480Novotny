@@ -21,13 +21,13 @@ uniform vec3 MaterialSpecularColor;
 
 uniform bool isLightSource;
 
+uniform float lightPower;
+
 void main(void) {
     //Where the light is in the world
     vec3 lightW = vec3(0.0, 0.0, 0.0);
     //What color
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
-    //How much of it
-    float lightPower = 500.0f;
 
     // Normal of the computed fragment, in camera space
     vec3 n = normalize( normalC );

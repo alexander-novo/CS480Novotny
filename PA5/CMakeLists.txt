@@ -38,8 +38,8 @@ INCLUDE_DIRECTORIES(
 FILE(COPY src/shaders DESTINATION .)
 FILE(COPY models DESTINATION .)
 FILE(COPY textures DESTINATION .)
-FILE(COPY src/config.json DESTINATION .)
-FILE(COPY src/basic.json DESTINATION .)
+FILE(COPY config.json DESTINATION .)
+FILE(COPY basic.json DESTINATION .)
 
 
 # Set Includes

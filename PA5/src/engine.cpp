@@ -10,6 +10,8 @@ Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun) {
 	m_vertexShader = ctx.vertex;
 	m_fragmentShader = ctx.fragment;
 	
+	m_light = ctx.lightStrength;
+	
 	mouseDown = false;
 }
 
@@ -29,7 +31,7 @@ bool Engine::Initialize() {
 	}
 	
 	// Start the graphics
-	m_graphics = new Graphics(m_cube);
+	m_graphics = new Graphics(m_cube, m_light);
 	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT, m_vertexShader, m_fragmentShader)) {
 		printf("The graphics failed to initialize.\n");
 		return false;

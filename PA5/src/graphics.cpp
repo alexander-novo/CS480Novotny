@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-Graphics::Graphics(Object* sun) : m_cube(sun) {
+Graphics::Graphics(Object* sun, float lightStrength) : m_cube(sun), lightPower(lightStrength) {
 
 }
 
@@ -115,6 +115,13 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 		return false;
 	}
 	
+	// Locate the model matrix in the shader
+	m_lightPower = m_shader->GetUniformLocation("lightPower");
+	if (m_lightPower== INVALID_UNIFORM_LOCATION) {
+		printf("m_lightPower not found\n");
+		return false;
+	}
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -140,6 +147,8 @@ void Graphics::Render(const Menu& menu) {
 	// Send in the projection and view to the shader
 	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));
 	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetView()));
+	
+	glUniform1fv(m_lightPower, 1, &lightPower);
 	
 	
 	// Render the object

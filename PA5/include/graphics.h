@@ -11,7 +11,7 @@
 
 class Graphics {
 	public:
-		Graphics(Object *sun);
+		Graphics(Object *sun, float lightPower);
 		
 		~Graphics();
 		
@@ -42,6 +42,9 @@ class Graphics {
 		GLint m_specular;
 		
 		GLint m_lightSource;
+		GLint m_lightPower;
+		
+		float lightPower;
 		
 		//The sun
 		Object *m_cube;
