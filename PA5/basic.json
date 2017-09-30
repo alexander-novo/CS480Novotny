@@ -19,8 +19,8 @@
     "name": "Sun",
     "radius": 6957000,
     "orbit": {
-      "distance": 0,
-      "year": 0
+      "distance": 1,
+      "year": 1
     },
     "day": 648,
     "spins": "ccw",
@@ -64,7 +64,7 @@
           "name": "The Moon",
           "radius": 1737500,
           "orbit": {
-            "distance": 348000,
+            "distance": 17400000,
             "year": 655.2
           },
           "day": 655.7,

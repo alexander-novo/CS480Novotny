@@ -136,15 +136,16 @@ int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale) {
 }
 
 int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale) {
-	ctx.moveScale = ((float) config["orbit"]["year"]) / timeScale;
-	ctx.spinScale = ((float) config["day"]) / timeScale;
+	ctx.name = config["name"];
+
+	ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
+	ctx.spinScale = timeScale / ((float) config["day"]);
+	
 	ctx.orbitDistance = ((float) config["orbit"]["distance"]) / spaceScale;
 	ctx.scale = ((float) config["radius"]) / spaceScale;
 	
 	if (config["spins"] == "ccw") ctx.spinDir = 1;
 	else ctx.spinDir = -1;
-	
-	ctx.name = config["name"];
 	
 	std::string filename = config["model"];
 	ctx.model = Model::load("models/" + filename);
@@ -152,7 +153,7 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		std::cout << "Could not load model file " << config["model"] << std::endl;
 		return 1;
 	}
-	
+
 	return -1;
 }
 
