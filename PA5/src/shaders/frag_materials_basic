@@ -27,7 +27,7 @@ void main(void) {
     //What color
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     //How much of it
-    float lightPower = 10.0f;
+    float lightPower = 1.0f;
 
     // Normal of the computed fragment, in camera space
     vec3 n = normalize( normalC );
