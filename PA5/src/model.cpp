@@ -17,6 +17,9 @@ Model* Model::load(std::string filename) {
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast);
 	aiMesh* mesh = scene->mMeshes[0];
+
+	Magick::Image* m_pImage;
+    Magick::Blob m_blob;
 	
 	//Add all our vertices
 	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
