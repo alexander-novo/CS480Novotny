@@ -162,6 +162,22 @@ void Engine::Keyboard() {
 		m_menu->setZoom(m_menu->options.zoom + step);
 	}
 	
+	else if(m_event.type == SDL_WINDOWEVENT) {
+		switch(m_event.window.event) {
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				//Update our projection materix in case the aspect ratio is different now
+				m_graphics->getProjection() = glm::perspective( 45.0f, //the FoV typically 90 degrees is good which is what this is set to
+				                               float(m_event.window.data1)/float(m_event.window.data2), //Aspect Ratio, so Circles stay Circular
+				                               0.01f, //Distance to the near plane, normally a small value like this
+				                               1000.0f); //Distance to the far plane,
+				
+				//Tell OpenGL how large our window is now
+				//SUPER IMPORTANT
+				glViewport(0, 0, m_event.window.data1, m_event.window.data2);
+				break;
+		}
+	}
+	
 	if (*scaleHandler < minimum) *scaleHandler = minimum;
 	if (*scaleHandler > maximum) *scaleHandler = maximum;
 }

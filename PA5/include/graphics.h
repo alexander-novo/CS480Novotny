@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "graphics_headers.h"
-#include "basecamera.h"
 #include "shader.h"
 #include "object.h"
 #include "Menu.h"
@@ -24,11 +23,12 @@ class Graphics {
 		
 		//Return pointer to main Object (sun)
 		Object *getCube();
+		
+		glm::mat4& getProjection();
 	
 	private:
 		std::string ErrorString(GLenum error);
 		
-		BaseCamera *m_camera;
 		void calculateCamera();
 		Shader *m_shader;
 		
@@ -45,6 +45,9 @@ class Graphics {
 		GLint m_lightPower;
 		
 		Menu& m_menu;
+		
+		glm::mat4 projection;
+		glm::mat4 view;
 		
 		float lightPower;
 		

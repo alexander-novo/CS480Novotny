@@ -32,13 +32,6 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	
-	// Init BaseCamera
-	m_camera = new BaseCamera();
-	if (!m_camera->Initialize(width, height)) {
-		printf("BaseCamera Failed to Initialize\n");
-		return false;
-	}
-	
 	m_cube->Init_GL();
 	
 	// Set up the shaders
@@ -126,6 +119,11 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
+	projection = glm::perspective( 45.0f, //the FoV typically 90 degrees is good which is what this is set to
+	                                                float(width)/float(height), //Aspect Ratio, so Circles stay Circular
+	                                                0.01f, //Distance to the near plane, normally a small value like this
+	                                                1000.0f); //Distance to the far plane,
+	
 	return true;
 }
 
@@ -145,8 +143,8 @@ void Graphics::Render() {
 	calculateCamera();
 	
 	// Send in the projection and view to the shader
-	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));
-	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetView()));
+	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(view));
 	
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
 	glUniform1fv(m_lightPower, 1, &modifiedLight);
@@ -206,7 +204,7 @@ void Graphics::calculateCamera() {
 	backgroundVec += lookVec;
 	
 	//Also let's try and look down from above what we're looking at
-	m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z), //Eye Position
+	view = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z), //Eye Position
 	                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
 	                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 }
@@ -229,4 +227,8 @@ std::string Graphics::ErrorString(GLenum error) {
 
 Object *Graphics::getCube() {
 	return m_cube;
+}
+
+glm::mat4& Graphics::getProjection() {
+	return projection;
 }
