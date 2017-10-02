@@ -37,7 +37,7 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 	bool useDefaultConfig = false;
 	if (argc == 1) {
 		useDefaultConfig = true;
-		std::string newArgv = "./basic.json";
+		std::string newArgv = "./config.json";
 		argv[1] = new char[newArgv.size()];
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());
 	}
