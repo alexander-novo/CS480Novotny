@@ -78,7 +78,7 @@ void Menu::updateScale(int dt) {
 	}
 	
 	//Take 2 seconds to scale
-	float scaleBy = (1.0f - CLOSE_SCALE) / dt / 2.0f;
+	float scaleBy = (1.0f - CLOSE_SCALE) * (dt / 1000.0f / 4.0f);
 	
 	if(scaleTo == 0) {
 		scaleBy *= -1;
