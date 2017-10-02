@@ -28,8 +28,9 @@ void Object::Init_GL() {
 	}
 }
 
-void Object::Update(float dt, const glm::mat4 &parentModel) {
+void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	float timeMod = dt / 1000.0f * ctx.timeScale;
+	float scale = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp) * pow(ctx.scale, scaleExp);
 	
 	//Update the timer
 	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
@@ -37,18 +38,17 @@ void Object::Update(float dt, const glm::mat4 &parentModel) {
 	
 	//Move into place
 	modelMat= glm::rotate(parentModel, time.move, glm::vec3(0.0, 1.0, 0.0));
-	modelMat= glm::translate(modelMat, glm::vec3(ctx.orbitDistance, 0.0, 0.0));
+	modelMat= glm::translate(modelMat, glm::vec3(pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
 	modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));
 	
 	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
-		i->Update(dt * ctx.timeScale, modelMat);
+		i->Update(dt * ctx.timeScale, modelMat, scaleExp);
 	}
 	
 	//Then rotate and scale so the satellites are unaffected
 	modelMat= glm::rotate(modelMat, time.spin, glm::vec3(0.0, 1.0, 0.0));
-	modelMat= glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
-	
+	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 }
 
 const glm::mat4& Object::GetModel() const {

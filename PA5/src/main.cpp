@@ -74,11 +74,12 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 		Object::Context sunCtx;
 		
 		//Load the sun's properties
-		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"]);
+		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0);
 		if (error != -1) return error;
 		
 		//make certain we set it to a light source
 		sunCtx.isLightSource = true;
+		sunCtx.scaleMultiplier = sunCtx.scale;
 		
 		sun = new Object(sunCtx, NULL);
 		
@@ -124,7 +125,7 @@ int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale) {
 	int error;
 	
 	for (auto &i : config["satellites"]) {
-		error = loadPlanetContext(i, ctx, spaceScale, timeScale);
+		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier);
 		if (error != -1) return error;
 		
 		Object &newPlanet = sun.addChild(ctx);
@@ -135,7 +136,7 @@ int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale) {
 	return -1;
 }
 
-int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale) {
+int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier) {
 	ctx.name = config["name"];
 
 	ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
@@ -143,6 +144,8 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	
 	ctx.orbitDistance = ((float) config["orbit"]["distance"]) / spaceScale;
 	ctx.scale = ((float) config["radius"]) / spaceScale;
+	
+	ctx.scaleMultiplier = scaleMultiplier;
 	
 	if (config["spins"] == "ccw") ctx.spinDir = 1;
 	else ctx.spinDir = -1;

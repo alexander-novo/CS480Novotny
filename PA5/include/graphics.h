@@ -11,7 +11,7 @@
 
 class Graphics {
 	public:
-		Graphics(Object *sun, float lightPower);
+		Graphics(Object *sun, float lightPower, Menu& menu);
 		
 		~Graphics();
 		
@@ -20,7 +20,7 @@ class Graphics {
 		//Update physics and models
 		void Update(unsigned int dt);
 		//Render models
-		void Render(const Menu &);
+		void Render();
 		
 		//Return pointer to main Object (sun)
 		Object *getCube();
@@ -29,7 +29,7 @@ class Graphics {
 		std::string ErrorString(GLenum error);
 		
 		BaseCamera *m_camera;
-		void calculateCamera(const Menu &);
+		void calculateCamera();
 		Shader *m_shader;
 		
 		//Where our matrices are in video memory
@@ -43,6 +43,8 @@ class Graphics {
 		
 		GLint m_lightSource;
 		GLint m_lightPower;
+		
+		Menu& m_menu;
 		
 		float lightPower;
 		

@@ -25,6 +25,8 @@ class Object {
 			Model* model;
 			
 			bool isLightSource = false;
+			
+			float scaleMultiplier; //Used to determine what to multiply a planet's scale by in close scale
 		};
 		
 		Object(const Context &ctx, Object* parent);
@@ -34,7 +36,7 @@ class Object {
 		//Initialises the planet's model and textures for OpenGL
 		void Init_GL();
 		//Updates the physics for the planet
-		void Update(float dt, const glm::mat4 &parentModel);
+		void Update(float dt, const glm::mat4 &parentModel, float scaleExp);
 		//Renders the planet on the screen
 		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation) const;
 		//Adds a satellite to this planet with the specified properties

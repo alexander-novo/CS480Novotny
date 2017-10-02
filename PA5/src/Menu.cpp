@@ -14,7 +14,7 @@ Menu::Menu(Window& a, Object& b) : window(a), root(b), options(_options) {
 	buildSatelliteList(root, "", _options.numPlanets);
 }
 
-void Menu::update() {
+void Menu::update(int dt) {
 	ImGui_ImplSdlGL3_NewFrame(window.getSDL_Window());
 	
 	//ImGui::ShowTestWindow();
@@ -30,6 +30,9 @@ void Menu::update() {
 	
 	ImGui::SliderFloat("Camera Rotation", &_options.rotation, 0.0f, 360.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
 	if(ImGui::Button("Reset##rot")) _options.rotation = 1.0;
+	
+	ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
+	ImGui::RadioButton("Close Scale", &scaleTo, 0);
 	
 	ImGui::Text("\nPlanet Controls");
 	
@@ -65,6 +68,25 @@ void Menu::update() {
 	
 	//End the window
 	ImGui::End();
+	
+	updateScale(dt);
+}
+
+void Menu::updateScale(int dt) {
+	if((_options.scale >= 1.0 && scaleTo == 1) || (_options.scale <= CLOSE_SCALE && scaleTo == 0)) {
+		return;
+	}
+	
+	//Take 2 seconds to scale
+	float scaleBy = (1.0f - CLOSE_SCALE) / dt / 2.0f;
+	
+	if(scaleTo == 0) {
+		scaleBy *= -1;
+	}
+	
+	_options.scale += scaleBy;
+	if(_options.scale < CLOSE_SCALE) _options.scale = CLOSE_SCALE;
+	else if(_options.scale > 1.0) _options.scale = 1.0;
 }
 
 void Menu::render() {

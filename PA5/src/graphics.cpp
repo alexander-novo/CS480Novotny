@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-Graphics::Graphics(Object* sun, float lightStrength) : m_cube(sun), lightPower(lightStrength) {
+Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), lightPower(lightStrength), m_menu(menu) {
 
 }
 
@@ -131,10 +131,10 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 
 void Graphics::Update(unsigned int dt) {
 	// Update the object
-	m_cube->Update(dt, glm::mat4(1.0f));
+	m_cube->Update(dt, glm::mat4(1.0f), m_menu.options.scale);
 }
 
-void Graphics::Render(const Menu& menu) {
+void Graphics::Render() {
 	//clear the screen
 	glClearColor(0.0, 0.0, 0.2, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,13 +142,14 @@ void Graphics::Render(const Menu& menu) {
 	// Start the correct program
 	m_shader->Enable();
 	
-	calculateCamera(menu);
+	calculateCamera();
 	
 	// Send in the projection and view to the shader
 	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetProjection()));
 	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(m_camera->GetView()));
 	
-	glUniform1fv(m_lightPower, 1, &lightPower);
+	float modifiedLight = pow(lightPower, m_menu.options.scale);
+	glUniform1fv(m_lightPower, 1, &modifiedLight);
 	
 	
 	// Render the object
@@ -163,18 +164,20 @@ void Graphics::Render(const Menu& menu) {
 	}
 }
 
-void Graphics::calculateCamera(const Menu &menu) {
+void Graphics::calculateCamera() {
 	//What we're looking at
 	glm::vec4 lookVec(0.0, 0.0, 0.0, 1.0);
 	//What should be in the background (whatever we're orbiting)
 	glm::vec4 backgroundVec(0.0, 0.0, 0.0, 1.0);
-	Object* lookingAt = menu.getPlanet(menu.options.lookingAt);
+	Object* lookingAt = m_menu.getPlanet(m_menu.options.lookingAt);
 	Object* parent = lookingAt->parent;
 	
 	
 	
 	//Keep track of how large whatever we're looking at is
-	float scale = lookingAt->ctx.scale * 25;
+	//float scale = sqrt(lookingAt->ctx.scale) * 250;
+	//float scale = lookingAt->ctx.scale * 15 * lookingAt->ctx.scaleMultiplier;
+	float scale = lookingAt->ctx.scaleMultiplier / pow(lookingAt->ctx.scaleMultiplier, m_menu.options.scale) * pow(lookingAt->ctx.scale, m_menu.options.scale) * 15;
 	
 	//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
 	lookVec = lookingAt->GetModel() * lookVec;
@@ -183,7 +186,7 @@ void Graphics::calculateCamera(const Menu &menu) {
 	if(parent != NULL) {
 		backgroundVec = parent->GetModel() * backgroundVec;
 	} else {
-		backgroundVec = lookVec + glm::vec4(0.0, -1.0, -5.0, 1.0);
+		backgroundVec = lookVec + glm::vec4(0.0, 0.0, -5.0, 1.0);
 	}
 	
 	
@@ -194,16 +197,16 @@ void Graphics::calculateCamera(const Menu &menu) {
 	
 	glm::vec3 crossVec = glm::normalize(glm::cross(glm::vec3(backgroundVec.x, backgroundVec.y, backgroundVec.z), glm::vec3(0.0, 1.0, 0.0)));
 	
-	float angle = menu.options.rotation * M_PI / 180;
+	float angle = m_menu.options.rotation * M_PI / 180;
 	backgroundVec = cos(angle) * backgroundVec + sin(angle) * glm::vec4(crossVec.x, crossVec.y, crossVec.z, 1.0);
 	//Then scale it depending on how large what we're looking at is
 	//We don't want to be to far away from a small object or too close to a large object
-	backgroundVec *= scale * menu.options.zoom;
+	backgroundVec *= scale * m_menu.options.zoom;
 	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 	backgroundVec += lookVec;
 	
 	//Also let's try and look down from above what we're looking at
-	m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * menu.options.zoom * menu.options.zoom, backgroundVec.z), //Eye Position
+	m_camera->GetView() = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z), //Eye Position
 	                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
 	                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 }

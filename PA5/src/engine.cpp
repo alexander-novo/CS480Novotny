@@ -30,15 +30,15 @@ bool Engine::Initialize() {
 		return false;
 	}
 	
+	//Start the menu and connect it to the window
+	m_menu = new Menu(*m_window, *m_cube);
+	
 	// Start the graphics
-	m_graphics = new Graphics(m_cube, m_light);
+	m_graphics = new Graphics(m_cube, m_light, *m_menu);
 	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT, m_vertexShader, m_fragmentShader)) {
 		printf("The graphics failed to initialize.\n");
 		return false;
 	}
-	
-	//Start the menu and connect it to the window
-	m_menu = new Menu(*m_window, *m_graphics->getCube());
 	
 	// Set the time
 	m_currentTimeMillis = GetCurrentTimeMillis();
@@ -60,11 +60,11 @@ void Engine::Run() {
 		}
 		
 		//Update the menu and get user's input options
-		m_menu->update();
+		m_menu->update(m_DT);
 		
 		// Update and render the graphics
 		m_graphics->Update(m_DT);
-		m_graphics->Render(*m_menu);
+		m_graphics->Render();
 		
 		//Render the GUI
 		m_menu->render();
