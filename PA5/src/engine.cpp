@@ -105,18 +105,6 @@ void Engine::Keyboard() {
 				m_running = false;
 				break;
 				
-				//Change orbit radius
-			case SDLK_UP:
-				m_graphics->getCube()->ctx.orbitDistance -= .5;
-				if (m_graphics->getCube()->ctx.orbitDistance < 0.0)
-					m_graphics->getCube()->ctx.orbitDistance = 0.0;
-				break;
-			case SDLK_DOWN:
-				m_graphics->getCube()->ctx.orbitDistance += .5;
-				if (m_graphics->getCube()->ctx.orbitDistance > 20.0)
-					m_graphics->getCube()->ctx.orbitDistance = 20.0;
-				break;
-				
 				//Change overall speed
 			case SDLK_LEFT:
 				*scaleHandler -= .05;

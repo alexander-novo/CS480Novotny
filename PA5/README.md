@@ -39,8 +39,6 @@ make
 
 # Controls
 
-`up arrow` - Decrease orbit radius  
-`down arrow` - Increase orbit radius  
 `left arrow` - Slow down  
 `right arrow` - Speed up  
 `r` - Reverse  
