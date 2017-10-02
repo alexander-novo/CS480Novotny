@@ -15,13 +15,7 @@ This project uses OpenGL 3.3. Some computers, such as virtual machines in the EC
 
 ### Ubuntu/Linux
 ```bash
-sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev
-```
-
-### Mac OSX
-Installation of brew is suggested to easily install the libs. Ensure that the latest version of the Developer Tools is installed.
-```bash
-brew install glew glm sdl2
+sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev magick++-dev
 ```
 
 ## Building and Running
