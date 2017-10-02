@@ -21,6 +21,9 @@
 #include <assimp/postprocess.h>    // Postprocessing variables for Importer
 #include <assimp/color4.h>          // aiColor4 object - handles colors from mesh objects
 
+//ImageMagick
+#include <Magick++.h>
+
 // GLM for matricies
 #define GLM_FORCE_RADIANS
 
