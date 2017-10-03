@@ -6,7 +6,8 @@ int main(int argc, char **argv) {
 	Object *sun;
 	
 	//Do command line arguments
-	int exit = processConfig(argc, argv, ctx, sun);
+	json config;
+	int exit = processConfig(argc, argv, config, ctx, sun);
 	
 	if (exit != -1) {
 		return exit;
@@ -22,6 +23,17 @@ int main(int argc, char **argv) {
 	}
 	
 	engine->Run();
+	
+	//If we changed window resolution, save it for next time
+	if(config["window"]["width"] != engine->windowWidth || config["window"]["height"] != engine->windowHeight) {
+		config["window"]["width"] = engine->windowWidth;
+		config["window"]["height"] = engine->windowHeight;
+		
+		std::ofstream configFile(argv[1]);
+		
+		config >> configFile;
+	}
+	
 	delete engine;
 	engine = NULL;
 	delete sun;
@@ -31,12 +43,10 @@ int main(int argc, char **argv) {
 }
 
 //Takes argc and argv from main and stuffs all the necessary information into ctx
-int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
+int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Object *&sun) {
 	
 	//If no arguments, use default (basic) config file
-	bool useDefaultConfig = false;
 	if (argc == 1) {
-		useDefaultConfig = true;
 		std::string newArgv = "./config.json";
 		argv[1] = new char[newArgv.size()];
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());
@@ -55,7 +65,6 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 			return 1;
 		}
 		
-		json config;
 		config << configFile;
 		
 		error = loadShader(config["shaders"]["vertex"], ctx.vertex);
@@ -96,13 +105,7 @@ int processConfig(int argc, char **argv, Engine::Context &ctx, Object *&sun) {
 		std::cout << "No -f option included" << std::endl;
 		return 1;
 	}
-
-	// If using the basic config file, free arguments memory
-	if(useDefaultConfig)
-	{
-		delete [] argv[1];
-		argv[1] = NULL;
-	}
+	
 	return -1;
 }
 

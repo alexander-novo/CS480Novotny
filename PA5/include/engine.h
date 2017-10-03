@@ -40,6 +40,10 @@ class Engine {
 		unsigned int getDT();
 		
 		long long GetCurrentTimeMillis();
+		
+		//Read-only
+		const int& windowWidth;
+		const int& windowHeight;
 	
 	private:
 		// Window related variables

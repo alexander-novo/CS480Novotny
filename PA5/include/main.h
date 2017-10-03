@@ -13,7 +13,7 @@ using json = nlohmann::json;
 
 #define PROGRAM_NAME "Tutorial"
 
-int processConfig(int argc, char** argv, Engine::Context&, Object*& sun);
+int processConfig(int argc, char** argv, json& config, Engine::Context&, Object*& sun);
 int loadShader(const std::string&, std::string&);
 int loadPlanets(json& planetConfig, Object& sun, float spaceScale, float timeScale);
 int loadPlanetContext(json& config, Object::Context& ctx, float spaceScale, float timeScale, float scaleMultiplier);
