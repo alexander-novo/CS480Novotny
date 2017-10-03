@@ -4,6 +4,9 @@
 ## PA5:    
     Moving to assimp loader. Requires installing assimp library (see updated depency instructions for Ubuntu).  
 
+# Group members
+Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
+
 # Dependencies, Building, and Running
 
 ## Dependency Instructions

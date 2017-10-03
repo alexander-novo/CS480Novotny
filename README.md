@@ -6,6 +6,9 @@ Read through the Wiki on this repository to understand how each class works. Thi
 
 This repository has been forked and is now used by Alexander Novotny.
 
+# Group members
+Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
+
 # Projects
 
 ## PA0: Triangle
