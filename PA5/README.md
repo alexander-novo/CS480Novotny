@@ -51,7 +51,7 @@ Hold `ctrl` to only affect the spinning movement
 
 
 # Menu Usage
-![Menu](https://i.imgur.com/tl66ihc.png)
+![Menu](https://i.imgur.com/tI66ihc.png)
 
 **Camera Distance** - Changes how far the camera is away from the current object  
 **Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow  
