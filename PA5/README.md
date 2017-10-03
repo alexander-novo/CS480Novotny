@@ -51,8 +51,13 @@ Hold `ctrl` to only affect the spinning movement
 
 
 # Menu Usage
+![Menu](https://i.imgur.com/tl66ihc.png)
 
-![Menu](https://i.imgur.com/RfxHhHu.png)
+**Camera Distance** - Changes how far the camera is away from the current object  
+**Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow  
+**Realistic/Close Scale** - Switch between the two to get realistic planet scaling (where the sun is *much* bigger than the planets and everything is very far apart) or an easier to see scale
+
+### Planet Controls
 
 **Select Satellite** - Select which planet/moon the controls will affect  
 **Time Scale** - How fast the currently selected object will orbit and spin, as well as everything orbiting it  
