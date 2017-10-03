@@ -1,0 +1,150 @@
+{
+  "window": {
+    "fullscreen": false,
+    "adjustable": false,
+    "height": 1000,
+    "width": 2000,
+    "name": "Solar System Simulator"
+  },
+  "shaders": {
+    "vertex": "shaders/vert_materials",
+    "fragment": "shaders/frag_materials"
+  },
+  "scale": {
+    "distance": 173925000,
+    "time": 2500
+  },
+  "sunlight": 50,
+  "sun": {
+    "name": "Sun",
+    "radius": 6957000,
+    "orbit": {
+      "distance": 1,
+      "year": 1
+    },
+    "day": 648,
+    "spins": "ccw",
+    "model": "Planet.obj",
+    "satellites": [
+      {
+        "name": "Mercury",
+        "radius": 2439500,
+        "orbit": {
+          "distance": 57900000,
+          "year": 2112
+        },
+        "day": 1407.6,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": []
+      },
+      {
+        "name": "Venus",
+        "radius": 2439500,
+        "orbit": {
+          "distance": 108200000,
+          "year": 5392.8
+        },
+        "day": 5832.5,
+        "spins": "cw",
+        "model": "Planet.obj",
+        "satellites": []
+      },
+      {
+        "name": "Earth",
+        "radius": 6378000,
+        "orbit": {
+          "distance": 149600000,
+          "year": 8764.8
+        },
+        "day": 23.9,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": [{
+          "name": "The Moon",
+          "radius": 1737500,
+          "orbit": {
+            "distance": 17400000,
+            "year": 655.2
+          },
+          "day": 655.7,
+          "spins": "ccw",
+          "model": "Planet.obj",
+          "satellites": []
+      }]
+    },
+    {
+       "name": "Mars",
+       "radius": 3396000,
+       "orbit": {
+          "distance" : 227900000,
+          "year": 16488
+        },
+        "day": 24.6,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": []
+    },
+    {
+       "name": "Jupiter",
+       "radius": 71492000,
+       "orbit": {
+          "distance" : 778600000,
+          "year": 103944
+        },
+        "day": 9.9,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": []
+    },
+    {
+       "name": "Saturn",
+       "radius": 60268000,
+       "orbit": {
+          "distance" : 1433500000,
+          "year": 257928
+        },
+        "day": 10.7,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": []
+    },
+    {
+       "name": "Uranus",
+       "radius": 25559000,
+       "orbit": {
+          "distance" : 2872500000,
+          "year": 734136
+        },
+        "day": -17.2,
+        "spins": "cw",
+        "model": "Planet.obj",
+        "satellites": []
+    },
+    {
+       "name": "Neptune",
+       "radius": 24764000,
+       "orbit": {
+          "distance" : 4495100000,
+          "year": 1435200
+        },
+        "day": 16.1,
+        "spins": "ccw",
+        "model": "Planet.obj",
+        "satellites": []
+    },
+    {
+       "name": "Pluto",
+       "radius": 1185000,
+       "orbit": {
+          "distance" : 5906400000,
+          "year": 2173440
+        },
+        "day": -153.3,
+        "spins": "cw",
+        "model": "Planet.obj",
+        "satellites": []
+    }
+  ]
+  }
+}
