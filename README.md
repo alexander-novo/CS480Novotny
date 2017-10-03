@@ -25,3 +25,6 @@ First part of solar system with our inner planets and the moon around Earth. Men
 
 ## PA4: Planets w/ Sun Lighting
 This project loads object and material files to give planets a real planet look and simulate day/night time. To run this project ```cd PA4``` then follow the instructions in the README.md.
+
+## PA5: Assimp Model Loader
+Nothing too new. Same models being loaded by Assimp this time. To run this project ```cd PA4``` then follow the instructions in the README.md.
