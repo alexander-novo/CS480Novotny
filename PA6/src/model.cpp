@@ -22,9 +22,18 @@ Model* Model::load(std::string filename) {
 	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
 		aiVector3D& vertex = mesh->mVertices[vertexIndex];
 		aiVector3D& normal = mesh->mNormals[vertexIndex];
-		aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
+		// Guard against objects with no UV
+		if(mesh->mTextureCoords[0])
+		{
+			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];	
+			newModel->_vertices.push_back({{vertex.x, vertex.y, vertex.z}, {uv.x, uv.y}, {normal.x, normal.y, normal.z}});
+		}
+		else
+		{
+			newModel->_vertices.push_back({{vertex.x, vertex.y, vertex.z}, {0, 0}, {normal.x, normal.y, normal.z}});
+		}
 		
-		newModel->_vertices.push_back({{vertex.x, vertex.y, vertex.z}, {uv.x, uv.y}, {normal.x, normal.y, normal.z}});
+		
 	}
 	
 	//Now our indices
