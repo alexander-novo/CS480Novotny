@@ -1,6 +1,15 @@
 #include "main.h"
 
 int main(int argc, char **argv) {
+	
+	//If no arguments, use default (basic) config file
+	if (argc == 1) {
+		std::string newArgv = "config.json";
+		argv[1] = new char[newArgv.size()+1]; 
+		argv[1][newArgv.size()] = 0; 
+		strncpy(argv[1], newArgv.c_str(), newArgv.size());	
+	}
+
 	//Stores the properties of our engine, such as window name/size, fullscreen, and shader info
 	Engine::Context ctx;
 	Object *sun;
@@ -33,6 +42,13 @@ int main(int argc, char **argv) {
 		
 		config >> configFile;
 	}
+
+	// If there were no arguments, delete the argument we created
+	if (argc == 1)
+	{
+		delete [] argv[1];
+		argv[1] = NULL;
+	}
 	
 	delete engine;
 	engine = NULL;
@@ -44,13 +60,6 @@ int main(int argc, char **argv) {
 
 //Takes argc and argv from main and stuffs all the necessary information into ctx
 int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Object *&sun) {
-	
-	//If no arguments, use default (basic) config file
-	if (argc == 1) {
-		std::string newArgv = "./config.json";
-		argv[1] = new char[newArgv.size()];
-		strncpy(argv[1], newArgv.c_str(), newArgv.size());
-	}
 	
 	int error = -1;
 	
@@ -95,6 +104,7 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		//Now load all the rest of the planets
 		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"]);
 		if (error != -1) return error;
+
 	}
 	
 	if (ctx.vertex == "") {
