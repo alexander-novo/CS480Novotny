@@ -1,7 +1,7 @@
 #version 330 core
 
 // Interpolated values from the vertex shaders
-in vec2 UV;
+in vec2 uvCoord;
 in vec3 positionW;
 in vec3 normalC;
 in vec3 eyeC;
@@ -20,8 +20,9 @@ uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
 uniform bool isLightSource;
-
 uniform float lightPower;
+
+uniform sampler2D gSampler;
 
 void main(void) {
     //Where the light is in the world
@@ -37,6 +38,8 @@ void main(void) {
     //Different shading if the object is a light source
     //Non-light sources have shadows, but light sources do not
     if(!isLightSource) {
+        MaterialDiffuseColor = texture2D(gSampler, uvCoord).xyz;
+
         //Start with a basis of the diffuse color. This will later become our texture
         vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseColor;
 

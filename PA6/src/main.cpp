@@ -159,6 +159,15 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		std::cout << "Could not load model file " << config["model"] << std::endl;
 		return 1;
 	}
+	
+	//Check if the planet has a texture
+	if(config.find("texture") != config.end()) {
+		//In case we have day/night times
+		if(config["texture"].type() == json::value_t::string) {
+			ctx.texture = Texture::load(config["texture"]);
+		}
+		
+	}
 
 	return -1;
 }

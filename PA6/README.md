@@ -14,7 +14,7 @@ This project uses OpenGL 3.3. Some computers, such as virtual machines in the EC
 
 ### Ubuntu/Linux
 ```bash
-sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev magick++-dev
+sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev libmagick++-dev
 ```
 
 ## Building and Running

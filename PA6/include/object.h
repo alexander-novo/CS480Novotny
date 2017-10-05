@@ -23,6 +23,7 @@ class Object {
 			std::string name = "Planet";
 			
 			Model* model;
+			Texture* texture = nullptr;
 			
 			bool isLightSource = false;
 			

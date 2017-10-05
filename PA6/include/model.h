@@ -34,4 +34,15 @@ class Model {
 		std::unordered_map<std::string, Material> materialList;
 };
 
+class Texture {
+	public:
+		static Texture* load(std::string filename);
+		
+		void bind();
+		
+	private:
+		Texture();
+		
+		GLuint m_textureObj;
+};
 #endif //TUTORIAL_MODEL_H

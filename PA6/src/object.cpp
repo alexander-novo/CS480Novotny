@@ -74,11 +74,16 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	//TODO remove colors, we shouldn't need this
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, color));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
 	
 	//Send all our face information
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+	
+	//If we have a texture, use it
+	if(ctx.texture != nullptr) {
+		ctx.texture->bind();
+	}
 	
 	//Now draw everything
 	glDrawElements(GL_TRIANGLES, ctx.model->_indices.size(), GL_UNSIGNED_INT, 0);
