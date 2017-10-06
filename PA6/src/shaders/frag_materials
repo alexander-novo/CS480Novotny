@@ -39,8 +39,7 @@ void main(void) {
     //Non-light sources have shadows, but light sources do not
     if(!isLightSource) {
         vec3 MaterialDiffuseTexture2d;
-        MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord).xyz;
-        //MaterialDiffuseColor = texture2D(gSampler, uvCoord).xyz;
+        MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
 
         //Start with a basis of the diffuse color. This will later become our texture
         vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;

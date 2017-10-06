@@ -174,9 +174,12 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	if(config.find("texture") != config.end()) {
 		//In case we have day/night times
 		if(config["texture"].type() == json::value_t::string) {
-			ctx.texture = Texture::load(config["texture"]);
+			filename = config["texture"];
+			ctx.texture = Texture::load("textures/" + filename);
 		}
 		
+	} else {
+		ctx.texture = nullptr;
 	}
 
 	return -1;

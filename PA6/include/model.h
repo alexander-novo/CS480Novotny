@@ -38,11 +38,17 @@ class Texture {
 	public:
 		static Texture* load(std::string filename);
 		
+		void initGL();
 		void bind();
 		
 	private:
 		Texture();
 		
+		bool initialised;
+		
 		GLuint m_textureObj;
+		
+		Magick::Image* m_Image;
+		Magick::Blob* m_Blob;
 };
 #endif //TUTORIAL_MODEL_H

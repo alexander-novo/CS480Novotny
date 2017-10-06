@@ -44,6 +44,8 @@ class Graphics {
 		GLint m_lightSource;
 		GLint m_lightPower;
 		
+		GLint m_textureSampler;
+		
 		Menu& m_menu;
 		
 		glm::mat4 projection;

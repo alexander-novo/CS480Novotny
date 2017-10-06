@@ -22,6 +22,10 @@ void Object::Init_GL() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ctx.model->_indices.size(), &ctx.model->_indices[0], GL_STATIC_DRAW);
 	
+	if(ctx.texture != nullptr) {
+		ctx.texture->initGL();
+	}
+	
 	//Now do the same for all our children
 	for(auto& child : _children) {
 		child->Init_GL();
@@ -37,9 +41,9 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	time.move += timeMod * ctx.moveScale * ctx.moveDir;
 	
 	//Move into place
-	modelMat= glm::rotate(parentModel, time.move, glm::vec3(0.0, 1.0, 0.0));
+	modelMat= glm::rotate(parentModel, -time.move, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::translate(modelMat, glm::vec3(pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
-	modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));
+	modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
 	
 	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
@@ -55,7 +59,7 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation) const {
+void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation, GLint &textureLocation) const {
 	//Send our shaders the model matrix
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMat));
 	
@@ -71,7 +75,6 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	glEnableVertexAttribArray(2);
 	
 	//Now send vertices, colors, and normals
-	//TODO remove colors, we shouldn't need this
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
@@ -83,6 +86,7 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	//If we have a texture, use it
 	if(ctx.texture != nullptr) {
 		ctx.texture->bind();
+		glUniform1i(textureLocation, 0);
 	}
 	
 	//Now draw everything
@@ -92,9 +96,11 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	
+	glBindTexture(GL_TEXTURE_2D, 0);
+	
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
-		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation, sourceLocation);
+		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation, sourceLocation, textureLocation);
 	}
 }
 

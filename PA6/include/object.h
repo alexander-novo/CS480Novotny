@@ -39,7 +39,7 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt, const glm::mat4 &parentModel, float scaleExp);
 		//Renders the planet on the screen
-		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation) const;
+		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation, GLint &textureLocation) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites

@@ -115,14 +115,21 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 		return false;
 	}
 	
+	// Locate the model matrix in the shader
+	m_textureSampler = m_shader->GetUniformLocation("gSampler");
+	if (m_textureSampler == INVALID_UNIFORM_LOCATION) {
+		printf("m_textureSampler not found\n");
+		return false;
+	}
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
 	projection = glm::perspective( 45.0f, //the FoV typically 90 degrees is good which is what this is set to
-	                                                float(width)/float(height), //Aspect Ratio, so Circles stay Circular
-	                                                0.01f, //Distance to the near plane, normally a small value like this
-	                                                1000.0f); //Distance to the far plane,
+	                               float(width)/float(height), //Aspect Ratio, so Circles stay Circular
+	                               0.01f, //Distance to the near plane, normally a small value like this
+	                               1000.0f); //Distance to the far plane,
 	
 	return true;
 }
@@ -151,8 +158,7 @@ void Graphics::Render() {
 	
 	
 	// Render the object
-	//glUniformMatrix4fv(m_modelMatrix, 1, GL_FALSE, glm::value_ptr(m_cube->GetModel()));
-	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular, m_lightSource);
+	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular, m_lightSource, m_textureSampler);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();

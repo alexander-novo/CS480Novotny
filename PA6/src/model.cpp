@@ -72,32 +72,24 @@ Model::Model(){}
 
 Texture* Texture::load(std::string filename) {
 	static std::unordered_map<std::string, Texture*> loadedTextures;
-	Magick::Image m_Image;
-	Magick::Blob m_Blob;
 	
 	//If we already have the texture loaded, don't load it again
 	if(loadedTextures.find(filename) != loadedTextures.end()) {
 		return loadedTextures[filename];
 	}
+	Texture* newTex = new Texture();
 	
 	//Load our texture with ImageMagick
 	try {
-		m_Image.read(filename);
-		m_Image.write(&m_Blob, "RGBA");
+		newTex->m_Image = new Magick::Image(filename);
+		newTex->m_Blob = new Magick::Blob();
+		newTex->m_Image->write(newTex->m_Blob, "RGBA");
 	} catch(Magick::Error& err) {
 		std::cout << "Could not load texture \"" << filename <<"\": " << err.what() << std::endl;
 		return nullptr;
 	}
 	
-	Texture* newTex = new Texture();
-	
-	//set up the texture with OpenGL
-	glGenTextures(1, &newTex->m_textureObj);
-	glBindTexture(GL_TEXTURE_2D, newTex->m_textureObj);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Image.columns(), m_Image.rows(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Blob.data());
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	newTex->initialised = false;
 	
 	//Now add it onto our list
 	loadedTextures[filename] = newTex;
@@ -105,8 +97,28 @@ Texture* Texture::load(std::string filename) {
 	return newTex;
 }
 
+void Texture::initGL() {
+	if(!initialised) {
+		//set up the texture with OpenGL
+		glGenTextures(1, &m_textureObj);
+		glBindTexture(GL_TEXTURE_2D, m_textureObj);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Image->columns(), m_Image->rows(), 0, GL_RGBA, GL_UNSIGNED_BYTE, m_Blob->data());
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		delete m_Image;
+		delete m_Blob;
+		m_Image = nullptr;
+		m_Blob = nullptr;
+		
+		initialised = true;
+	}
+}
+
 void Texture::bind() {
 	glActiveTexture(GL_TEXTURE0);
+	
 	glBindTexture(GL_TEXTURE_2D, m_textureObj);
 }
 
