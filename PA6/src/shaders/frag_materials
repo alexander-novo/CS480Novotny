@@ -78,12 +78,15 @@ void main(void) {
         vec3 MaterialDiffuseTexture2d;
         MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
 
+        //Start with a basis of the diffuse color. This will later become our texture
+        vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
+
         //This calculates if you're staring directly at the face, or if you're just glancing the face
         //If you're staring directly at the face - get the full brunt of the light, otherwise we lose some colors
         //Namely, blue
         float cosPhi = clamp( dot( E, n ), 0,1 );
 
-        frag_color = MaterialDiffuseTexture2d * lightColor * pow(cosPhi, 0.5) + vec3(1.0, 0.50,  0.0);
+        frag_color = materialAmbientModified + MaterialDiffuseTexture2d * lightColor * pow(cosPhi, 0.5);
     }
 
 }
