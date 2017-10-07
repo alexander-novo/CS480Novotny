@@ -25,6 +25,7 @@
     "day": 648,
     "spins": "ccw",
     "model": "Planet.obj",
+    "texture": "2k_sun.jpg",
     "satellites": [
       {
         "name": "Mercury",
