@@ -31,8 +31,10 @@ void main(void) {
     vec3 E = normalize(eyeC);
 
     // Swirly
-    float yoffset = (cos(shaderTime * uvCoord.y)); 
-    vec3 swirley = texture2D(gSampler, vec2(uvCoord.x, -1*(.6-uvCoord.y + yoffset))).xyz;
+    float shaderTimeMod = cos(shaderTime) * uvCoord.y;
+    float xoffset = sin(shaderTimeMod);
+    float yoffset = cos(shaderTimeMod*3); 
+    vec3 swirley = texture2D(gSampler, vec2(uvCoord.x + xoffset, -1*(.6-uvCoord.y + yoffset))).xyz;
 
     // Texture
     vec3 MaterialDiffuseTexture2d;
