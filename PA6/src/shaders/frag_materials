@@ -64,6 +64,6 @@ void main(void) {
         // Diffuse : "color" of the object
         MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
-    MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
+        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
 }
 

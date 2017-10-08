@@ -10,7 +10,10 @@ For both of the operating systems to run this project installation of these thre
 
 The project also uses [ImGUI](https://github.com/ocornut/imgui) and [JSON for Modern C++](https://github.com/nlohmann/json), both of which are already included.
 
-This project uses OpenGL 3.3. Some computers, such as virtual machines in the ECC, can not run this version. In in order to run OpenGL 2.7 follow the instructions at [Using OpenGL 2.7](https://github.com/HPC-Vis/computer-graphics/wiki/Using-OpenGL-2.7)
+This project uses OpenGL 3.3. Some computers, such as virtual machines in the ECC, can not run this version. In in order to run OpenGL 2.7 follow the instructions at [Using OpenGL 2.7](https://github.com/HPC-Vis/computer-graphics/wiki/Using-OpenGL-2.7)   
+   
+This project uses ImageMagick++ for loading textures. We have found that there are various forms of ImageMagick++ that can conflict with eachother. In order to be sure that ImageMagick++ is installed properly for this project, we recommend removing all other forms before installing the libmagick++-dev library. 
+``` sudo apt-get remove *magick* ``` should handle this removal.
 
 ### Ubuntu/Linux
 ```bash
@@ -67,3 +70,4 @@ Hold `ctrl` to only affect the spinning movement
 
 `Tutorial --help` - Pull up the help menu / command usage  
 `Tutorial <config>` - Run the program with the given config file
+`Tutorial` - Will run using the default configuration of `config.json`.

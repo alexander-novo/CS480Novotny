@@ -6,12 +6,12 @@
 #include "window.h"
 #include "object.h"
 
-#define MIN_TIME_SCALE -5.0f
-#define MAX_TIME_SCALE  5.0f
+#define MIN_TIME_SCALE -1000.0f
+#define MAX_TIME_SCALE  1000.0f
 #define MIN_MOVE_SCALE  0.0f
 #define MAX_MOVE_SCALE  5.0f
 
-#define CLOSE_SCALE 0.5f
+#define CLOSE_SCALE 0.43f
 
 class Menu {
 	public:
