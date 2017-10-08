@@ -4,7 +4,8 @@ glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b) {
-	time.spin = time.move = 0.0;
+	time.spin = 0;
+	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
 }
 
 Object::~Object() {
@@ -49,8 +50,8 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	if(parent != nullptr) {
 		//Move into place
 		//Add the scales to the distance to make certain they never overlap
-		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
-		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));
+		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0)); //Orbital tilt
+		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));       //Orbital rotation
 		modelMat= glm::translate(modelMat, glm::vec3(pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
 		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
 		modelMat= glm::rotate(modelMat, -ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
