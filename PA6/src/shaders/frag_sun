@@ -22,17 +22,32 @@ uniform float lightPower;
 
 uniform sampler2D gSampler;
 
+uniform float shaderTime;
+
 void main(void) {
     // Normal of the computed fragment, in camera space
     vec3 n = normalize( normalC );
     // Eye vector (towards the camera)
     vec3 E = normalize(eyeC);
 
+    // Swirly
+    float shaderTimeMod = cos(shaderTime) * uvCoord.y;
+    float xoffset = sin(shaderTimeMod);
+    float yoffset = cos(shaderTimeMod*3); 
+    vec3 swirley = texture2D(gSampler, vec2(uvCoord.x + xoffset, -1*(.6-uvCoord.y + yoffset))).xyz;
+
+    // Texture
+    vec3 MaterialDiffuseTexture2d;
+    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord).xyz;
+
     //This calculates if you're staring directly at the face, or if you're just glancing the face
     //If you're staring directly at the face - get the full brunt of the light, otherwise we lose some colors
     //Namely, blue
     float cosPhi = clamp( dot( E, n ), 0,1 );
 
-    frag_color = vec3(1.0, 1.0, 1.0) * pow(cosPhi, 0.5) + vec3(1.0, 0.50,  0.0);
+    //Color shift to make a little orange/yellower
+    vec3 colorShift = vec3(.3,.15, 0.0);
+
+    frag_color = swirley * MaterialDiffuseTexture2d * pow(cosPhi, 0.5) + vec3(.3, .15, 0.0);
 }
 
