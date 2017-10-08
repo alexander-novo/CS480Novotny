@@ -7,8 +7,8 @@
     "name": "Solar System Simulator"
   },
   "shaders": {
-    "vertex": "shaders/vert_materials",
-    "fragment": "shaders/frag_materials"
+    "vertex": "vert_materials",
+    "fragment": "frag_materials"
   },
   "scale": {
     "distance": 173925000,
@@ -21,6 +21,10 @@
     "orbit": {
       "distance": 1,
       "year": 1
+    },
+    "shaders": {
+      "vertex": "vert_sun",
+      "fragment": "frag_sun"
     },
     "day": 648,
     "spins": "ccw",

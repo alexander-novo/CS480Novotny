@@ -15,18 +15,12 @@ out vec3 lightDirC;
 out vec2 uvCoord;
 
 void main(void) {
-    vec4 lightW = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 v = vec4(positionM, 1.0);
     gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * v;
 
-    positionW = (modelMatrix * vec4(positionM, 1.0)).xyz;
-
+    //Vector from the vertex to the camera
     vec3 positionC = (viewMatrix * modelMatrix * vec4(positionM ,1)).xyz;
     eyeC = vec3(0,0,0) - positionC;
-
-    // Vector that goes from the vertex to the light, in camera space. M is ommited because it's identity.
-    vec3 lightPosC = (viewMatrix * lightW).xyz;
-    lightDirC = lightPosC + eyeC;
 
     // Normal of the the vertex, in camera space
     normalC = (viewMatrix * modelMatrix * vec4(normalM,0)).xyz;

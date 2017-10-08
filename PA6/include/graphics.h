@@ -15,7 +15,7 @@ class Graphics {
 		~Graphics();
 		
 		//Initialise OpenGL
-		bool Initialize(int width, int height, std::string vertexShader, std::string fragmentShader);
+		bool Initialize(int width, int height);
 		//Update physics and models
 		void Update(unsigned int dt);
 		//Render models
@@ -30,21 +30,6 @@ class Graphics {
 		std::string ErrorString(GLenum error);
 		
 		void calculateCamera();
-		Shader *m_shader;
-		
-		//Where our matrices are in video memory
-		GLint m_projectionMatrix;
-		GLint m_viewMatrix;
-		GLint m_modelMatrix;
-		
-		GLint m_diffuse;
-		GLint m_ambient;
-		GLint m_specular;
-		
-		GLint m_lightSource;
-		GLint m_lightPower;
-		
-		GLint m_textureSampler;
 		
 		Menu& m_menu;
 		

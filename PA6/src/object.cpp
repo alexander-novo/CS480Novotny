@@ -1,12 +1,13 @@
 #include "object.h"
 
+glm::mat4* Object::viewMatrix;
+glm::mat4* Object::projectionMatrix;
+
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b) {
 	time.spin = time.move = 0.0;
 }
 
 Object::~Object() {
-	//Vertices.clear();
-	//Indices.clear();
 	for (auto &i : _children) {
 		delete i;
 	}
@@ -25,6 +26,8 @@ void Object::Init_GL() {
 	if(ctx.texture != nullptr) {
 		ctx.texture->initGL();
 	}
+	
+	ctx.shader->Initialize();
 	
 	//Now do the same for all our children
 	for(auto& child : _children) {
@@ -59,22 +62,27 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation, GLint &textureLocation) const {
-	//Send our shaders the model matrix
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(modelMat));
+void Object::Render(float lightPower) const {
+	ctx.shader->Enable();
+
+	//Send our shaders the MVP matrices
+	ctx.shader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
+	ctx.shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
+	ctx.shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 	
 	//Send the material information
-	glUniform3fv(ambientLocation, 1, &ctx.model->material.ambient.r);
-	glUniform3fv(diffuseLocation, 1, &ctx.model->material.diffuse.r);
-	glUniform3fv(specularLocation, 1, &ctx.model->material.specular.r);
+	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);
+	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.model->material.diffuse.r);
+	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.model->material.specular.r);
 	
-	glUniform1i(sourceLocation, ctx.isLightSource);
+	//And light
+	ctx.shader->uniform1fv("lightPower", 1, &lightPower);
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	
-	//Now send vertices, colors, and normals
+	//Now send vertices, uvs, and normals
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
@@ -86,7 +94,7 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	//If we have a texture, use it
 	if(ctx.texture != nullptr) {
 		ctx.texture->bind();
-		glUniform1i(textureLocation, 0);
+		ctx.shader->uniform1i("gSampler", 0);
 	}
 	
 	//Now draw everything
@@ -100,12 +108,12 @@ void Object::Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuse
 	
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
-		i->Render(modelLocation, ambientLocation, diffuseLocation, specularLocation, sourceLocation, textureLocation);
+		i->Render(lightPower);
 	}
 }
 
 Object& Object::addChild(const Object::Context& ctx) {
-	Object* newPlanet = new Object(ctx, this);
+	auto* newPlanet = new Object(ctx, this);
 	_children.push_back(newPlanet);
 	return *newPlanet;
 }

@@ -21,9 +21,6 @@ class Engine {
 			int height = ENGINE_HEIGHT_DEFAULT;
 			bool fullscreen = ENGINE_FULLSCREEN_DEFAULT;
 			
-			std::string vertex = "";
-			std::string fragment = "";
-			
 			float lightStrength = 1.0f;
 		};
 		
@@ -64,8 +61,6 @@ class Engine {
 		Menu *m_menu;
 		
 		bool mouseDown;
-		
-		std::string m_vertexShader, m_fragmentShader;
 };
 
 #endif // ENGINE_H

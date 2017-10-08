@@ -8,7 +8,7 @@ Graphics::~Graphics() {
 
 }
 
-bool Graphics::Initialize(int width, int height, std::string vertexShader, std::string fragmentShader) {
+bool Graphics::Initialize(int width, int height) {
 	// Used for the linux OS
 #if !defined(__APPLE__) && !defined(MACOSX)
 	// cout << glewGetString(GLEW_VERSION) << endl;
@@ -34,94 +34,6 @@ bool Graphics::Initialize(int width, int height, std::string vertexShader, std::
 	
 	m_cube->Init_GL();
 	
-	// Set up the shaders
-	m_shader = new Shader();
-	if (!m_shader->Initialize()) {
-		printf("Shader Failed to Initialize\n");
-		return false;
-	}
-	
-	// Add the vertex shader
-	if (!m_shader->AddShader(GL_VERTEX_SHADER, vertexShader)) {
-		printf("Vertex Shader failed to Initialize\n");
-		return false;
-	}
-	
-	// Add the fragment shader
-	if (!m_shader->AddShader(GL_FRAGMENT_SHADER, fragmentShader)) {
-		printf("Fragment Shader failed to Initialize\n");
-		return false;
-	}
-	
-	// Connect the program
-	if (!m_shader->Finalize()) {
-		printf("Program to Finalize\n");
-		return false;
-	}
-	
-	// Locate the projection matrix in the shader
-	m_projectionMatrix = m_shader->GetUniformLocation("projectionMatrix");
-	if (m_projectionMatrix == INVALID_UNIFORM_LOCATION) {
-		printf("m_projectionMatrix not found\n");
-		return false;
-	}
-	
-	// Locate the view matrix in the shader
-	m_viewMatrix = m_shader->GetUniformLocation("viewMatrix");
-	if (m_viewMatrix == INVALID_UNIFORM_LOCATION) {
-		printf("m_viewMatrix not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_modelMatrix = m_shader->GetUniformLocation("modelMatrix");
-	if (m_modelMatrix == INVALID_UNIFORM_LOCATION) {
-		printf("m_modelMatrix not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_ambient = m_shader->GetUniformLocation("MaterialAmbientColor");
-	if (m_ambient == INVALID_UNIFORM_LOCATION) {
-		printf("m_ambient not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_diffuse = m_shader->GetUniformLocation("MaterialDiffuseColor");
-	if (m_diffuse == INVALID_UNIFORM_LOCATION) {
-		printf("m_diffuse not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_specular = m_shader->GetUniformLocation("MaterialSpecularColor");
-	if (m_specular == INVALID_UNIFORM_LOCATION) {
-		printf("m_specular not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_lightSource = m_shader->GetUniformLocation("isLightSource");
-	if (m_lightSource == INVALID_UNIFORM_LOCATION) {
-		printf("m_lightSource not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_lightPower = m_shader->GetUniformLocation("lightPower");
-	if (m_lightPower== INVALID_UNIFORM_LOCATION) {
-		printf("m_lightPower not found\n");
-		return false;
-	}
-	
-	// Locate the model matrix in the shader
-	m_textureSampler = m_shader->GetUniformLocation("gSampler");
-	if (m_textureSampler == INVALID_UNIFORM_LOCATION) {
-		printf("m_textureSampler not found\n");
-		return false;
-	}
-	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -144,21 +56,15 @@ void Graphics::Render() {
 	glClearColor(0.0, 0.0, 0.2, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	// Start the correct program
-	m_shader->Enable();
-	
 	calculateCamera();
 	
-	// Send in the projection and view to the shader
-	glUniformMatrix4fv(m_projectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniformMatrix4fv(m_viewMatrix, 1, GL_FALSE, glm::value_ptr(view));
+	Object::viewMatrix = &view;
+	Object::projectionMatrix = &projection;
 	
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
-	glUniform1fv(m_lightPower, 1, &modifiedLight);
-	
 	
 	// Render the object
-	m_cube->Render(m_modelMatrix, m_ambient, m_diffuse, m_specular, m_lightSource, m_textureSampler);
+	m_cube->Render(modifiedLight);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();

@@ -76,10 +76,9 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		
 		config << configFile;
 		
-		error = loadShader(config["shaders"]["vertex"], ctx.vertex);
-		if (error != -1) return error;
-		error = loadShader(config["shaders"]["fragment"], ctx.fragment);
-		if (error != -1) return error;
+		std::string vertexLocation = config["shaders"]["vertex"];
+		std::string fragLocation = config["shaders"]["fragment"];
+		Shader* defaultShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 		
 		//Window properties
 		//I don't think fullscreen works yet - maybe eventually
@@ -92,7 +91,7 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		Object::Context sunCtx;
 		
 		//Load the sun's properties
-		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0);
+		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0, defaultShader);
 		if (error != -1) return error;
 		
 		//make certain we set it to a light source
@@ -102,54 +101,31 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		sun = new Object(sunCtx, NULL);
 		
 		//Now load all the rest of the planets
-		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"]);
+		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"], defaultShader);
 		if (error != -1) return error;
 
 	}
 	
-	if (ctx.vertex == "") {
-		std::cout << "No -v option included" << std::endl;
-		return 1;
-	}
-	if (ctx.fragment == "") {
-		std::cout << "No -f option included" << std::endl;
-		return 1;
-	}
-	
 	return -1;
 }
 
-//Accepts name of file to load shader from and string reference to store into
-int loadShader(const std::string &filename, std::string &shader) {
-	std::ifstream shaderFile(filename);
-	
-	if (!shaderFile.is_open()) {
-		std::cerr << "Could not find shader file: " << filename << std::endl;
-		return 1;
-	}
-	
-	shader = std::string(std::istreambuf_iterator<char>(shaderFile), {});
-	
-	return -1;
-}
-
-int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale) {
+int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Shader* defaultShader) {
 	Object::Context ctx;
 	int error;
 	
 	for (auto &i : config["satellites"]) {
-		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier);
+		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier, defaultShader);
 		if (error != -1) return error;
 		
 		Object &newPlanet = sun.addChild(ctx);
-		error = loadPlanets(i, newPlanet, spaceScale, timeScale);
+		error = loadPlanets(i, newPlanet, spaceScale, timeScale, defaultShader);
 		if (error != -1) return error;
 	}
 	
 	return -1;
 }
 
-int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier) {
+int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier, Shader* defaultShader) {
 	ctx.name = config["name"];
 
 	ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
@@ -180,6 +156,15 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		
 	} else {
 		ctx.texture = nullptr;
+	}
+	
+	//Check if the planet has a special shader
+	if(config.find("shaders") != config.end()) {
+		std::string vertexLocation = config["shaders"]["vertex"];
+		std::string fragLocation = config["shaders"]["fragment"];
+		ctx.shader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
+	} else {
+		ctx.shader = defaultShader;
 	}
 
 	return -1;

@@ -6,9 +6,8 @@ in vec3 positionW;
 in vec3 normalC;
 in vec3 eyeC;
 in vec3 lightDirC;
-smooth in vec3 color;
 
-// Ouput data
+// Output data
 out vec3 frag_color;
 
 // Values that stay constant for the whole mesh.
@@ -19,7 +18,6 @@ uniform vec3 MaterialDiffuseColor;
 uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
-uniform bool isLightSource;
 uniform float lightPower;
 
 uniform sampler2D gSampler;
@@ -35,52 +33,37 @@ void main(void) {
     // Direction of the light (from the fragment to the light)
     vec3 l = normalize( lightDirC );
 
-    //Different shading if the object is a light source
-    //Non-light sources have shadows, but light sources do not
-    if(!isLightSource) {
-        vec3 MaterialDiffuseTexture2d;
-        MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
+    vec3 MaterialDiffuseTexture2d;
+    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
 
-        //Start with a basis of the diffuse color. This will later become our texture
-        vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
+    //Start with a basis of the diffuse color. This will later become our texture
+    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
 
-        //How far away we are - light depends on distance
-        float distance = length(lightW - positionW);
+    //How far away we are - light depends on distance
+    float distance = length(lightW - positionW);
 
-        // Cosine of the angle between the normal and the light direction
-        // clamped to a minimum of 0
-        // Anything facing directly towards the light will shine the brightest
-        // and anything facing away will be black
-        float cosTheta = clamp( dot( n,l ), 0,1 );
+    // Cosine of the angle between the normal and the light direction
+    // clamped to a minimum of 0
+    // Anything facing directly towards the light will shine the brightest
+    // and anything facing away will be black
+    float cosTheta = clamp( dot( n,l ), 0,1 );
 
-        // Eye vector (towards the camera)
-        vec3 E = normalize(eyeC);
-        // Direction in which the triangle reflects the light
-        vec3 R = reflect(-l,n);
-        // Cosine of the angle between the Eye vector and the Reflect vector,
-        // clamped to 0
-        //  - Looking into the reflection -> 1
-        //  - Looking elsewhere -> < 1
-        float cosAlpha = clamp( dot( E,R ), 0,1 );
+    // Eye vector (towards the camera)
+    vec3 E = normalize(eyeC);
+    // Direction in which the triangle reflects the light
+    vec3 R = reflect(-l,n);
+    // Cosine of the angle between the Eye vector and the Reflect vector,
+    // clamped to 0
+    //  - Looking into the reflection -> 1
+    //  - Looking elsewhere -> < 1
+    float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-        frag_color =
-            // Ambient : simulates indirect lighting
-            materialAmbientModified +
-            // Diffuse : "color" of the object
-            MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
-            // Specular : reflective highlight, like a mirror
-        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
-    } else {
-        // Eye vector (towards the camera)
-        vec3 E = normalize(eyeC);
-
-        //This calculates if you're staring directly at the face, or if you're just glancing the face
-        //If you're staring directly at the face - get the full brunt of the light, otherwise we lose some colors
-        //Namely, blue
-        float cosPhi = clamp( dot( E, n ), 0,1 );
-
-        frag_color = lightColor * pow(cosPhi, 0.5) + vec3(1.0, 0.50,  0.0);
-    }
-
+    frag_color =
+        // Ambient : simulates indirect lighting
+        materialAmbientModified +
+        // Diffuse : "color" of the object
+        MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
+        // Specular : reflective highlight, like a mirror
+    MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
 }
 

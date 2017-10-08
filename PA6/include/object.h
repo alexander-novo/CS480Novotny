@@ -5,6 +5,7 @@
 #include <cmath>
 #include "graphics_headers.h"
 #include "model.h"
+#include "shader.h"
 
 class Object {
 	public:
@@ -21,9 +22,12 @@ class Object {
 			int spinDir = -1;
 			
 			std::string name = "Planet";
+			std::string vertexShader;
+			std::string fragmentShader;
 			
 			Model* model;
 			Texture* texture = nullptr;
+			Shader* shader;
 			
 			bool isLightSource = false;
 			
@@ -39,7 +43,7 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt, const glm::mat4 &parentModel, float scaleExp);
 		//Renders the planet on the screen
-		void Render(GLint &modelLocation, GLint &ambientLocation, GLint &diffuseLocation, GLint &specularLocation, GLint &sourceLocation, GLint &textureLocation) const;
+		void Render(float lightPower) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites
@@ -57,6 +61,9 @@ class Object {
 		
 		//Returns a reference to a satellite
 		Object& operator[](int index);
+		
+		static glm::mat4* viewMatrix;
+		static glm::mat4* projectionMatrix;
 	
 	private:
 		//Timing information for keeping track of orbits and such
