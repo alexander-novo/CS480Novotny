@@ -50,11 +50,12 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	if(parent != nullptr) {
 		//Move into place
 		//Add the scales to the distance to make certain they never overlap
-		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0)); //Orbital tilt
-		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));       //Orbital rotation
-		modelMat= glm::translate(modelMat, glm::vec3(pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
-		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
-		modelMat= glm::rotate(modelMat, -ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
+		float distance = pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+		glm::vec4 parentCoordinate = parentModel * glm::vec4(0.0, 0.0, 0.0, 1.0);
+		glm::vec3 coordinate = {parentCoordinate.x + distance * cos(-time.move),
+		                        parentCoordinate.y + distance * cos(-time.move) * ctx.orbitTilt,
+		                        parentCoordinate.z + distance * sin(-time.move)};
+		modelMat= glm::translate(parentModel, coordinate);
 	} else {
 		modelMat = parentModel;
 	}
@@ -65,6 +66,7 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	}
 	
 	//Then rotate and scale so the satellites are unaffected
+	modelMat= glm::rotate(modelMat, ctx.axisTilt, glm::vec3(0.0, 0.0, 1.0));
 	modelMat= glm::rotate(modelMat, time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 }

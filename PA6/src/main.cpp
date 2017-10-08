@@ -133,7 +133,8 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	if(config["day"] != 0) ctx.spinScale = timeScale / ((float) config["day"]);
 	else ctx.spinScale = 0;
 	
-	ctx.orbitTilt = M_PI * ((float) config["orbit"]["tilt"]) / 180;
+	ctx.orbitTilt = tan(M_PI * ((float) config["orbit"]["tilt"]) / 180);
+	ctx.axisTilt = M_PI * ((float) config["axial-tilt"]) / 180;
 	
 	ctx.orbitDistance = ((float) config["orbit"]["distance"]) / spaceScale;
 	ctx.scale = ((float) config["radius"]) / spaceScale;

@@ -16,6 +16,7 @@ class Object {
 			float spinScale = 1.0;
 			float orbitDistance = 10.0;
 			float orbitTilt = 0.0;
+			float axisTilt = 0.0;
 			
 			float scale = 1.0;
 			

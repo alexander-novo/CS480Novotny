@@ -27,8 +27,8 @@
       "vertex": "vert_sun",
       "fragment": "frag_sun"
     },
+    "axial-tilt": 7.25,
     "day": 648,
-    "spins": "ccw",
     "model": "Planet.obj",
     "texture": "2k_sun.jpg",
     "satellites": [
@@ -40,8 +40,8 @@
           "year": 2112,
           "tilt": 7.0
         },
+        "axial-tilt": 0,
         "day": 1407.6,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_mercury.jpg",
         "satellites": []
@@ -54,8 +54,8 @@
           "year": 5392.8,
           "tilt": 3.4
         },
+        "axial-tilt": 177.4,
         "day": 5832.5,
-        "spins": "cw",
         "model": "Planet.obj",
         "texture": "2k_venus_atmosphere.jpg",
         "satellites": []
@@ -72,8 +72,8 @@
           "vertex": "vert_materials",
           "fragment": "frag_earth"
         },
+        "axial-tilt": 23.439281,
         "day": 23.9,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_earth_daymap2.jpg",
         "alt-texture": "2k_earth_nightmap.jpg",
@@ -86,8 +86,8 @@
               "year": 655.2,
               "tilt": 5.1
             },
+            "axial-tilt": 1.5424,
             "day": 655.7,
-            "spins": "ccw",
             "texture": "2k_moon.jpg",
             "model": "Planet.obj",
             "satellites": []
@@ -102,8 +102,8 @@
           "year": 16488,
           "tilt": 1.9
         },
+        "axial-tilt": 25.19,
         "day": 24.6,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_mars.jpg",
         "satellites": []
@@ -116,8 +116,8 @@
           "year": 103944,
           "tilt": 1.3
         },
+        "axial-tilt": 3.13,
         "day": 9.9,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_jupiter.jpg",
         "satellites": []
@@ -130,8 +130,8 @@
           "year": 257928,
           "tilt": 2.5
         },
+        "axial-tilt": 26.73,
         "day": 10.7,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_saturn.jpg",
         "satellites": []
@@ -144,8 +144,8 @@
           "year": 734136,
           "tilt": 0.8
         },
+        "axial-tilt": 97.77,
         "day": -17.2,
-        "spins": "cw",
         "model": "Planet.obj",
         "texture": "2k_uranus.jpg",
         "satellites": []
@@ -158,8 +158,8 @@
           "year": 1435200,
           "tilt": 1.8
         },
+        "axial-tilt": 28.32,
         "day": 16.1,
-        "spins": "ccw",
         "model": "Planet.obj",
         "texture": "2k_neptune.jpg",
         "satellites": []
@@ -172,8 +172,8 @@
           "year": 2173440,
           "tilt": 17.2
         },
+        "axial-tilt": 119.61,
         "day": -153.3,
-        "spins": "cw",
         "model": "Planet.obj",
         "texture": "2k_pluto_imagiined.jpg",
         "satellites": []
