@@ -111,7 +111,10 @@ void Object::Render(float lightPower) const {
 		ctx.altTexture->bind(GL_ALT_TEXTURE);
 		ctx.shader->uniform1i("gAltSampler", GL_ALT_TEXTURE_OFFSET);
 	}
-	
+
+	//Timer for shader
+	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
+
 	//Now draw everything
 	glDrawElements(GL_TRIANGLES, ctx.model->_indices.size(), GL_UNSIGNED_INT, 0);
 	
