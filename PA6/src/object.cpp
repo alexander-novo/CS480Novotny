@@ -49,9 +49,11 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	if(parent != nullptr) {
 		//Move into place
 		//Add the scales to the distance to make certain they never overlap
-		modelMat= glm::rotate(parentModel, -time.move, glm::vec3(0.0, 1.0, 0.0));
+		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
+		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));
 		modelMat= glm::translate(modelMat, glm::vec3(pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
 		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
+		modelMat= glm::rotate(modelMat, -ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
 	} else {
 		modelMat = parentModel;
 	}

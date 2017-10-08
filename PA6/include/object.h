@@ -15,6 +15,7 @@ class Object {
 			float moveScale = 1.0;
 			float spinScale = 1.0;
 			float orbitDistance = 10.0;
+			float orbitTilt = 0.0;
 			
 			float scale = 1.0;
 			

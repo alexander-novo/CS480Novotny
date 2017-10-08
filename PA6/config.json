@@ -19,8 +19,9 @@
     "name": "Sun",
     "radius": 695700000,
     "orbit": {
-      "distance": 1,
-      "year": 1
+      "distance": 0,
+      "year": 0,
+      "tilt": 0
     },
     "shaders": {
       "vertex": "vert_sun",
@@ -36,7 +37,8 @@
         "radius": 2439500,
         "orbit": {
           "distance": 57900000000,
-          "year": 2112
+          "year": 2112,
+          "tilt": 7.0
         },
         "day": 1407.6,
         "spins": "ccw",
@@ -49,7 +51,8 @@
         "radius": 2439500,
         "orbit": {
           "distance": 108200000000,
-          "year": 5392.8
+          "year": 5392.8,
+          "tilt": 3.4
         },
         "day": 5832.5,
         "spins": "cw",
@@ -62,7 +65,8 @@
         "radius": 6378000,
         "orbit": {
           "distance": 149600000000,
-          "year": 8764.8
+          "year": 8764.8,
+          "tilt": 0
         },
         "shaders" : {
           "vertex": "vert_materials",
@@ -79,7 +83,8 @@
             "radius": 1737500,
             "orbit": {
               "distance": 348000000,
-              "year": 655.2
+              "year": 655.2,
+              "tilt": 5.1
             },
             "day": 655.7,
             "spins": "ccw",
@@ -94,7 +99,8 @@
         "radius": 3396000,
         "orbit": {
           "distance": 227900000000,
-          "year": 16488
+          "year": 16488,
+          "tilt": 1.9
         },
         "day": 24.6,
         "spins": "ccw",
@@ -107,7 +113,8 @@
         "radius": 71492000,
         "orbit": {
           "distance": 778600000000,
-          "year": 103944
+          "year": 103944,
+          "tilt": 1.3
         },
         "day": 9.9,
         "spins": "ccw",
@@ -120,7 +127,8 @@
         "radius": 60268000,
         "orbit": {
           "distance": 1433500000000,
-          "year": 257928
+          "year": 257928,
+          "tilt": 2.5
         },
         "day": 10.7,
         "spins": "ccw",
@@ -133,7 +141,8 @@
         "radius": 25559000,
         "orbit": {
           "distance": 2872500000000,
-          "year": 734136
+          "year": 734136,
+          "tilt": 0.8
         },
         "day": -17.2,
         "spins": "cw",
@@ -146,7 +155,8 @@
         "radius": 24764000,
         "orbit": {
           "distance": 4495100000000,
-          "year": 1435200
+          "year": 1435200,
+          "tilt": 1.8
         },
         "day": 16.1,
         "spins": "ccw",
@@ -159,7 +169,8 @@
         "radius": 1185000,
         "orbit": {
           "distance": 5906400000000,
-          "year": 2173440
+          "year": 2173440,
+          "tilt": 17.2
         },
         "day": -153.3,
         "spins": "cw",

@@ -128,8 +128,12 @@ int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Sh
 int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier, Shader* defaultShader) {
 	ctx.name = config["name"];
 
-	ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
-	ctx.spinScale = timeScale / ((float) config["day"]);
+	if(config["orbit"]["year"] != 0) ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
+	else ctx.moveScale = 0;
+	if(config["day"] != 0) ctx.spinScale = timeScale / ((float) config["day"]);
+	else ctx.spinScale = 0;
+	
+	ctx.orbitTilt = M_PI * ((float) config["orbit"]["tilt"]) / 180;
 	
 	ctx.orbitDistance = ((float) config["orbit"]["distance"]) / spaceScale;
 	ctx.scale = ((float) config["radius"]) / spaceScale;
