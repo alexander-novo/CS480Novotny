@@ -43,10 +43,15 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
 	time.move += timeMod * ctx.moveScale * ctx.moveDir;
 	
-	//Move into place
-	modelMat= glm::rotate(parentModel, -time.move, glm::vec3(0.0, 1.0, 0.0));
-	modelMat= glm::translate(modelMat, glm::vec3(pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
-	modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
+	if(parent != nullptr) {
+		//Move into place
+		//Add the scales to the distance to make certain they never overlap
+		modelMat= glm::rotate(parentModel, -time.move, glm::vec3(0.0, 1.0, 0.0));
+		modelMat= glm::translate(modelMat, glm::vec3(pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
+		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
+	} else {
+		modelMat = parentModel;
+	}
 	
 	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
