@@ -148,14 +148,17 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	
 	//Check if the planet has a texture
 	if(config.find("texture") != config.end()) {
-		//In case we have day/night times
-		if(config["texture"].type() == json::value_t::string) {
-			filename = config["texture"];
-			ctx.texture = Texture::load("textures/" + filename);
-		}
-		
+		filename = config["texture"];
+		ctx.texture = Texture::load("textures/" + filename);
 	} else {
 		ctx.texture = nullptr;
+	}
+	
+	if(config.find("alt-texture") != config.end()) {
+		filename = config["alt-texture"];
+		ctx.altTexture = Texture::load("textures/" + filename);
+	} else {
+		ctx.altTexture = nullptr;
 	}
 	
 	//Check if the planet has a special shader

@@ -26,6 +26,9 @@ void Object::Init_GL() {
 	if(ctx.texture != nullptr) {
 		ctx.texture->initGL();
 	}
+	if(ctx.altTexture != nullptr) {
+		ctx.altTexture->initGL();
+	}
 	
 	ctx.shader->Initialize();
 	
@@ -98,8 +101,12 @@ void Object::Render(float lightPower) const {
 	
 	//If we have a texture, use it
 	if(ctx.texture != nullptr) {
-		ctx.texture->bind();
-		ctx.shader->uniform1i("gSampler", 0);
+		ctx.texture->bind(GL_COLOR_TEXTURE);
+		ctx.shader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
+	}
+	if(ctx.altTexture != nullptr) {
+		ctx.altTexture->bind(GL_ALT_TEXTURE);
+		ctx.shader->uniform1i("gAltSampler", GL_ALT_TEXTURE_OFFSET);
 	}
 	
 	//Now draw everything

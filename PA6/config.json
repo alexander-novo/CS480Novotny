@@ -64,10 +64,15 @@
           "distance": 149600000000,
           "year": 8764.8
         },
+        "shaders" : {
+          "vertex": "vert_materials",
+          "fragment": "frag_earth"
+        },
         "day": 23.9,
         "spins": "ccw",
         "model": "Planet.obj",
-        "texture": "2k_earth_daymap.jpg",
+        "texture": "2k_earth_daymap2.jpg",
+        "alt-texture": "2k_earth_nightmap.jpg",
         "satellites": [
           {
             "name": "The Moon",

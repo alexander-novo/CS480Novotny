@@ -27,6 +27,8 @@ class Object {
 			
 			Model* model;
 			Texture* texture = nullptr;
+			Texture* altTexture = nullptr;
+			Texture* normalMap = nullptr;
 			Shader* shader;
 			
 			bool isLightSource = false;

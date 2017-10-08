@@ -116,8 +116,8 @@ void Texture::initGL() {
 	}
 }
 
-void Texture::bind() {
-	glActiveTexture(GL_TEXTURE0);
+void Texture::bind(GLenum textureTarget) {
+	glActiveTexture(textureTarget);
 	
 	glBindTexture(GL_TEXTURE_2D, m_textureObj);
 }
