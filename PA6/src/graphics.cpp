@@ -48,7 +48,7 @@ bool Graphics::Initialize(int width, int height) {
 
 void Graphics::Update(unsigned int dt) {
 	// Update the object
-	m_cube->Update(dt, glm::mat4(1.0f), m_menu.options.scale, m_menu.options.drawOrbits);
+	m_cube->Update(dt, m_menu.options.scale, m_menu.options.drawOrbits);
 }
 
 void Graphics::Render() {
@@ -76,9 +76,9 @@ void Graphics::Render() {
 
 void Graphics::calculateCamera() {
 	//What we're looking at
-	glm::vec4 lookVec(0.0, 0.0, 0.0, 1.0);
+	glm::vec3 lookVec;
 	//What should be in the background (whatever we're orbiting)
-	glm::vec4 backgroundVec(0.0, 0.0, 0.0, 1.0);
+	glm::vec3 backgroundVec;
 	Object* lookingAt = m_menu.getPlanet(m_menu.options.lookingAt);
 	Object* parent = lookingAt->parent;
 	
@@ -90,13 +90,13 @@ void Graphics::calculateCamera() {
 	float scale = lookingAt->ctx.scaleMultiplier / pow(lookingAt->ctx.scaleMultiplier, m_menu.options.scale) * pow(lookingAt->ctx.scale, m_menu.options.scale) * 15;
 	
 	//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
-	lookVec = lookingAt->GetModel() * lookVec;
+	lookVec = lookingAt->position;
 	
 	//If we're orbiting something, put that something in the background of the camera
 	if(parent != NULL) {
-		backgroundVec = parent->GetModel() * backgroundVec;
+		backgroundVec = parent->position;
 	} else {
-		backgroundVec = lookVec + glm::vec4(0.0, 0.0, -5.0, 1.0);
+		backgroundVec = lookVec + glm::vec3(0.0, 0.0, -5.0);
 	}
 	
 	
@@ -108,7 +108,7 @@ void Graphics::calculateCamera() {
 	glm::vec3 crossVec = glm::normalize(glm::cross(glm::vec3(backgroundVec.x, backgroundVec.y, backgroundVec.z), glm::vec3(0.0, 1.0, 0.0)));
 	
 	float angle = m_menu.options.rotation * M_PI / 180;
-	backgroundVec = cos(angle) * backgroundVec + sin(angle) * glm::vec4(crossVec.x, crossVec.y, crossVec.z, 1.0);
+	backgroundVec = cos(angle) * backgroundVec + sin(angle) * glm::vec3(crossVec.x, crossVec.y, crossVec.z);
 	//Then scale it depending on how large what we're looking at is
 	//We don't want to be to far away from a small object or too close to a large object
 	backgroundVec *= scale * m_menu.options.zoom;

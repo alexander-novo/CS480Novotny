@@ -45,7 +45,7 @@ class Object {
 		//Initialises the planet's model and textures for OpenGL
 		void Init_GL();
 		//Updates the physics for the planet
-		void Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool drawOrbits);
+		void Update(float dt, float scaleExp, bool drawOrbits);
 		//Renders the planet on the screen
 		void Render(float lightPower, bool drawOrbits) const;
 		//Adds a satellite to this planet with the specified properties
@@ -62,6 +62,8 @@ class Object {
 		const Context originalCtx;
 		//Pointer to the planet this one is orbiting - NULL for sun-type objects
 		Object* const parent;
+		
+		const glm::vec3& position;
 		
 		//Returns a reference to a satellite
 		Object& operator[](int index);
@@ -85,17 +87,19 @@ class Object {
 		GLuint OB;
 		
 		struct OrbitInfo {
-			glm::vec4 lastParentPos;
+			glm::vec3 lastParentPos;
 			float lastScale;
 			
 		} orbitInfo;
+		
+		glm::vec3 _position;
 		
 		//List of satellites
 		std::vector<Object*> _children;
 		
 		std::vector<glm::vec3> orbitVertices;
 		
-		void updateOrbit(const glm::mat4& parentModel, float scaleExp, float scaleMult);
+		void updateOrbit(float scaleExp, float scaleMult);
 		void drawOrbit() const;
 };
 

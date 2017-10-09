@@ -4,9 +4,10 @@ glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
 Shader* Object::orbitShader;
 
-Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b) {
+Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
 	time.spin = 0;
 	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
+	_position = {0.0, 0.0, 0.0};
 }
 
 Object::~Object() {
@@ -44,7 +45,7 @@ void Object::Init_GL() {
 	}
 }
 
-void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool drawOrbits) {
+void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	float timeMod = dt / 1000.0f * ctx.timeScale;
 	float scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
 	float scale = scaleMult * pow(ctx.scale, scaleExp);
@@ -56,18 +57,20 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool
 	if(parent != nullptr) {
 		//Move into place
 		//Add the scales to the distance to make certain they never overlap
-		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0)); //Orbital tilt
-		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));       //Orbital rotation
-		modelMat= glm::translate(modelMat, glm::vec3(scaleMult * pow(parent->ctx.scale, scaleExp) + scale + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
-		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
-		modelMat= glm::rotate(modelMat, -ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
+		float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+		
+		float cosTheta = cos(-time.move);
+		_position = {parent->position.x + radius * cos(ctx.orbitTilt) * cosTheta,
+		             parent->position.y + radius * sin(ctx.orbitTilt) * cosTheta,
+		             parent->position.z + radius * sin(-time.move)};
+		modelMat = glm::translate(position);
 	} else {
-		modelMat = parentModel;
+		modelMat = glm::mat4(1.0);
 	}
 	
 	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
-		i->Update(dt * ctx.timeScale, modelMat, scaleExp, drawOrbits);
+		i->Update(dt * ctx.timeScale, scaleExp, drawOrbits);
 	}
 	
 	//Then rotate and scale so the satellites are unaffected
@@ -75,19 +78,21 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 	
-	if(drawOrbits) updateOrbit(parentModel, scaleExp, scaleMult);
+	if(drawOrbits) updateOrbit(scaleExp, scaleMult);
 }
 
-void Object::updateOrbit(const glm::mat4& parentModel, float scaleExp, float scaleMult) {
-	glm::vec4 parentPosition = parentModel* glm::vec4(0.0, 0.0, 0.0, 1.0);
+void Object::updateOrbit(float scaleExp, float scaleMult) {
+	if(parent == nullptr) return;
 	
-	if((parentPosition == orbitInfo.lastParentPos && scaleExp == orbitInfo.lastScale) || parent == nullptr) return;
+	const glm::vec3& parentPosition = parent->position;
+	
+	if((parentPosition == orbitInfo.lastParentPos && scaleExp == orbitInfo.lastScale)) return;
 	
 	orbitInfo.lastParentPos = parentPosition;
 	orbitInfo.lastScale = scaleExp;
 	
 	float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
-	double thetaStep = M_PI / 300;
+	double thetaStep = M_PI / radius / 75;
 	double rCosPhi = radius * cos(ctx.orbitTilt);
 	double rSinPhi = radius * sin(ctx.orbitTilt);
 	double theta = 0;
