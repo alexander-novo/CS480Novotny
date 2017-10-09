@@ -92,7 +92,7 @@ void Object::updateOrbit(float scaleExp, float scaleMult) {
 	orbitInfo.lastScale = scaleExp;
 	
 	float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
-	double thetaStep = M_PI / radius / 75;
+	double thetaStep = M_PI / 300;
 	double rCosPhi = radius * cos(ctx.orbitTilt);
 	double rSinPhi = radius * sin(ctx.orbitTilt);
 	double theta = 0;
