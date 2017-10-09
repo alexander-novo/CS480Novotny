@@ -20,7 +20,7 @@ class Object {
 			
 			float scale = 1.0;
 			
-			int moveDir = -1;
+			int moveDir = 1;
 			int spinDir = -1;
 			
 			std::string name = "Planet";
