@@ -170,7 +170,7 @@ void Engine::Keyboard() {
 				m_graphics->getProjection() = glm::perspective( 45.0f,
 				                               float(windowWidth)/float(windowHeight),
 				                               0.01f,
-				                               1000.0f);
+				                               1000000.0f);
 				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT

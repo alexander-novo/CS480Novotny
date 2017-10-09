@@ -95,7 +95,7 @@ class Object {
 		
 		std::vector<glm::vec3> orbitVertices;
 		
-		void updateOrbit(const glm::mat4& parentModel, float scaleExp);
+		void updateOrbit(const glm::mat4& parentModel, float scaleExp, float scaleMult);
 		void drawOrbit() const;
 };
 

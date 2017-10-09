@@ -46,7 +46,8 @@ void Object::Init_GL() {
 
 void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool drawOrbits) {
 	float timeMod = dt / 1000.0f * ctx.timeScale;
-	float scale = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp) * pow(ctx.scale, scaleExp);
+	float scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
+	float scale = scaleMult * pow(ctx.scale, scaleExp);
 	
 	//Update the timer
 	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
@@ -57,7 +58,7 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool
 		//Add the scales to the distance to make certain they never overlap
 		modelMat= glm::rotate(parentModel, ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0)); //Orbital tilt
 		modelMat= glm::rotate(modelMat, -time.move, glm::vec3(0.0, 1.0, 0.0));       //Orbital rotation
-		modelMat= glm::translate(modelMat, glm::vec3(pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
+		modelMat= glm::translate(modelMat, glm::vec3(scaleMult * pow(parent->ctx.scale, scaleExp) + scale + pow(ctx.orbitDistance, scaleExp), 0.0, 0.0));
 		modelMat= glm::rotate(modelMat, time.move, glm::vec3(0.0, 1.0, 0.0));
 		modelMat= glm::rotate(modelMat, -ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
 	} else {
@@ -74,10 +75,10 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 	
-	if(drawOrbits) updateOrbit(parentModel, scaleExp);
+	if(drawOrbits) updateOrbit(parentModel, scaleExp, scaleMult);
 }
 
-void Object::updateOrbit(const glm::mat4& parentModel, float scaleExp) {
+void Object::updateOrbit(const glm::mat4& parentModel, float scaleExp, float scaleMult) {
 	glm::vec4 parentPosition = parentModel* glm::vec4(0.0, 0.0, 0.0, 1.0);
 	
 	if((parentPosition == orbitInfo.lastParentPos && scaleExp == orbitInfo.lastScale) || parent == nullptr) return;
@@ -85,7 +86,7 @@ void Object::updateOrbit(const glm::mat4& parentModel, float scaleExp) {
 	orbitInfo.lastParentPos = parentPosition;
 	orbitInfo.lastScale = scaleExp;
 	
-	float radius = pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+	float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
 	double thetaStep = M_PI / 300;
 	double rCosPhi = radius * cos(ctx.orbitTilt);
 	double rSinPhi = radius * sin(ctx.orbitTilt);
