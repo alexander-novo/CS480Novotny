@@ -49,13 +49,13 @@ Hold `ctrl` to only affect the spinning movement
 
 # Things to check out
 
-###Earth's Nighttime textures
+### Earth's Nighttime textures
 ![Earth](https://i.imgur.com/wwPRcj1.png)
 
-###The Moon's Orbit
+### The Moon's Orbit
 ![Moon](https://i.imgur.com/d84EAvg.png)
 
-###The Sun's Layered Textures
+### The Sun's Layered Textures
 ![Sun](https://i.imgur.com/wOT7HgD.png)
 
 # Menu Usage
