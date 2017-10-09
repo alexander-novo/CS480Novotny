@@ -12,7 +12,7 @@ The project also uses [ImGUI](https://github.com/ocornut/imgui) and [JSON for Mo
 
 This project uses OpenGL 3.3. Some computers, such as virtual machines in the ECC, can not run this version. In in order to run OpenGL 2.7 follow the instructions at [Using OpenGL 2.7](https://github.com/HPC-Vis/computer-graphics/wiki/Using-OpenGL-2.7)   
    
-This project uses ImageMagick++ for loading textures. We have found that there are various forms of ImageMagick++ that can conflict with eachother. In order to be sure that ImageMagick++ is installed properly for this project, we recommend removing all other forms before installing the libmagick++-dev library. 
+This project uses ImageMagick++ for loading textures. We have found that there are various forms of ImageMagick++ that can conflict with each other. In order to be sure that ImageMagick++ is installed properly for this project, we recommend removing all other forms before installing the libmagick++-dev library. 
 ``` sudo apt-get remove *magick* ``` should handle this removal.
 
 ### Ubuntu/Linux
@@ -47,14 +47,24 @@ Hold `ctrl` to only affect the spinning movement
 `left click` - Drag to rotate camera around object  
 `Scroll wheel` - Zoom in and out
 
+# Things to check out
 
+###Earth's Nighttime textures
+![Earth](https://i.imgur.com/wwPRcj1.png)
+
+###The Moon's Orbit
+![Moon](https://i.imgur.com/d84EAvg.png)
+
+###The Sun's Layered Textures
+![Sun](https://i.imgur.com/wOT7HgD.png)
 
 # Menu Usage
-![Menu](https://i.imgur.com/tI66ihc.png)
+![Menu](https://i.imgur.com/AIt1yMM.png)
 
 **Camera Distance** - Changes how far the camera is away from the current object  
 **Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow  
-**Realistic/Close Scale** - Switch between the two to get realistic planet scaling (where the sun is *much* bigger than the planets and everything is very far apart) or an easier to see scale
+**Realistic/Close Scale** - Switch between the two to get realistic planet scaling (where the sun is *much* bigger than the planets and everything is very far apart) or an easier to see scale  
+**Draw Orbits** - Check to draw dotted lines along the planets' orbits
 
 ### Planet Controls
 
