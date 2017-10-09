@@ -23,6 +23,7 @@ class Menu {
 			float zoom = 1.0;     //Keeps track of how far our camera should be away from the planet we're looking at
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 			float scale = 1.0;    //Keep track of the current distance scale. Applied as an exponential modifier
+			bool drawOrbits = true;
 		};
 		
 		Menu(Window& window, Object& root);

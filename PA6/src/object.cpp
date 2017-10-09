@@ -2,6 +2,7 @@
 
 glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
+Shader* Object::orbitShader;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b) {
 	time.spin = 0;
@@ -16,6 +17,8 @@ Object::~Object() {
 }
 
 void Object::Init_GL() {
+	orbitShader->Initialize();
+	
 	glGenBuffers(1, &VB);
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * ctx.model->_vertices.size(), &ctx.model->_vertices[0], GL_STATIC_DRAW);
@@ -23,6 +26,8 @@ void Object::Init_GL() {
 	glGenBuffers(1, &IB);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ctx.model->_indices.size(), &ctx.model->_indices[0], GL_STATIC_DRAW);
+	
+	glGenBuffers(1, &OB);
 	
 	if(ctx.texture != nullptr) {
 		ctx.texture->initGL();
@@ -39,7 +44,7 @@ void Object::Init_GL() {
 	}
 }
 
-void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
+void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool drawOrbits) {
 	float timeMod = dt / 1000.0f * ctx.timeScale;
 	float scale = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp) * pow(ctx.scale, scaleExp);
 	
@@ -61,20 +66,50 @@ void Object::Update(float dt, const glm::mat4 &parentModel, float scaleExp) {
 	
 	//Update all satellites after moving, so they follow us around
 	for (auto &i : _children) {
-		i->Update(dt * ctx.timeScale, modelMat, scaleExp);
+		i->Update(dt * ctx.timeScale, modelMat, scaleExp, drawOrbits);
 	}
 	
 	//Then rotate and scale so the satellites are unaffected
 	modelMat= glm::rotate(modelMat, ctx.axisTilt, glm::vec3(0.0, 0.0, 1.0));
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
+	
+	if(drawOrbits) updateOrbit(parentModel, scaleExp);
+}
+
+void Object::updateOrbit(const glm::mat4& parentModel, float scaleExp) {
+	glm::vec4 parentPosition = parentModel* glm::vec4(0.0, 0.0, 0.0, 1.0);
+	
+	if((parentPosition == orbitInfo.lastParentPos && scaleExp == orbitInfo.lastScale) || parent == nullptr) return;
+	
+	orbitInfo.lastParentPos = parentPosition;
+	orbitInfo.lastScale = scaleExp;
+	
+	float radius = pow(parent->ctx.scale, scaleExp) + pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+	double thetaStep = M_PI / 300;
+	double rCosPhi = radius * cos(ctx.orbitTilt);
+	double rSinPhi = radius * sin(ctx.orbitTilt);
+	double theta = 0;
+	
+	orbitVertices.clear();
+	
+	for(int i = 0; i * thetaStep < M_PI * 2; i++){
+		theta = i * thetaStep;
+		orbitVertices.push_back(glm::vec3(parentPosition.x + rCosPhi * cos(theta),
+		                                  parentPosition.y + rSinPhi * cos(theta),
+		                                  parentPosition.z + radius * sin(theta)));
+	}
+	
+	glBindBuffer(GL_ARRAY_BUFFER, OB);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * orbitVertices.size(), &orbitVertices[0], GL_STATIC_DRAW);
 }
 
 const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(float lightPower) const {
+void Object::Render(float lightPower, bool drawOrbits) const {
+	if(drawOrbits) drawOrbit();
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -127,8 +162,26 @@ void Object::Render(float lightPower) const {
 	
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
-		i->Render(lightPower);
+		i->Render(lightPower, drawOrbits);
 	}
+}
+
+void Object::drawOrbit() const {
+	if(parent == nullptr) return;
+	orbitShader->Enable();
+	
+	orbitShader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
+	orbitShader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	
+	glEnableVertexAttribArray(0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, OB);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+	
+	glDrawArrays(GL_LINES, 0, orbitVertices.size());
+	
+	glDisableVertexAttribArray(0);
 }
 
 Object& Object::addChild(const Object::Context& ctx) {

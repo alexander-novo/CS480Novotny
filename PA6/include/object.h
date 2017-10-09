@@ -45,9 +45,9 @@ class Object {
 		//Initialises the planet's model and textures for OpenGL
 		void Init_GL();
 		//Updates the physics for the planet
-		void Update(float dt, const glm::mat4 &parentModel, float scaleExp);
+		void Update(float dt, const glm::mat4 &parentModel, float scaleExp, bool drawOrbits);
 		//Renders the planet on the screen
-		void Render(float lightPower) const;
+		void Render(float lightPower, bool drawOrbits) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites
@@ -68,6 +68,8 @@ class Object {
 		
 		static glm::mat4* viewMatrix;
 		static glm::mat4* projectionMatrix;
+		
+		static Shader* orbitShader;
 	
 	private:
 		//Timing information for keeping track of orbits and such
@@ -80,9 +82,21 @@ class Object {
 
 		GLuint VB;
 		GLuint IB;
+		GLuint OB;
+		
+		struct OrbitInfo {
+			glm::vec4 lastParentPos;
+			float lastScale;
+			
+		} orbitInfo;
 		
 		//List of satellites
 		std::vector<Object*> _children;
+		
+		std::vector<glm::vec3> orbitVertices;
+		
+		void updateOrbit(const glm::mat4& parentModel, float scaleExp);
+		void drawOrbit() const;
 };
 
 #endif /* OBJECT_H */

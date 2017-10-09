@@ -48,7 +48,7 @@ bool Graphics::Initialize(int width, int height) {
 
 void Graphics::Update(unsigned int dt) {
 	// Update the object
-	m_cube->Update(dt, glm::mat4(1.0f), m_menu.options.scale);
+	m_cube->Update(dt, glm::mat4(1.0f), m_menu.options.scale, m_menu.options.drawOrbits);
 }
 
 void Graphics::Render() {
@@ -64,7 +64,7 @@ void Graphics::Render() {
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
 	
 	// Render the object
-	m_cube->Render(modifiedLight);
+	m_cube->Render(modifiedLight, m_menu.options.drawOrbits);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();

@@ -22,7 +22,7 @@ void Menu::update(int dt) {
 	
 	//Start a new window called "Controls"
 	//On first seeing this window, make it 650 x 400, but let the user resize it later
-	ImGui::SetNextWindowSize(ImVec2(490, 220), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(550, 220), ImGuiCond_FirstUseEver);
     // ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing); 
 	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
@@ -36,6 +36,8 @@ void Menu::update(int dt) {
 	
 	ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
 	ImGui::RadioButton("Close Scale", &scaleTo, 0);
+	
+	ImGui::Checkbox("Draw Orbits", &_options.drawOrbits);
 
     if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing))
     {

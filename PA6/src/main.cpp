@@ -88,6 +88,8 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		
 		ctx.lightStrength = config["sunlight"];
 		
+		Object::orbitShader = Shader::load("shaders/vert_orbits", "shaders/frag_orbits");
+		
 		Object::Context sunCtx;
 		
 		//Load the sun's properties
