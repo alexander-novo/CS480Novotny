@@ -6,7 +6,15 @@ Shader* Object::orbitShader;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
 	time.spin = 0;
-	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
+	//Prevent Saturn from Starting away from its rings
+	if(a.name == "Saturn" || a.name == "Saturn Rings" )
+	{
+		time.move = 0;
+	}
+	else
+	{
+		time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;	
+	}
 	_position = {0.0, 0.0, 0.0};
 }
 
