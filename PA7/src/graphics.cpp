@@ -1,7 +1,8 @@
 #include "graphics.h"
 
 Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), lightPower(lightStrength), m_menu(menu) {
-
+	Object::viewMatrix = &view;
+	Object::projectionMatrix = &projection;
 }
 
 Graphics::~Graphics() {
@@ -57,9 +58,6 @@ void Graphics::Render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	calculateCamera();
-	
-	Object::viewMatrix = &view;
-	Object::projectionMatrix = &projection;
 	
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
 	

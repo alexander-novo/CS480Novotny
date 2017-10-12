@@ -56,15 +56,14 @@ void Engine::Run() {
 			Keyboard();
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
-	
-		//Update the menu and get user's input options
-		m_menu->update(m_DT);
 		
-		// Update and render the graphics
+		// Update planet positions
 		m_graphics->Update(m_DT);
-		m_graphics->Render();
+		// Update menu options and labels
+		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
 		
-		//Render the GUI
+		//Render everything
+		m_graphics->Render();
 		m_menu->render();
 		
 		// Swap to the Window

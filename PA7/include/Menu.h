@@ -24,6 +24,7 @@ class Menu {
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 			float scale = 1.0;    //Keep track of the current distance scale. Applied as an exponential modifier
 			bool drawOrbits = true;
+			bool drawLabels = true;
 		};
 		
 		Menu(Window& window, Object& root);
@@ -32,7 +33,7 @@ class Menu {
 		Object* getPlanet(int index) const;
 		
 		//Add stuff to the menu and check if anything has changed since last time
-		void update(int dt);
+		void update(int dt, float width, float height);
 		//Draw everything
 		void render();
 		

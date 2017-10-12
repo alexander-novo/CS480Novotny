@@ -14,7 +14,7 @@ Menu::Menu(Window& a, Object& b) : window(a), root(b), options(_options) {
 	buildSatelliteList(root, "", _options.numPlanets);
 }
 
-void Menu::update(int dt) {
+void Menu::update(int dt, float width, float height) {
 
 	ImGui_ImplSdlGL3_NewFrame(window.getSDL_Window());
     ImGuiIO& io = ImGui::GetIO();	
@@ -37,7 +37,9 @@ void Menu::update(int dt) {
 	ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
 	ImGui::RadioButton("Close Scale", &scaleTo, 0);
 	
-	ImGui::Checkbox("Draw Orbits", &_options.drawOrbits);
+	ImGui::Checkbox("Draw Orbits", &_options.drawOrbits); ImGui::SameLine();
+	ImGui::Checkbox("Planet Labels", &_options.drawLabels);
+	
 
     if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing))
     {
@@ -75,6 +77,38 @@ void Menu::update(int dt) {
 	}
 	//End the window
 	ImGui::End();
+	
+	//Planet Labels
+	if(options.drawLabels) {
+		//Make a new transparent window that covers the whole screen and doesn't take user input
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(width, height));
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0, 0.0, 0.0, 0.0));
+		
+		ImGui::Begin("Overlay", NULL,
+		             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+		             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoInputs |
+		             ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing);
+		
+		//Loop through each planet and find where they are on the screen
+		//Then draw a label there
+		glm::vec4 screenPos;
+		for (const auto& pair : satelliteMap) {
+			//Multiply planet position by VP matrix
+			//No Model Matrix because planet position is already in world coordinates
+			screenPos = *Object::projectionMatrix *
+			            (*Object::viewMatrix * (glm::vec4(pair.second->position, 1.0)));
+			//If not on the screen
+			if (screenPos.w < 0) continue;
+			//Here we do height - because OpenGL's origin is at the bottom left of the screen and ImGui's is at the top left
+			ImGui::SetCursorPos(ImVec2(((screenPos.x) / screenPos.w + 1) * width / 2 + 5,
+			                           height - ((screenPos.y) / screenPos.w + 1) * height / 2 - 5));
+			ImGui::Text(pair.second->ctx.name.c_str());
+		}
+		
+		ImGui::End();
+		ImGui::PopStyleColor(1);
+	}
 	
 	updateScale(dt);
 }
