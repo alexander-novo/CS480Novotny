@@ -7,6 +7,7 @@ layout (location = 2) in vec3 normalM;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 modelViewMatrix;
 
 out vec3 positionW;
 out vec3 normalC;
@@ -16,14 +17,14 @@ out vec2 uvCoord;
 
 void main(void) {
     vec4 v = vec4(positionM, 1.0);
-    gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * v;
+    gl_Position = (projectionMatrix * modelViewMatrix) * v;
 
     //Vector from the vertex to the camera
-    vec3 positionC = (viewMatrix * modelMatrix * vec4(positionM ,1)).xyz;
+    vec3 positionC = (modelViewMatrix * vec4(positionM ,1)).xyz;
     eyeC = vec3(0,0,0) - positionC;
 
     // Normal of the the vertex, in camera space
-    normalC = (viewMatrix * modelMatrix * vec4(normalM,0)).xyz;
+    normalC = (modelViewMatrix * vec4(normalM,0)).xyz;
 
     uvCoord = uv;
 }

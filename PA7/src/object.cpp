@@ -130,9 +130,11 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
+	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
 	ctx.shader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
 	ctx.shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
 	ctx.shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	ctx.shader->uniformMatrix4fv("modelViewMatrix", 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
 	
 	//Send the material information
 	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);

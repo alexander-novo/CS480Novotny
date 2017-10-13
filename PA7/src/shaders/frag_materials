@@ -10,10 +10,6 @@ in vec3 lightDirC;
 // Output data
 out vec3 frag_color;
 
-// Values that stay constant for the whole mesh.
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-
 uniform vec3 MaterialDiffuseColor;
 uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;

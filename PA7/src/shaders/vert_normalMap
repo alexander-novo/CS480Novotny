@@ -9,6 +9,7 @@ layout (location = 4) in vec3 bitangentM;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 modelViewMatrix;
 
 out vec3 positionW;
 out vec3 eyeT;
@@ -18,27 +19,24 @@ out vec2 uvCoord;
 void main(void) {
     vec4 lightW = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 v = vec4(positionM, 1.0);
-    mat4 MVMatrix = viewMatrix * modelMatrix;
-    gl_Position = (projectionMatrix * MVMatrix) * v;
+    gl_Position = (projectionMatrix * modelViewMatrix) * v;
 
     positionW = (modelMatrix * vec4(positionM, 1.0)).xyz;
 
     // Normal of the the vertex, in camera space
-    vec3 normalC    = (MVMatrix * vec4(normalM, 0)).xyz;
-    vec3 tangentC   = (MVMatrix * vec4(tangentM, 0)).xyz;
-    vec3 bitangentC = (MVMatrix * vec4(bitangentM, 0)).xyz;
+    vec3 normalC    = (modelViewMatrix * vec4(normalM, 0)).xyz;
+    vec3 tangentC   = (modelViewMatrix * vec4(tangentM, 0)).xyz;
+    vec3 bitangentC = (modelViewMatrix * vec4(bitangentM, 0)).xyz;
 
     mat3 TBNMatrix  = transpose(mat3(tangentC, bitangentC, normalC));
 
-    vec3 positionC = (MVMatrix * vec4(positionM ,1)).xyz;
+    vec3 positionC = (modelViewMatrix * vec4(positionM ,1)).xyz;
     vec3 eyeC = (vec3(0,0,0) - positionC);
     eyeT = TBNMatrix * eyeC;
 
     // Vector that goes from the vertex to the light, in camera space. M is ommited because it's identity.
     vec3 lightPosC = (viewMatrix * lightW).xyz;
     lightDirT = TBNMatrix * (lightPosC + eyeC);
-
-
 
     uvCoord = uv;
 }
