@@ -70,6 +70,8 @@ Model* Model::load(std::string filename) {
 	
 	newModel->material = modelMaterial;
 	
+	newModel->initialised = false;
+	
 	//Now save this model for later in case we need to use it again
 	loadedModels[filename] = newModel;
 	
@@ -77,6 +79,48 @@ Model* Model::load(std::string filename) {
 }
 
 Model::Model(){}
+
+void Model::initGL() {
+	if(!initialised) {
+		glGenBuffers(1, &VB);
+		glBindBuffer(GL_ARRAY_BUFFER, VB);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertices.size(), &_vertices[0], GL_STATIC_DRAW);
+		
+		glGenBuffers(1, &IB);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), &_indices[0], GL_STATIC_DRAW);
+		
+		initialised = true;
+	}
+}
+
+void Model::drawModel() {
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	
+	//Now send vertices, uvs, and normals
+	glBindBuffer(GL_ARRAY_BUFFER, VB);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
+	
+	//Send all our face information
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
+	
+	//Now draw everything
+	glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+	
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
+	glDisableVertexAttribArray(4);
+}
 
 Texture* Texture::load(std::string filename) {
 	static std::unordered_map<std::string, Texture*> loadedTextures;

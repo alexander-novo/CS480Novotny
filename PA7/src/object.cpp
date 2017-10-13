@@ -26,18 +26,17 @@ Object::~Object() {
 }
 
 void Object::Init_GL() {
+	//Initialise shaders
 	orbitShader->Initialize();
+	ctx.shader->Initialize();
 	
-	glGenBuffers(1, &VB);
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * ctx.model->_vertices.size(), &ctx.model->_vertices[0], GL_STATIC_DRAW);
+	//Initialise models
+	ctx.model->initGL();
 	
-	glGenBuffers(1, &IB);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * ctx.model->_indices.size(), &ctx.model->_indices[0], GL_STATIC_DRAW);
-	
+	//Set aside a buffer for our orbit vertices
 	glGenBuffers(1, &OB);
 	
+	//Initialise textures
 	if(ctx.texture != nullptr) {
 		ctx.texture->initGL();
 	}
@@ -50,8 +49,6 @@ void Object::Init_GL() {
 	if(ctx.specularMap != nullptr) {
 		ctx.specularMap->initGL();
 	}
-	
-	ctx.shader->Initialize();
 	
 	//Now do the same for all our children
 	for(auto& child : _children) {
@@ -145,29 +142,6 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	//And light
 	ctx.shader->uniform1fv("lightPower", 1, &lightPower);
 	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	
-	if(ctx.normalMap != nullptr) {
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
-	}
-	
-	//Now send vertices, uvs, and normals
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
-	
-	if(ctx.normalMap != nullptr) {
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
-	}
-	
-	//Send all our face information
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	
 	//If we have a texture, use it
 	if(ctx.texture != nullptr) {
 		ctx.texture->bind(GL_COLOR_TEXTURE);
@@ -188,18 +162,9 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	
 	//Timer for shader
 	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
-
-	//Now draw everything
-	glDrawElements(GL_TRIANGLES, ctx.model->_indices.size(), GL_UNSIGNED_INT, 0);
 	
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	
-	if(ctx.normalMap != nullptr) {
-		glDisableVertexAttribArray(3);
-		glDisableVertexAttribArray(4);
-	}
+	//Now draw our planet
+	ctx.model->drawModel();
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	

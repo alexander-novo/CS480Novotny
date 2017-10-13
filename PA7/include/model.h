@@ -41,8 +41,16 @@ class Model {
 		
 		Material material;
 		
+		void initGL();
+		void drawModel();
+		
 	private:
 		Model();
+		
+		GLuint VB;
+		GLuint IB;
+		
+		bool initialised;
 		
 		std::unordered_map<std::string, Material> materialList;
 };
