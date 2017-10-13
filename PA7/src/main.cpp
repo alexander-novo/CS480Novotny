@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 		
 		std::ofstream configFile(argv[1]);
 		
-		config >> configFile;
+		configFile << config.dump(4);
 	}
 
 	// If there were no arguments, delete the argument we created
