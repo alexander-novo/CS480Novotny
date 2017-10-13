@@ -40,7 +40,10 @@ struct Vertex {
 	glm::vec2 uv;
 	glm::vec3 normal;
 	
-	Vertex(glm::vec3 v, glm::vec2 u, glm::vec3 n) : vertex(v), uv(u), normal(n) {}
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
+	
+	Vertex(glm::vec3 v, glm::vec2 u, glm::vec3 n, glm::vec3 t, glm::vec3 b) : vertex(v), uv(u), normal(n), tangent(t), bitangent(b) {}
 };
 
 #endif /* GRAPHICS_HEADERS_H */

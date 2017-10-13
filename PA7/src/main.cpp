@@ -168,6 +168,20 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		ctx.altTexture = nullptr;
 	}
 	
+	if(config.find("normal-texture") != config.end()) {
+		filename = config["normal-texture"];
+		ctx.normalMap = Texture::load("textures/" + filename);
+	} else {
+		ctx.normalMap = nullptr;
+	}
+	
+	if(config.find("specular-texture") != config.end()) {
+		filename = config["specular-texture"];
+		ctx.specularMap = Texture::load("textures/" + filename);
+	} else {
+		ctx.specularMap = nullptr;
+	}
+	
 	//Check if the planet has a special shader
 	if(config.find("shaders") != config.end()) {
 		std::string vertexLocation = config["shaders"]["vertex"];

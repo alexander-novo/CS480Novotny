@@ -13,13 +13,17 @@
 #define TUTORIAL_MODEL_H
 
 //Set up which texture channels to use with which type of texture
-#define GL_COLOR_TEXTURE  GL_TEXTURE0
-#define GL_ALT_TEXTURE    GL_TEXTURE1
-#define GL_NORMAL_TEXTURE GL_TEXTURE2
+#define GL_COLOR_TEXTURE    GL_TEXTURE0
+#define GL_ALT_TEXTURE      GL_TEXTURE1
+#define GL_ALT_TEXTURE2     GL_TEXTURE2
+#define GL_NORMAL_TEXTURE   GL_TEXTURE3
+#define GL_SPECULAR_TEXTURE GL_TEXTURE4
 //And the offset (for sending to the sampler)
-#define GL_COLOR_TEXTURE_OFFSET  0
-#define GL_ALT_TEXTURE_OFFSET    1
-#define GL_NORMAL_TEXTURE_OFFSET 2
+#define GL_COLOR_TEXTURE_OFFSET    0
+#define GL_ALT_TEXTURE_OFFSET      1
+#define GL_ALT_TEXTURE2_OFFSET     2
+#define GL_NORMAL_TEXTURE_OFFSET   3
+#define GL_SPECULAR_TEXTURE_OFFSET 4
 
 class Model {
 	public:

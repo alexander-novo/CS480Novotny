@@ -31,6 +31,7 @@ class Object {
 			Texture* texture = nullptr;
 			Texture* altTexture = nullptr;
 			Texture* normalMap = nullptr;
+			Texture* specularMap = nullptr;
 			Shader* shader;
 			
 			bool isLightSource = false;

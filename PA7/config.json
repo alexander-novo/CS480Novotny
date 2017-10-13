@@ -69,7 +69,7 @@
           "tilt": 0
         },
         "shaders" : {
-          "vertex": "vert_materials",
+          "vertex": "vert_normalMap",
           "fragment": "frag_earth"
         },
         "axial-tilt": 23.439281,
@@ -77,6 +77,8 @@
         "model": "Planet.obj",
         "texture": "2k_earth_daymap2.jpg",
         "alt-texture": "2k_earth_nightmap.jpg",
+        "normal-texture": "2k_earth_normal_map.tif",
+        "specular-texture": "2k_earth_specular_map.tif",
         "satellites": [
           {
             "name": "The Moon",

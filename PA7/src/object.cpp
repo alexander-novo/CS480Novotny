@@ -44,6 +44,12 @@ void Object::Init_GL() {
 	if(ctx.altTexture != nullptr) {
 		ctx.altTexture->initGL();
 	}
+	if(ctx.normalMap != nullptr) {
+		ctx.normalMap->initGL();
+	}
+	if(ctx.specularMap != nullptr) {
+		ctx.specularMap->initGL();
+	}
 	
 	ctx.shader->Initialize();
 	
@@ -143,11 +149,21 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	
+	if(ctx.normalMap != nullptr) {
+		glEnableVertexAttribArray(3);
+		glEnableVertexAttribArray(4);
+	}
+	
 	//Now send vertices, uvs, and normals
 	glBindBuffer(GL_ARRAY_BUFFER, VB);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+	
+	if(ctx.normalMap != nullptr) {
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
+	}
 	
 	//Send all our face information
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
@@ -161,7 +177,15 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 		ctx.altTexture->bind(GL_ALT_TEXTURE);
 		ctx.shader->uniform1i("gAltSampler", GL_ALT_TEXTURE_OFFSET);
 	}
-
+	if(ctx.normalMap != nullptr) {
+		ctx.normalMap->bind(GL_NORMAL_TEXTURE);
+		ctx.shader->uniform1i("gNormalSampler", GL_NORMAL_TEXTURE_OFFSET);
+	}
+	if(ctx.specularMap != nullptr) {
+		ctx.specularMap->bind(GL_SPECULAR_TEXTURE);
+		ctx.shader->uniform1i("gSpecularSampler", GL_SPECULAR_TEXTURE_OFFSET);
+	}
+	
 	//Timer for shader
 	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
 
@@ -171,6 +195,11 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	
+	if(ctx.normalMap != nullptr) {
+		glDisableVertexAttribArray(3);
+		glDisableVertexAttribArray(4);
+	}
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	

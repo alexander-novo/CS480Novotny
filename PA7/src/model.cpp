@@ -22,18 +22,26 @@ Model* Model::load(std::string filename) {
 	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
 		aiVector3D& vertex = mesh->mVertices[vertexIndex];
 		aiVector3D& normal = mesh->mNormals[vertexIndex];
-		// Guard against objects with no UV
-		if(mesh->mTextureCoords[0])
-		{
-			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];	
-			newModel->_vertices.push_back({{vertex.x, vertex.y, vertex.z}, {uv.x, uv.y}, {normal.x, normal.y, normal.z}});
-		}
-		else
-		{
-			newModel->_vertices.push_back({{vertex.x, vertex.y, vertex.z}, {0, 0}, {normal.x, normal.y, normal.z}});
+		aiVector3D uv = {0.0, 0.0, 0.0};
+		aiVector3D tangent = {0.0, 0.0, 0.0};
+		aiVector3D bitangent = {0.0, 0.0, 0.0};
+		
+		if(mesh->HasTextureCoords(0)) {
+			uv = mesh->mTextureCoords[0][vertexIndex];
 		}
 		
+		if(mesh->HasTangentsAndBitangents()) {
+			tangent = mesh->mTangents[vertexIndex];
+			bitangent = mesh->mBitangents[vertexIndex];
+		}
 		
+		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
+		                  {uv.x, uv.y},
+		                  {normal.x, normal.y, normal.z},
+		                  {tangent.x, tangent.y, tangent.z},
+		                  {bitangent.x, bitangent.y, bitangent.z}};
+		
+		newModel->_vertices.push_back(newVert);
 	}
 	
 	//Now our indices
