@@ -22,7 +22,7 @@ void Menu::update(int dt, float width, float height) {
 	
 	//Start a new window called "Controls"
 	//On first seeing this window, make it 650 x 400, but let the user resize it later
-	ImGui::SetNextWindowSize(ImVec2(550, 220), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(550, 300), ImGuiCond_FirstUseEver);
     // ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing); 
 	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
@@ -44,15 +44,20 @@ void Menu::update(int dt, float width, float height) {
     if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing))
     {
         ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
-    	ImGui::BeginChild("Planet Controls", ImVec2(0, 200), true, ImGuiWindowFlags_NoScrollbar);
+    	ImGui::BeginChild("Planet Controls", ImVec2(0, 145), true, ImGuiWindowFlags_NoScrollbar);
 
     	
     	//Get information of whatever planet we're currently looking at
     	Object::Context& ctx = getPlanet(_options.planetSelector)->ctx;
     	const Object::Context& originalCtx = getPlanet(_options.planetSelector)->originalCtx;
     	
-    	//Drop down planet list
-    	ImGui::Combo("Select Satellite", &_options.planetSelector, satelliteList.c_str());
+        //Drop down planet list
+        //Change the planet we're looking at
+        if(ImGui::Combo("Select Satellite", &_options.planetSelector, satelliteList.c_str()))
+        {
+             _options.lookingAt = _options.planetSelector;
+        };
+        
     	
     	//Time Scale slider and reset (logarithmic slider [base 10])
     	ImGui::SliderFloat("Time Scale", &ctx.timeScale, -1000.0f, 1000.0, "%.3f", 10.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
@@ -69,9 +74,6 @@ void Menu::update(int dt, float width, float height) {
     	if(ImGui::Button("Reset##spinScale")) ctx.spinScale = originalCtx.spinScale, ctx.spinDir = originalCtx.spinDir;
     	ImGui::RadioButton("cw##spin", &ctx.spinDir, -1); ImGui::SameLine();
     	ImGui::RadioButton("ccw##spin", &ctx.spinDir, 1);
-    	
-    	//Change the planet we're looking at
-    	if(ImGui::Button("Focus")) _options.lookingAt = _options.planetSelector;
     	
     	ImGui::EndChild();
 	}
