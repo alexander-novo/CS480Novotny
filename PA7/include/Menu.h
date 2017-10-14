@@ -11,7 +11,7 @@
 #define MIN_MOVE_SCALE  0.0f
 #define MAX_MOVE_SCALE  5.0f
 
-#define CLOSE_SCALE 0.43f
+#define CLOSE_SCALE 0.5f
 
 class Object;
 
