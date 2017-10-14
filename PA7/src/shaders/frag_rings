@@ -10,9 +10,9 @@ in vec3 lightDirC;
 // Output data
 out vec4 frag_color;
 
-uniform vec3 MaterialDiffuseColor;
-uniform vec3 MaterialAmbientColor;
-uniform vec3 MaterialSpecularColor;
+uniform vec4 MaterialDiffuseColor;
+uniform vec4 MaterialAmbientColor;
+uniform vec4 MaterialSpecularColor;
 
 uniform vec3 lightW3;
 
@@ -22,18 +22,18 @@ uniform sampler2D gSampler;
 
 void main(void) {
     //What color
-    vec3 lightColor = vec3(1.0, 1.0, 1.0);
+    vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0);
 
     // Normal of the computed fragment, in camera space
     vec3 n = normalize( normalC );
     // Direction of the light (from the fragment to the light)
     vec3 l = normalize( lightDirC );
 
-    vec3 MaterialDiffuseTexture2d;
-    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
+    vec4 MaterialDiffuseTexture2d;
+    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).rgba;
 
     //Start with a basis of the diffuse color. This will later become our texture
-    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
+    vec4 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
 
     //How far away we are - light depends on distance
     float distance = length(lightW3 - positionW);
@@ -54,13 +54,12 @@ void main(void) {
     //  - Looking elsewhere -> < 1
     float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-    frag_color.rgb = MaterialDiffuseTexture2d;
+    frag_color.rgba = MaterialDiffuseTexture2d;
         // Ambient : simulates indirect lighting
-//        materialAmbientModified +
+        materialAmbientModified +
         // Diffuse : "color" of the object
-//        MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
+        MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
-//        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
-    frag_color.a = .5;
+        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
 }
 
