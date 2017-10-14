@@ -187,15 +187,21 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	//Timer for shader
 	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
 	
+	//Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	//Now draw our planet
 	ctx.model->drawModel();
-	
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(lightPower, drawOrbits);
 	}
+
+	glDisable(GL_BLEND);
 }
 
 void Object::drawOrbit() const {
