@@ -144,7 +144,68 @@
                     "year": 103944
                 },
                 "radius": 71492000,
-                "satellites": [],
+                "satellites": [
+                    {
+                      "axial-tilt": 0,
+                      "name": "Io",
+                      "radius": 1821500,
+                      "orbit": {
+                        "distance": 9391000,
+                        "tilt": 0,
+                        "year": 1.769138
+                      },
+                      "day": 1.769138,
+                      "spins": "ccw",
+                      "texture": "2k_moon.jpg",
+                      "model": "Planet.obj",
+                      "satellites": []
+                    },
+                    {
+                      "axial-tilt": 0,
+                      "name": "Europa",
+                      "radius": 1560800,
+                      "orbit": {
+                        "distance": 23537000,
+                        "tilt": 0,
+                        "year": 3.551181
+                      },
+                      "day": 3.551181,
+                      "spins": "ccw",
+                      "texture": "2k_moon.jpg",
+                      "model": "Planet.obj",
+                      "satellites": []
+                    },
+                    {
+                      "axial-tilt": 0,
+                      "name": "Ganymede",
+                      "radius": 2631200,
+                      "orbit": {
+                        "distance": 9391000,
+                        "tilt": 0,
+                        "year": 7.154553
+                      },
+                      "day": 7.154553,
+                      "spins": "ccw",
+                      "texture": "2k_moon.jpg",
+                      "model": "Planet.obj",
+                      "satellites": []
+                    },
+                    {
+                      "axial-tilt": 0,
+                      "name": "Callisto",
+                      "radius": 2410300,
+                      "orbit": {
+                        "distance": 23537000,
+                        "tilt": 0,
+                        "year": 16.689017
+                      },
+                      "day": 16.689017,
+                      "spins": "ccw",
+                      "texture": "2k_moon.jpg",
+                      "model": "Planet.obj",
+                      "satellites": []
+                    }
+                ],
                 "spins": null,
                 "texture": "2k_jupiter.jpg"
             },
