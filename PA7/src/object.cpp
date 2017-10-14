@@ -8,16 +8,8 @@ glm::vec3 const * Object::globalOffset;
 Menu* Object::menu;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
+	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
 	time.spin = 0;
-	//Prevent Saturn from Starting away from its rings
-	if(a.name == "Saturn" || a.name == "Saturn Rings" )
-	{
-		time.move = 0;
-	}
-	else
-	{
-		time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;	
-	}
 	_position = {0.0, 0.0, 0.0};
 }
 
@@ -35,6 +27,12 @@ void Object::Init_GL() {
 	
 	//Initialise models
 	ctx.model->initGL();
+
+	if(ctx.hasRings)
+	{
+		ctx.ringsShader->Initialize();
+		ctx.ringsModel->initGL();	
+	}
 	
 	//Set aside a buffer for our orbit vertices
 	glGenBuffers(1, &OB);
@@ -51,6 +49,9 @@ void Object::Init_GL() {
 	}
 	if(ctx.specularMap != nullptr) {
 		ctx.specularMap->initGL();
+	}
+	if(ctx.ringsTexture != nullptr) {
+		ctx.ringsTexture->initGL();
 	}
 	
 	//Now do the same for all our children
@@ -145,6 +146,10 @@ const glm::mat4& Object::GetModel() const {
 
 void Object::Render(float lightPower, bool drawOrbits) const {
 	if(drawOrbits) drawOrbit();
+	if(ctx.hasRings)
+	{
+		RenderRings(lightPower);	
+	}
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -196,11 +201,52 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
+	glDisable(GL_BLEND);
+
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(lightPower, drawOrbits);
 	}
 
+
+}
+
+void Object::RenderRings(float lightPower) const {
+	ctx.ringsShader->Enable();
+
+	//Send our shaders the MVP matrices
+	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
+	ctx.ringsShader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
+	ctx.ringsShader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
+	ctx.ringsShader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	ctx.ringsShader->uniformMatrix4fv("modelViewMatrix", 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
+	
+	//Send the material information
+	ctx.ringsShader->uniform3fv("MaterialAmbientColor", 1, &ctx.ringsModel->material.ambient.r);
+	ctx.ringsShader->uniform3fv("MaterialDiffuseColor", 1, &ctx.ringsModel->material.diffuse.r);
+	ctx.ringsShader->uniform3fv("MaterialSpecularColor", 1, &ctx.ringsModel->material.specular.r);
+	
+	glm::vec3 oppOffset = *Object::globalOffset;
+	oppOffset *= -1;
+	ctx.ringsShader->uniform3fv("lightW3", 1, &oppOffset.x);
+	
+	//And light
+	ctx.ringsShader->uniform1fv("lightPower", 1, &lightPower);
+	
+	//If we have a texture, use it
+	if(ctx.ringsTexture != nullptr) {
+		ctx.ringsTexture->bind(GL_COLOR_TEXTURE);
+		ctx.ringsShader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
+	}
+
+	//Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//Now draw our planet
+	ctx.ringsModel->drawModel();
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_BLEND);
 }
 

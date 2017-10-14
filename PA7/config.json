@@ -156,7 +156,7 @@
                       },
                       "day": 1.769138,
                       "spins": "ccw",
-                      "texture": "2k_moon.jpg",
+                      "texture": "2k_moon_tex1.jpg",
                       "model": "Planet.obj",
                       "satellites": []
                     },
@@ -171,7 +171,7 @@
                       },
                       "day": 3.551181,
                       "spins": "ccw",
-                      "texture": "2k_moon.jpg",
+                      "texture": "2k_moon_tex2.jpg",
                       "model": "Planet.obj",
                       "satellites": []
                     },
@@ -186,7 +186,7 @@
                       },
                       "day": 7.154553,
                       "spins": "ccw",
-                      "texture": "2k_moon.jpg",
+                      "texture": "2k_moon_tex3.jpg",
                       "model": "Planet.obj",
                       "satellites": []
                     },
@@ -201,7 +201,7 @@
                       },
                       "day": 16.689017,
                       "spins": "ccw",
-                      "texture": "2k_moon.jpg",
+                      "texture": "2k_moon_tex4.jpg",
                       "model": "Planet.obj",
                       "satellites": []
                     }
@@ -219,29 +219,19 @@
                     "tilt": 2.5,
                     "year": 257928
                 },
+                "rings": {
+                    "model": "Rings.obj",
+                    "shaders": {
+                        "fragment": "frag_rings",
+                        "vertex": "vert_materials"
+                    },
+                    "texture": "2k_saturn_ring.png"
+
+                },
                 "radius": 60268000,
                 "satellites": [],
                 "spins": null,
                 "texture": "2k_saturn.jpg"
-            },
-            {
-                "axial-tilt": 26.73,
-                "day": 0,
-                "model": "Rings.obj",
-                "name": "Saturn Rings",
-                "orbit": {
-                    "distance": 1433500000000,
-                    "tilt": 2.5,
-                    "year": 257928
-                },
-                "radius": 60268000,
-                "satellites": [],
-                "shaders": {
-                    "fragment": "frag_rings",
-                    "vertex": "vert_materials"
-                },
-                "spins": null,
-                "texture": "2k_saturn_ring.png"
             },
             {
                 "axial-tilt": 97.77,

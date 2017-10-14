@@ -25,17 +25,22 @@ class Object {
 			
 			int moveDir = 1;
 			int spinDir = -1;
+
+			bool hasRings = false;
 			
 			std::string name = "Planet";
 			std::string vertexShader;
 			std::string fragmentShader;
 			
 			Model* model;
+			Model* ringsModel = nullptr;
+			Texture* ringsTexture = nullptr;
 			Texture* texture = nullptr;
 			Texture* altTexture = nullptr;
 			Texture* normalMap = nullptr;
 			Texture* specularMap = nullptr;
 			Shader* shader;
+			Shader* ringsShader;
 			
 			bool isLightSource = false;
 			
@@ -112,6 +117,7 @@ class Object {
 		void updateOrbit(float scaleExp, float scaleMult);
 		void calcOrbit(float scaleExp, float scaleMult, unsigned numDashes, GLuint buffer);
 		void drawOrbit() const;
+		void RenderRings(float lightPower) const;
 };
 
 #endif /* OBJECT_H */
