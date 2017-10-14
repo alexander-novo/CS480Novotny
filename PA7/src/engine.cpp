@@ -37,6 +37,8 @@ bool Engine::Initialize() {
 		return false;
 	}
 	
+	Object::menu = m_menu;
+	
 	// Set the time
 	m_currentTimeMillis = GetCurrentTimeMillis();
 	
@@ -57,8 +59,12 @@ void Engine::Run() {
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
 		
+		//Make certain whatever we're looking at is at origin
+		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
+		
 		// Update planet positions
 		m_graphics->Update(m_DT);
+		
 		// Update menu options and labels
 		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
 		

@@ -13,6 +13,8 @@
 
 #define CLOSE_SCALE 0.43f
 
+class Object;
+
 class Menu {
 	public:
 		//All the different options the menu changes

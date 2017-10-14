@@ -6,6 +6,9 @@
 #include "graphics_headers.h"
 #include "model.h"
 #include "shader.h"
+#include "Menu.h"
+
+class Menu;
 
 class Object {
 	public:
@@ -72,7 +75,13 @@ class Object {
 		static glm::mat4* viewMatrix;
 		static glm::mat4* projectionMatrix;
 		
+		//The shader that every orbit should use
 		static Shader* orbitShader;
+		
+		//Keeps track of what to shift every planet's position by (to keep what we're looking at at the center)
+		static glm::vec3 const * globalOffset;
+		
+		static Menu* menu;
 	
 	private:
 		//Timing information for keeping track of orbits and such
@@ -90,7 +99,7 @@ class Object {
 		struct OrbitInfo {
 			glm::vec3 lastParentPos;
 			float lastScale;
-			
+			bool lastFocus;
 		} orbitInfo;
 		
 		glm::vec3 _position;
@@ -98,9 +107,10 @@ class Object {
 		//List of satellites
 		std::vector<Object*> _children;
 		
-		std::vector<glm::vec3> orbitVertices;
+		unsigned numOrbitVertices;
 		
 		void updateOrbit(float scaleExp, float scaleMult);
+		void calcOrbit(float scaleExp, float scaleMult, unsigned numDashes, GLuint buffer);
 		void drawOrbit() const;
 };
 

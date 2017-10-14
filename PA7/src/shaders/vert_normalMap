@@ -11,13 +11,15 @@ uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 modelViewMatrix;
 
+uniform vec3 lightW3;
+
 out vec3 positionW;
 out vec3 eyeT;
 out vec3 lightDirT;
 out vec2 uvCoord;
 
 void main(void) {
-    vec4 lightW = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 lightW = vec4(lightW3, 1.0);
     vec4 v = vec4(positionM, 1.0);
     gl_Position = (projectionMatrix * modelViewMatrix) * v;
 

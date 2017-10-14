@@ -97,7 +97,7 @@ void Menu::update(int dt, float width, float height) {
 			//Multiply planet position by VP matrix
 			//No Model Matrix because planet position is already in world coordinates
 			screenPos = *Object::projectionMatrix *
-			            (*Object::viewMatrix * (glm::vec4(pair.second->position, 1.0)));
+			            (*Object::viewMatrix * (glm::vec4(pair.second->position - *Object::globalOffset, 1.0)));
 			//If not on the screen
 			if (screenPos.w < 0) continue;
 			//Here we do height - because OpenGL's origin is at the bottom left of the screen and ImGui's is at the top left

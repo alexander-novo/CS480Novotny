@@ -14,13 +14,13 @@ uniform vec3 MaterialDiffuseColor;
 uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
+uniform vec3 lightW3;
+
 uniform float lightPower;
 
 uniform sampler2D gSampler;
 
 void main(void) {
-    //Where the light is in the world
-    vec3 lightW = vec3(0.0, 0.0, 0.0);
     //What color
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
@@ -36,7 +36,7 @@ void main(void) {
     vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
 
     //How far away we are - light depends on distance
-    float distance = length(lightW - positionW);
+    float distance = length(lightW3 - positionW);
 
     // Cosine of the angle between the normal and the light direction
     // clamped to a minimum of 0

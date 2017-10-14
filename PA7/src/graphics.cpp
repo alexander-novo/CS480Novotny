@@ -3,6 +3,7 @@
 Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), lightPower(lightStrength), m_menu(menu) {
 	Object::viewMatrix = &view;
 	Object::projectionMatrix = &projection;
+	Object::globalOffset = &m_cube->position;
 }
 
 Graphics::~Graphics() {
@@ -80,8 +81,6 @@ void Graphics::calculateCamera() {
 	Object* lookingAt = m_menu.getPlanet(m_menu.options.lookingAt);
 	Object* parent = lookingAt->parent;
 	
-	
-	
 	//Keep track of how large whatever we're looking at is
 	//float scale = sqrt(lookingAt->ctx.scale) * 250;
 	//float scale = lookingAt->ctx.scale * 15 * lookingAt->ctx.scaleMultiplier;
@@ -97,11 +96,9 @@ void Graphics::calculateCamera() {
 		backgroundVec = lookVec + glm::vec3(0.0, 0.0, -5.0);
 	}
 	
-	
 	//Now do some math to find where to place the camera
 	//First find the direction pointing from what we're orbiting to what we're looking at
-	backgroundVec = lookVec - backgroundVec;
-	backgroundVec = glm::normalize(backgroundVec);
+	backgroundVec = glm::normalize(lookVec - backgroundVec);
 	
 	glm::vec3 crossVec = glm::normalize(glm::cross(glm::vec3(backgroundVec.x, backgroundVec.y, backgroundVec.z), glm::vec3(0.0, 1.0, 0.0)));
 	
@@ -112,6 +109,9 @@ void Graphics::calculateCamera() {
 	backgroundVec *= scale * m_menu.options.zoom;
 	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 	backgroundVec += lookVec;
+	
+	backgroundVec -= *Object::globalOffset;
+	lookVec -= *Object::globalOffset;
 	
 	//Also let's try and look down from above what we're looking at
 	view = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z), //Eye Position

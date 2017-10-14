@@ -1,8 +1,11 @@
+#include <Menu.h>
 #include "object.h"
 
 glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
 Shader* Object::orbitShader;
+glm::vec3 const * Object::globalOffset;
+Menu* Object::menu;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
 	time.spin = 0;
@@ -57,9 +60,9 @@ void Object::Init_GL() {
 }
 
 void Object::Update(float dt, float scaleExp, bool drawOrbits) {
-	float timeMod = dt / 1000.0f * ctx.timeScale;
-	float scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
-	float scale = scaleMult * pow(ctx.scale, scaleExp);
+	double timeMod = dt / 1000.0f * ctx.timeScale;
+	double scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
+	double scale = scaleMult * pow(ctx.scale, scaleExp);
 	
 	//Update the timer
 	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
@@ -68,15 +71,15 @@ void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	if(parent != nullptr) {
 		//Move into place
 		//Add the scales to the distance to make certain they never overlap
-		float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+		double radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
 		
-		float cosTheta = cos(-time.move);
+		double cosTheta = cos(-time.move);
 		_position = {parent->position.x + radius * cos(ctx.orbitTilt) * cosTheta,
 		             parent->position.y + radius * sin(ctx.orbitTilt) * cosTheta,
 		             parent->position.z + radius * sin(-time.move)};
-		modelMat = glm::translate(position);
+		modelMat = glm::translate(position - *globalOffset);
 	} else {
-		modelMat = glm::mat4(1.0);
+		modelMat = glm::translate(glm::vec3(0) - *globalOffset);
 	}
 	
 	//Update all satellites after moving, so they follow us around
@@ -97,28 +100,43 @@ void Object::updateOrbit(float scaleExp, float scaleMult) {
 	
 	const glm::vec3& parentPosition = parent->position;
 	
-	if((parentPosition == orbitInfo.lastParentPos && scaleExp == orbitInfo.lastScale)) return;
+	if(parentPosition == orbitInfo.lastParentPos
+	    && scaleExp == orbitInfo.lastScale
+	    && (menu->getPlanet(menu->options.lookingAt) == this) == orbitInfo.lastFocus) return;
 	
 	orbitInfo.lastParentPos = parentPosition;
 	orbitInfo.lastScale = scaleExp;
+	orbitInfo.lastFocus = (menu->getPlanet(menu->options.lookingAt) == this);
 	
-	float radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
-	double thetaStep = M_PI / 300;
+	int numDashes = 600;
+	if(orbitInfo.lastFocus) {
+		numDashes = 100 / pow(ctx.moveScale, scaleExp);
+	}
+	calcOrbit(scaleExp, scaleMult, numDashes, OB);
+}
+
+void Object::calcOrbit(float scaleExp, float scaleMult, unsigned numDashes, GLuint buffer) {
+	const glm::vec3& parentPosition = parent->position;
+	
+	double radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
+	double thetaStep = M_PI / numDashes;
 	double rCosPhi = radius * cos(ctx.orbitTilt);
 	double rSinPhi = radius * sin(ctx.orbitTilt);
 	double theta = 0;
 	
-	orbitVertices.clear();
+	numOrbitVertices = numDashes * 2;
+	std::vector<glm::vec3> vertexList(numOrbitVertices);
 	
-	for(int i = 0; i * thetaStep < M_PI * 2; i++){
+	int i;
+	for(i = 0; i < numOrbitVertices; i++){
 		theta = i * thetaStep;
-		orbitVertices.push_back(glm::vec3(parentPosition.x + rCosPhi * cos(theta),
-		                                  parentPosition.y + rSinPhi * cos(theta),
-		                                  parentPosition.z + radius * sin(theta)));
+		vertexList[i] = glm::vec3(parentPosition.x + rCosPhi * cos(theta),
+		                          parentPosition.y + rSinPhi * cos(theta),
+		                          parentPosition.z + radius * sin(theta));
 	}
 	
-	glBindBuffer(GL_ARRAY_BUFFER, OB);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * orbitVertices.size(), &orbitVertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * numOrbitVertices, &vertexList[0], GL_STATIC_DRAW);
 }
 
 const glm::mat4& Object::GetModel() const {
@@ -140,6 +158,10 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);
 	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.model->material.diffuse.r);
 	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.model->material.specular.r);
+	
+	glm::vec3 oppOffset = *Object::globalOffset;
+	oppOffset *= -1;
+	ctx.shader->uniform3fv("lightW3", 1, &oppOffset.x);
 	
 	//And light
 	ctx.shader->uniform1fv("lightPower", 1, &lightPower);
@@ -183,13 +205,15 @@ void Object::drawOrbit() const {
 	orbitShader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
 	orbitShader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 	
+	orbitShader->uniform3fv("globalOffset", 1, &Object::globalOffset->x);
+	
 	glEnableVertexAttribArray(0);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, OB);
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 	
-	glDrawArrays(GL_LINES, 0, orbitVertices.size());
+	glDrawArrays(GL_LINES, 0, numOrbitVertices);
 	
 	glDisableVertexAttribArray(0);
 }
