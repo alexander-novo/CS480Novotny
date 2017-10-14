@@ -54,13 +54,13 @@ void main(void) {
     //  - Looking elsewhere -> < 1
     float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-    frag_color.rgb =
+    frag_color.rgb = 
         // Ambient : simulates indirect lighting
         materialAmbientModified +
         // Diffuse : "color" of the object
         MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
         MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
-    frag_color.a = 1;
+    frag_color.a = .3;
 }
 

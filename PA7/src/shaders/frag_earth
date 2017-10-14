@@ -7,7 +7,7 @@ in vec3 eyeT;
 in vec3 lightDirT;
 
 // Output data
-out vec3 frag_color;
+out vec4 frag_color;
 
 // Values that stay constant for the whole mesh.
 uniform mat4 modelMatrix;
@@ -60,7 +60,7 @@ void main(void) {
         //  - Looking elsewhere -> < 1
         float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-        frag_color =
+        frag_color.rgb =
             // Ambient : simulates indirect lighting
             materialAmbientModified +
             // Diffuse : "color" of the object
@@ -72,11 +72,12 @@ void main(void) {
             cosTheta += 0.05;
             cosTheta *= 10;
 
-            frag_color *= cosTheta;
-            frag_color += texture2D(gAltSampler, uvCoord.st).xyz * (1 - cosTheta);
+            frag_color.rgb *= cosTheta;
+            frag_color.rgb += texture2D(gAltSampler, uvCoord.st).xyz * (1 - cosTheta);
         }
     }  else {
-        frag_color = texture2D(gAltSampler, uvCoord.st).xyz;
+        frag_color.rgb = texture2D(gAltSampler, uvCoord.st).xyz;
     }
+    frag_color.a = 1;
 }
 
