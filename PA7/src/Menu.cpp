@@ -105,7 +105,8 @@ void Menu::update(int dt, float width, float height) {
 			//Here we do height - because OpenGL's origin is at the bottom left of the screen and ImGui's is at the top left
 			ImGui::SetCursorPos(ImVec2(((screenPos.x) / screenPos.w + 1) * width / 2 + 5,
 			                           height - ((screenPos.y) / screenPos.w + 1) * height / 2 - 5));
-			ImGui::Text(pair.second->ctx.name.c_str());
+
+            ImGui::Text("%s", pair.second->ctx.name.c_str());
 		}
 		
 		ImGui::End();
