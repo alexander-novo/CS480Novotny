@@ -17,6 +17,7 @@ uniform vec3 MaterialSpecularColor;
 uniform vec3 lightW3;
 
 uniform float lightPower;
+uniform float shininess;
 
 uniform sampler2D gSampler;
 
@@ -60,7 +61,7 @@ void main(void) {
         // Diffuse : "color" of the object
         MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
-        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,5) / distance;
+        MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,shininess) / distance;
     frag_color.a = 1;
 }
 

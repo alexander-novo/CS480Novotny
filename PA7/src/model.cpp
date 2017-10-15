@@ -68,6 +68,8 @@ Model* Model::load(std::string filename) {
 	modelMaterial.diffuse = {diffuseColor.r, diffuseColor.g, diffuseColor.b};
 	modelMaterial.specular = {specularColor.r, specularColor.g, specularColor.b};
 	
+	material->Get(AI_MATKEY_SHININESS, modelMaterial.shininess);
+	
 	newModel->material = modelMaterial;
 	
 	newModel->initialised = false;

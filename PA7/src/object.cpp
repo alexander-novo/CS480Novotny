@@ -163,6 +163,7 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);
 	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.model->material.diffuse.r);
 	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.model->material.specular.r);
+	ctx.shader->uniform1fv("shininess", 1, &ctx.model->material.shininess);
 	
 	glm::vec3 oppOffset = *Object::globalOffset;
 	oppOffset *= -1;
@@ -225,6 +226,7 @@ void Object::RenderRings(float lightPower) const {
 	ctx.ringsShader->uniform3fv("MaterialAmbientColor", 1, &ctx.ringsModel->material.ambient.r);
 	ctx.ringsShader->uniform3fv("MaterialDiffuseColor", 1, &ctx.ringsModel->material.diffuse.r);
 	ctx.ringsShader->uniform3fv("MaterialSpecularColor", 1, &ctx.ringsModel->material.specular.r);
+	ctx.shader->uniform1fv("shininess", 1, &ctx.model->material.shininess);
 	
 	glm::vec3 oppOffset = *Object::globalOffset;
 	oppOffset *= -1;

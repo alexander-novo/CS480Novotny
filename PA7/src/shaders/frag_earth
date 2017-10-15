@@ -20,6 +20,7 @@ uniform vec3 MaterialSpecularColor;
 uniform vec3 lightW3;
 
 uniform float lightPower;
+uniform float shininess;
 
 uniform sampler2D gSampler;
 uniform sampler2D gAltSampler;
@@ -66,7 +67,7 @@ void main(void) {
             // Diffuse : "color" of the object
             MaterialDiffuseTexture2d * lightColor * lightPower * abs(cosTheta) / distance +
             // Specular : reflective highlight, like a mirror
-            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * pow(cosAlpha,5) / distance;
+            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * pow(cosAlpha,20) / distance;
 
         if(cosTheta <= 0.05) {
             cosTheta += 0.05;

@@ -132,24 +132,18 @@
           "year": 257928,
           "tilt": 2.5
         },
+        "rings": {
+          "model": "Rings.obj",
+          "shaders": {
+            "fragment": "frag_rings",
+            "vertex": "vert_materials"
+          },
+          "texture": "2k_saturn_ring.png"
+        },
         "axial-tilt": 26.73,
         "day": 10.7,
         "model": "Planet.obj",
         "texture": "2k_saturn.jpg",
-        "satellites": []
-      },
-      {
-        "name": "Saturn Rings",
-        "radius": 60268000,
-        "orbit": {
-          "distance": 1433500000000,
-          "year": 257928,
-          "tilt": 2.5
-        },
-        "axial-tilt": 26.73,
-        "day": 0,
-        "model": "Rings.obj",
-        "texture": "2k_saturn_ring.png",
         "satellites": []
       },
       {
