@@ -1,7 +1,7 @@
 {
     "scale": {
         "distance": 173925000,
-        "time": 75
+        "time": 10
     },
     "shaders": {
         "fragment": "frag_materials",
@@ -106,9 +106,9 @@
                     "orbit": {
                       "distance": 9391000,
                       "tilt": 0,
-                      "year": 0.31891
+                      "year": 7.6584
                     },
-                    "day": 0.31891,
+                    "day": 7.6584,
                     "spins": "ccw",
                     "texture": "2k_moon_tex1.jpg",
                     "model": "Planet.obj",
@@ -121,9 +121,9 @@
                     "orbit": {
                       "distance": 23537000,
                       "tilt": 0,
-                      "year": 1.26244
+                      "year": 30.29856
                     },
-                    "day": 1.26244,
+                    "day": 30.29856,
                     "spins": "ccw",
                     "texture": "2k_moon_tex2.jpg",
                     "model": "Planet.obj",
