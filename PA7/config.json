@@ -1,297 +1,199 @@
 {
-    "scale": {
-        "distance": 173925000,
-        "time": 10
+  "window": {
+    "fullscreen": false,
+    "adjustable": false,
+    "height": 750,
+    "width": 1500,
+    "name": "Solar System Simulator"
+  },
+  "shaders": {
+    "vertex": "vert_materials",
+    "fragment": "frag_materials"
+  },
+  "scale": {
+    "distance": 173925000,
+    "time": 10
+  },
+  "sunlight": 1000,
+  "sun": {
+    "name": "Sun",
+    "radius": 695700000,
+    "orbit": {
+      "distance": 0,
+      "year": 0,
+      "tilt": 0
     },
     "shaders": {
-        "fragment": "frag_materials",
-        "vertex": "vert_materials"
+      "vertex": "vert_sun",
+      "fragment": "frag_sun"
     },
-    "sun": {
-        "axial-tilt": 7.25,
-        "day": 648,
-        "model": "Planet.obj",
-        "name": "Sun",
+    "axial-tilt": 7.25,
+    "day": 648,
+    "model": "Planet.obj",
+    "texture": "2k_sun.jpg",
+    "satellites": [
+      {
+        "name": "Mercury",
+        "radius": 2439500,
         "orbit": {
-            "distance": 0,
-            "tilt": 0,
-            "year": 0
+          "distance": 57900000000,
+          "year": 2112,
+          "tilt": 7.0
         },
-        "radius": 695700000,
+        "axial-tilt": 0,
+        "day": 1407.6,
+        "model": "Planet.obj",
+        "texture": "2k_mercury.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Venus",
+        "radius": 2439500,
+        "orbit": {
+          "distance": 108200000000,
+          "year": 5392.8,
+          "tilt": 3.4
+        },
+        "axial-tilt": 177.4,
+        "day": 5832.5,
+        "model": "Planet.obj",
+        "texture": "2k_venus_atmosphere.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Earth",
+        "radius": 6378000,
+        "orbit": {
+          "distance": 149600000000,
+          "year": 8764.8,
+          "tilt": 0
+        },
+        "shaders" : {
+          "vertex": "vert_normalMap",
+          "fragment": "frag_earth"
+        },
+        "axial-tilt": 23.439281,
+        "day": 23.9,
+        "model": "Planet.obj",
+        "texture": "2k_earth_daymap2.jpg",
+        "alt-texture": "2k_earth_nightmap.jpg",
+        "normal-texture": "2k_earth_normal_map.tif",
+        "specular-texture": "2k_earth_specular_map.tif",
         "satellites": [
-            {
-                "axial-tilt": 0,
-                "day": 1407.6,
-                "model": "Planet.obj",
-                "name": "Mercury",
-                "orbit": {
-                    "distance": 57900000000,
-                    "tilt": 7.0,
-                    "year": 2112
-                },
-                "radius": 2439500,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_mercury.jpg"
+          {
+            "name": "The Moon",
+            "radius": 1737500,
+            "orbit": {
+              "distance": 348000000,
+              "year": 655.2,
+              "tilt": 5.1
             },
-            {
-                "axial-tilt": 177.4,
-                "day": 5832.5,
-                "model": "Planet.obj",
-                "name": "Venus",
-                "orbit": {
-                    "distance": 108200000000,
-                    "tilt": 3.4,
-                    "year": 5392.8
-                },
-                "radius": 2439500,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_venus_atmosphere.jpg"
-            },
-            {
-                "alt-texture": "2k_earth_nightmap.jpg",
-                "axial-tilt": 23.439281,
-                "day": 23.9,
-                "model": "Planet.obj",
-                "name": "Earth",
-                "normal-texture": "2k_earth_normal_map.tif",
-                "orbit": {
-                    "distance": 149600000000,
-                    "tilt": 0,
-                    "year": 8764.8
-                },
-                "radius": 6378000,
-                "satellites": [
-                    {
-                        "axial-tilt": 1.5424,
-                        "day": 655.7,
-                        "model": "Planet.obj",
-                        "name": "The Moon",
-                        "orbit": {
-                            "distance": 348000000,
-                            "tilt": 5.1,
-                            "year": 655.2
-                        },
-                        "radius": 1737500,
-                        "satellites": [],
-                        "spins": null,
-                        "texture": "2k_moon.jpg"
-                    }
-                ],
-                "shaders": {
-                    "fragment": "frag_earth",
-                    "vertex": "vert_normalMap"
-                },
-                "specular-texture": "2k_earth_specular_map.tif",
-                "spins": null,
-                "texture": "2k_earth_daymap2.jpg"
-            },
-            {
-                "axial-tilt": 25.19,
-                "day": 24.6,
-                "model": "Planet.obj",
-                "name": "Mars",
-                "orbit": {
-                    "distance": 227900000000,
-                    "tilt": 1.9,
-                    "year": 16488
-                },
-                "radius": 3396000,
-                "satellites": [
-                  {
-                    "axial-tilt": 0,
-                    "name": "Phobos",
-                    "radius": 13000,
-                    "orbit": {
-                      "distance": 9391000,
-                      "tilt": 0,
-                      "year": 7.6584
-                    },
-                    "day": 7.6584,
-                    "spins": "ccw",
-                    "texture": "2k_moon_tex1.jpg",
-                    "model": "Planet.obj",
-                    "satellites": []
-                  },
-                  {
-                    "axial-tilt": 0,
-                    "name": "Deimos",
-                    "radius": 78000,
-                    "orbit": {
-                      "distance": 23537000,
-                      "tilt": 0,
-                      "year": 30.29856
-                    },
-                    "day": 30.29856,
-                    "spins": "ccw",
-                    "texture": "2k_moon_tex2.jpg",
-                    "model": "Planet.obj",
-                    "satellites": []
-                  }
-                ],
-                "spins": null,
-                "texture": "2k_mars.jpg"
-            },
-            {
-                "axial-tilt": 3.13,
-                "day": 9.9,
-                "model": "Planet.obj",
-                "name": "Jupiter",
-                "orbit": {
-                    "distance": 778600000000,
-                    "tilt": 1.3,
-                    "year": 103944
-                },
-                "radius": 71492000,
-                "satellites": [
-                    {
-                      "axial-tilt": 0,
-                      "name": "Io",
-                      "radius": 1821500,
-                      "orbit": {
-                        "distance": 9391000,
-                        "tilt": 0,
-                        "year": 1.769138
-                      },
-                      "day": 1.769138,
-                      "spins": "ccw",
-                      "texture": "2k_moon_tex1.jpg",
-                      "model": "Planet.obj",
-                      "satellites": []
-                    },
-                    {
-                      "axial-tilt": 0,
-                      "name": "Europa",
-                      "radius": 1560800,
-                      "orbit": {
-                        "distance": 23537000,
-                        "tilt": 0,
-                        "year": 3.551181
-                      },
-                      "day": 3.551181,
-                      "spins": "ccw",
-                      "texture": "2k_moon_tex2.jpg",
-                      "model": "Planet.obj",
-                      "satellites": []
-                    },
-                    {
-                      "axial-tilt": 0,
-                      "name": "Ganymede",
-                      "radius": 2631200,
-                      "orbit": {
-                        "distance": 9391000,
-                        "tilt": 0,
-                        "year": 7.154553
-                      },
-                      "day": 7.154553,
-                      "spins": "ccw",
-                      "texture": "2k_moon_tex3.jpg",
-                      "model": "Planet.obj",
-                      "satellites": []
-                    },
-                    {
-                      "axial-tilt": 0,
-                      "name": "Callisto",
-                      "radius": 2410300,
-                      "orbit": {
-                        "distance": 23537000,
-                        "tilt": 0,
-                        "year": 16.689017
-                      },
-                      "day": 16.689017,
-                      "spins": "ccw",
-                      "texture": "2k_moon_tex4.jpg",
-                      "model": "Planet.obj",
-                      "satellites": []
-                    }
-                ],
-                "spins": null,
-                "texture": "2k_jupiter.jpg"
-            },
-            {
-                "axial-tilt": 26.73,
-                "day": 10.7,
-                "model": "Planet.obj",
-                "name": "Saturn",
-                "orbit": {
-                    "distance": 1433500000000,
-                    "tilt": 2.5,
-                    "year": 257928
-                },
-                "rings": {
-                    "model": "Rings.obj",
-                    "shaders": {
-                        "fragment": "frag_rings",
-                        "vertex": "vert_materials"
-                    },
-                    "texture": "2k_saturn_ring.png"
-
-                },
-                "radius": 60268000,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_saturn.jpg"
-            },
-            {
-                "axial-tilt": 97.77,
-                "day": -17.2,
-                "model": "Planet.obj",
-                "name": "Uranus",
-                "orbit": {
-                    "distance": 2872500000000,
-                    "tilt": 0.8,
-                    "year": 734136
-                },
-                "radius": 25559000,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_uranus.jpg"
-            },
-            {
-                "axial-tilt": 28.32,
-                "day": 16.1,
-                "model": "Planet.obj",
-                "name": "Neptune",
-                "orbit": {
-                    "distance": 4495100000000,
-                    "tilt": 1.8,
-                    "year": 1435200
-                },
-                "radius": 24764000,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_neptune.jpg"
-            },
-            {
-                "axial-tilt": 119.61,
-                "day": -153.3,
-                "model": "Planet.obj",
-                "name": "Pluto",
-                "orbit": {
-                    "distance": 5906400000000,
-                    "tilt": 17.2,
-                    "year": 2173440
-                },
-                "radius": 1185000,
-                "satellites": [],
-                "spins": null,
-                "texture": "2k_pluto_imagiined.jpg"
-            }
-        ],
-        "shaders": {
-            "fragment": "frag_sun",
-            "vertex": "vert_sun"
+            "axial-tilt": 1.5424,
+            "day": 655.7,
+            "texture": "2k_moon.jpg",
+            "model": "Planet.obj",
+            "satellites": []
+          }
+        ]
+      },
+      {
+        "name": "Mars",
+        "radius": 3396000,
+        "orbit": {
+          "distance": 227900000000,
+          "year": 16488,
+          "tilt": 1.9
         },
-        "spins": null,
-        "texture": "2k_sun.jpg"
-    },
-    "sunlight": 1000,
-    "window": {
-        "adjustable": false,
-        "fullscreen": false,
-        "height": 1362,
-        "name": "Solar System Simulator",
-        "width": 2462
-    }
+        "axial-tilt": 25.19,
+        "day": 24.6,
+        "model": "Planet.obj",
+        "texture": "2k_mars.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Jupiter",
+        "radius": 71492000,
+        "orbit": {
+          "distance": 778600000000,
+          "year": 103944,
+          "tilt": 1.3
+        },
+        "axial-tilt": 3.13,
+        "day": 9.9,
+        "model": "Planet.obj",
+        "texture": "2k_jupiter.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Saturn",
+        "radius": 60268000,
+        "orbit": {
+          "distance": 1433500000000,
+          "year": 257928,
+          "tilt": 2.5
+        },
+        "axial-tilt": 26.73,
+        "day": 10.7,
+        "model": "Planet.obj",
+        "texture": "2k_saturn.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Saturn Rings",
+        "radius": 60268000,
+        "orbit": {
+          "distance": 1433500000000,
+          "year": 257928,
+          "tilt": 2.5
+        },
+        "axial-tilt": 26.73,
+        "day": 0,
+        "model": "Rings.obj",
+        "texture": "2k_saturn_ring.png",
+        "satellites": []
+      },
+      {
+        "name": "Uranus",
+        "radius": 25559000,
+        "orbit": {
+          "distance": 2872500000000,
+          "year": 734136,
+          "tilt": 0.8
+        },
+        "axial-tilt": 97.77,
+        "day": -17.2,
+        "model": "Planet.obj",
+        "texture": "2k_uranus.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Neptune",
+        "radius": 24764000,
+        "orbit": {
+          "distance": 4495100000000,
+          "year": 1435200,
+          "tilt": 1.8
+        },
+        "axial-tilt": 28.32,
+        "day": 16.1,
+        "model": "Planet.obj",
+        "texture": "2k_neptune.jpg",
+        "satellites": []
+      },
+      {
+        "name": "Pluto",
+        "radius": 1185000,
+        "orbit": {
+          "distance": 5906400000000,
+          "year": 2173440,
+          "tilt": 17.2
+        },
+        "axial-tilt": 119.61,
+        "day": -153.3,
+        "model": "Planet.obj",
+        "texture": "2k_pluto_imagiined.jpg",
+        "satellites": []
+      }
+    ]
+  }
 }
