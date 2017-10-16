@@ -11,13 +11,13 @@
     "fragment": "frag_materials"
   },
   "scale": {
-    "distance": 173925000,
+    "distance": 173925,
     "time": 10
   },
   "sunlight": 1000,
   "sun": {
     "name": "Sun",
-    "radius": 695700000,
+    "radius": 695700,
     "orbit": {
       "distance": 0,
       "year": 0,
@@ -34,9 +34,9 @@
     "satellites": [
       {
         "name": "Mercury",
-        "radius": 2439500,
+        "radius": 2439.5,
         "orbit": {
-          "distance": 57900000000,
+          "distance": 57900000,
           "year": 2112,
           "tilt": 7.0
         },
@@ -48,9 +48,9 @@
       },
       {
         "name": "Venus",
-        "radius": 2439500,
+        "radius": 2439.5,
         "orbit": {
-          "distance": 108200000000,
+          "distance": 108200000,
           "year": 5392.8,
           "tilt": 3.4
         },
@@ -62,9 +62,9 @@
       },
       {
         "name": "Earth",
-        "radius": 6378000,
+        "radius": 6378,
         "orbit": {
-          "distance": 149600000000,
+          "distance": 149600000,
           "year": 8764.8,
           "tilt": 0
         },
@@ -82,9 +82,9 @@
         "satellites": [
           {
             "name": "The Moon",
-            "radius": 1737500,
+            "radius": 1737.5,
             "orbit": {
-              "distance": 348000000,
+              "distance": 348000,
               "year": 655.2,
               "tilt": 5.1
             },
@@ -98,9 +98,9 @@
       },
       {
         "name": "Mars",
-        "radius": 3396000,
+        "radius": 3396,
         "orbit": {
-          "distance": 227900000000,
+          "distance": 22790000,
           "year": 16488,
           "tilt": 1.9
         },
@@ -112,14 +112,13 @@
             {
               "axial-tilt": 0,
               "name": "Phobos",
-              "radius": 11400,
+              "radius": 11.4,
               "orbit": {
-                "distance": 9378000,
+                "distance": 9378,
                 "tilt": 1.08,
                 "year": 7.65384
               },
               "day": 7.65384,
-              "spins": null,
               "texture": "2k_moon_tex1.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -127,14 +126,13 @@
             {
               "axial-tilt": 0,
               "name": "Deimos",
-              "radius": 60000,
+              "radius": 60,
               "orbit": {
-                "distance": 23459000,
+                "distance": 23459,
                 "tilt": 1.79,
                 "year": 30.29856
               },
               "day": 30.29856,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -143,9 +141,9 @@
       },
       {
         "name": "Jupiter",
-        "radius": 71492000,
+        "radius": 71492,
         "orbit": {
-          "distance": 778600000000,
+          "distance": 778600000,
           "year": 103944,
           "tilt": 1.3
         },
@@ -157,14 +155,13 @@
             {
               "axial-tilt": 0,
               "name": "Io",
-              "radius": 1821500,
+              "radius": 1821.5,
               "orbit": {
-                "distance": 422000000,
+                "distance": 422000,
                 "tilt": 0.04,
                 "year": 42.458312
               },
               "day": 42.5,
-              "spins": null,
               "texture": "2k_moon_tex1.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -172,14 +169,13 @@
             {
               "axial-tilt": 0,
               "name": "Europa",
-              "radius": 1560800,
+              "radius": 1560.8,
               "orbit": {
-                "distance": 671000000,
+                "distance": 671000,
                 "tilt": 0.47,
                 "year": 85.228344
               },
               "day": 85.2,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -187,14 +183,13 @@
             {
               "axial-tilt": 0,
               "name": "Ganymede",
-              "radius": 2631200,
+              "radius": 2631.2,
               "orbit": {
-                "distance": 1070000000,
+                "distance": 1070000,
                 "tilt": 0.18,
                 "year": 171.709272
               },
               "day": 171.7,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -202,14 +197,13 @@
             {
               "axial-tilt": 0,
               "name": "Callisto",
-              "radius": 2410300,
+              "radius": 2410.3,
               "orbit": {
-                "distance": 1883000000,
+                "distance": 1883000,
                 "tilt": 0.19,
                 "year": 400.536408
               },
               "day": 400.5,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -218,9 +212,9 @@
       },
       {
         "name": "Saturn",
-        "radius": 60268000,
+        "radius": 60268,
         "orbit": {
-          "distance": 1433500000000,
+          "distance": 1433500000,
           "year": 257928,
           "tilt": 2.5
         },
@@ -240,14 +234,13 @@
             {
               "axial-tilt": 0,
               "name": "Titan",
-              "radius": 2575000,
+              "radius": 2575,
               "orbit": {
-                "distance": 1221830000,
+                "distance": 1221830,
                 "tilt": 0.3,
                 "year": 382.68
               },
               "day": 382.68,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -255,14 +248,13 @@
             {
               "axial-tilt": 0,
               "name": "Rhea",
-              "radius": 764500,
+              "radius": 764.5,
               "orbit": {
-                "distance": 527040000,
+                "distance": 527040,
                 "tilt": 0.33,
                 "year": 108.432
               },
               "day": 108.432,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -270,14 +262,13 @@
             {
               "axial-tilt": 0,
               "name": "Iapetus",
-              "radius": 735500,
+              "radius": 735.5,
               "orbit": {
-                "distance": 3560900000,
+                "distance": 3560900,
                 "tilt": 8.31,
                 "year": 1903.92
               },
               "day": 1903.92,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -285,14 +276,13 @@
             {
               "axial-tilt": 0,
               "name": "Dione",
-              "radius": 561500,
+              "radius": 561.5,
               "orbit": {
-                "distance": 377420000,
+                "distance": 377420,
                 "tilt": 0.03,
                 "year": 65.688
               },
               "day": 65.688,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -300,14 +290,13 @@
             {
               "axial-tilt": 0,
               "name": "Tethis",
-              "radius": 533000,
+              "radius": 533,
               "orbit": {
-                "distance": 249700000,
+                "distance": 249700,
                 "tilt": 1.09,
                 "year": 45.312
               },
               "day": 45.312,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -316,9 +305,9 @@
       },
       {
         "name": "Uranus",
-        "radius": 25559000,
+        "radius": 25559,
         "orbit": {
-          "distance": 2872500000000,
+          "distance": 2872500000,
           "year": 734136,
           "tilt": 0.8
         },
@@ -330,14 +319,13 @@
             {
               "axial-tilt": 0,
               "name": "Titania",
-              "radius": 789000,
+              "radius": 789,
               "orbit": {
-                "distance": 436300000,
+                "distance": 436300,
                 "tilt": 0.08,
                 "year": 208.944
               },
               "day": 208.944,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -345,14 +333,13 @@
             {
               "axial-tilt": 0,
               "name": "Oberon",
-              "radius": 761500,
+              "radius": 761.5,
               "orbit": {
-                "distance": 583500000,
+                "distance": 583500,
                 "tilt": 0.07,
                 "year": 323.112
               },
               "day": 323.112,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -360,14 +347,13 @@
             {
               "axial-tilt": 0,
               "name": "Umbriel",
-              "radius": 584500,
+              "radius": 584.5,
               "orbit": {
-                "distance": 266000000,
+                "distance": 266000,
                 "tilt": 0.13,
                 "year": 99.456
               },
               "day": 99.456,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -375,14 +361,13 @@
             {
               "axial-tilt": 0,
               "name": "Ariel",
-              "radius": 579000,
+              "radius": 579,
               "orbit": {
-                "distance": 190900000,
+                "distance": 190900,
                 "tilt": 0.04,
                 "year": 60.48
               },
               "day": 60.48,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -391,9 +376,9 @@
       },
       {
         "name": "Neptune",
-        "radius": 24764000,
+        "radius": 24764,
         "orbit": {
-          "distance": 4495100000000,
+          "distance": 4495100000,
           "year": 1435200,
           "tilt": 1.8
         },
@@ -405,14 +390,13 @@
           {
             "axial-tilt": 0,
             "name": "Triton",
-            "radius": 1353500,
+            "radius": 1353.5,
             "orbit": {
-              "distance": 354760000,
+              "distance": 354760,
               "tilt": 156.87,
               "year": -141.048
             },
             "day": 141.048,
-            "spins": null,
             "texture": "2k_moon_tex3.jpg",
             "model": "Planet.obj",
             "satellites": []
@@ -421,9 +405,9 @@
       },
       {
         "name": "Pluto",
-        "radius": 1185000,
+        "radius": 1185,
         "orbit": {
-          "distance": 5906400000000,
+          "distance": 5906400000,
           "year": 2173440,
           "tilt": 17.2
         },
