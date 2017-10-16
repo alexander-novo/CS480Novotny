@@ -401,7 +401,23 @@
         "day": 16.1,
         "model": "Planet.obj",
         "texture": "2k_neptune.jpg",
-        "satellites": []
+        "satellites": [
+          {
+            "axial-tilt": 0,
+            "name": "Triton",
+            "radius": 1353500,
+            "orbit": {
+              "distance": 354760000,
+              "tilt": 156.87,
+              "year": -141.048
+            },
+            "day": 141.048,
+            "spins": null,
+            "texture": "2k_moon_tex3.jpg",
+            "model": "Planet.obj",
+            "satellites": []
+          }
+        ]
       },
       {
         "name": "Pluto",
