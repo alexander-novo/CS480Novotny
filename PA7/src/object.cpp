@@ -146,10 +146,6 @@ const glm::mat4& Object::GetModel() const {
 
 void Object::Render(float lightPower, bool drawOrbits) const {
 	if(drawOrbits) drawOrbit();
-	if(ctx.hasRings)
-	{
-		RenderRings(lightPower);	
-	}
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -203,6 +199,11 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glDisable(GL_BLEND);
+
+	if(ctx.hasRings)
+	{
+		RenderRings(lightPower);	
+	}
 
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
