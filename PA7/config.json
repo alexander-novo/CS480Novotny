@@ -236,7 +236,83 @@
         "day": 10.7,
         "model": "Planet.obj",
         "texture": "2k_saturn.jpg",
-        "satellites": []
+        "satellites": [
+            {
+              "axial-tilt": 0,
+              "name": "Titan",
+              "radius": 2775000,
+              "orbit": {
+                "distance": 1221900,
+                "tilt": 0.3,
+                "year": 382.68
+              },
+              "day": 382.68,
+              "spins": null,
+              "texture": "2k_moon_tex4.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Rhea",
+              "radius": 764500,
+              "orbit": {
+                "distance": 527070,
+                "tilt": 0.33,
+                "year": 108.432
+              },
+              "day": 108.432,
+              "spins": null,
+              "texture": "2k_moon_tex3.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Iapetus",
+              "radius": 735500,
+              "orbit": {
+                "distance": 3560900,
+                "tilt": 8.31,
+                "year": 1903.92
+              },
+              "day": 1903.92,
+              "spins": null,
+              "texture": "2k_moon_tex2.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Dione",
+              "radius": 561500,
+              "orbit": {
+                "distance": 377420,
+                "tilt": 0.03,
+                "year": 65.688
+              },
+              "day": 65.688,
+              "spins": null,
+              "texture": "2k_moon_tex2.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Tethis",
+              "radius": 533000,
+              "orbit": {
+                "distance": 249700,
+                "tilt": 1.09,
+                "year": 45.312
+              },
+              "day": 45.312,
+              "spins": null,
+              "texture": "2k_moon_tex3.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            }
+          ]
       },
       {
         "name": "Uranus",
