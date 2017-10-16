@@ -115,11 +115,10 @@
               "radius": 11400,
               "orbit": {
                 "distance": 9378000,
-                "tilt": 1.08,
+                "tilt": 26.27,
                 "year": 7.65384
               },
               "day": 7.65384,
-              "spins": null,
               "texture": "2k_moon_tex1.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -130,11 +129,10 @@
               "radius": 60000,
               "orbit": {
                 "distance": 23459000,
-                "tilt": 1.79,
+                "tilt": 26.98,
                 "year": 30.29856
               },
               "day": 30.29856,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -160,11 +158,10 @@
               "radius": 1821500,
               "orbit": {
                 "distance": 422000000,
-                "tilt": 0.04,
+                "tilt": 3.17,
                 "year": 42.458312
               },
               "day": 42.5,
-              "spins": null,
               "texture": "2k_moon_tex1.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -175,11 +172,10 @@
               "radius": 1560800,
               "orbit": {
                 "distance": 671000000,
-                "tilt": 0.47,
+                "tilt": 3.6,
                 "year": 85.228344
               },
               "day": 85.2,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -190,11 +186,10 @@
               "radius": 2631200,
               "orbit": {
                 "distance": 1070000000,
-                "tilt": 0.18,
+                "tilt": 3.31,
                 "year": 171.709272
               },
               "day": 171.7,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -205,11 +200,10 @@
               "radius": 2410300,
               "orbit": {
                 "distance": 1883000000,
-                "tilt": 0.19,
+                "tilt": 3.32,
                 "year": 400.536408
               },
               "day": 400.5,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -243,11 +237,10 @@
               "radius": 2575000,
               "orbit": {
                 "distance": 1221830000,
-                "tilt": 0.3,
+                "tilt": 27.03,
                 "year": 382.68
               },
               "day": 382.68,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -258,11 +251,10 @@
               "radius": 764500,
               "orbit": {
                 "distance": 527040000,
-                "tilt": 0.33,
+                "tilt": 27.06,
                 "year": 108.432
               },
               "day": 108.432,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -273,11 +265,10 @@
               "radius": 735500,
               "orbit": {
                 "distance": 3560900000,
-                "tilt": 8.31,
+                "tilt": 35.04,
                 "year": 1903.92
               },
               "day": 1903.92,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -288,11 +279,10 @@
               "radius": 561500,
               "orbit": {
                 "distance": 377420000,
-                "tilt": 0.03,
+                "tilt": 26.76,
                 "year": 65.688
               },
               "day": 65.688,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -303,11 +293,10 @@
               "radius": 533000,
               "orbit": {
                 "distance": 249700000,
-                "tilt": 1.09,
+                "tilt": 27.84,
                 "year": 45.312
               },
               "day": 45.312,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -333,11 +322,10 @@
               "radius": 789000,
               "orbit": {
                 "distance": 436300000,
-                "tilt": 0.08,
+                "tilt": 97.85,
                 "year": 208.944
               },
               "day": 208.944,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -348,11 +336,10 @@
               "radius": 761500,
               "orbit": {
                 "distance": 583500000,
-                "tilt": 0.07,
+                "tilt": 97.84,
                 "year": 323.112
               },
               "day": 323.112,
-              "spins": null,
               "texture": "2k_moon_tex2.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -363,11 +350,10 @@
               "radius": 584500,
               "orbit": {
                 "distance": 266000000,
-                "tilt": 0.13,
+                "tilt": 97.9,
                 "year": 99.456
               },
               "day": 99.456,
-              "spins": null,
               "texture": "2k_moon_tex3.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -378,11 +364,10 @@
               "radius": 579000,
               "orbit": {
                 "distance": 190900000,
-                "tilt": 0.04,
+                "tilt": 97.81,
                 "year": 60.48
               },
               "day": 60.48,
-              "spins": null,
               "texture": "2k_moon_tex4.jpg",
               "model": "Planet.obj",
               "satellites": []
@@ -408,11 +393,10 @@
             "radius": 1353500,
             "orbit": {
               "distance": 354760000,
-              "tilt": 156.87,
+              "tilt": 185.19,
               "year": -141.048
             },
             "day": 141.048,
-            "spins": null,
             "texture": "2k_moon_tex3.jpg",
             "model": "Planet.obj",
             "satellites": []
