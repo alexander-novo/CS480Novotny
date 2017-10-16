@@ -122,7 +122,68 @@
         "day": 9.9,
         "model": "Planet.obj",
         "texture": "2k_jupiter.jpg",
-        "satellites": []
+        "satellites": [
+            {
+              "axial-tilt": 0,
+              "name": "Io",
+              "radius": 1821500,
+              "orbit": {
+                "distance": 422000000,
+                "tilt": 0.04,
+                "year": 42.458312
+              },
+              "day": 42.5,
+              "spins": null,
+              "texture": "2k_moon_tex1.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Europa",
+              "radius": 1560800,
+              "orbit": {
+                "distance": 671000000,
+                "tilt": 0.47,
+                "year": 85.228344
+              },
+              "day": 85.2,
+              "spins": null,
+              "texture": "2k_moon_tex2.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Ganymede",
+              "radius": 2631200,
+              "orbit": {
+                "distance": 1070000000,
+                "tilt": 0.18,
+                "year": 171.709272
+              },
+              "day": 171.7,
+              "spins": null,
+              "texture": "2k_moon_tex3.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Callisto",
+              "radius": 2410300,
+              "orbit": {
+                "distance": 1883000000,
+                "tilt": 0.19,
+                "year": 400.536408
+              },
+              "day": 400.5,
+              "spins": null,
+              "texture": "2k_moon_tex4.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            }
+        ]
       },
       {
         "name": "Saturn",
