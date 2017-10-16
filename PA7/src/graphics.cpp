@@ -69,10 +69,10 @@ void Graphics::Render() {
 	
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
 	
+	renderSkybox();
+	
 	// Render the object
 	m_cube->Render(modifiedLight, m_menu.options.drawOrbits);
-	
-	renderSkybox();
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();
@@ -107,8 +107,6 @@ void Graphics::renderSkybox() {
 	
 	glCullFace(OldCullFaceMode);
 	glDepthFunc(OldDepthFuncMode);
-	
-	
 }
 
 void Graphics::calculateCamera() {
