@@ -108,7 +108,38 @@
         "day": 24.6,
         "model": "Planet.obj",
         "texture": "2k_mars.jpg",
-        "satellites": []
+        "satellites": [
+            {
+              "axial-tilt": 0,
+              "name": "Phobos",
+              "radius": 11400,
+              "orbit": {
+                "distance": 9378000,
+                "tilt": 1.08,
+                "year": 7.65384
+              },
+              "day": 7.65384,
+              "spins": null,
+              "texture": "2k_moon_tex1.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            },
+            {
+              "axial-tilt": 0,
+              "name": "Deimos",
+              "radius": 60000,
+              "orbit": {
+                "distance": 23459000,
+                "tilt": 1.79,
+                "year": 30.29856
+              },
+              "day": 30.29856,
+              "spins": null,
+              "texture": "2k_moon_tex2.jpg",
+              "model": "Planet.obj",
+              "satellites": []
+            }
+          ]
       },
       {
         "name": "Jupiter",
