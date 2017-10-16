@@ -30,6 +30,9 @@ class Graphics {
 		std::string ErrorString(GLenum error);
 		
 		void calculateCamera();
+		void renderSkybox();
+		
+		glm::vec3 eyePos;
 		
 		Menu& m_menu;
 		
@@ -40,6 +43,10 @@ class Graphics {
 		
 		//The sun
 		Object *m_cube;
+		
+		Model* skybox;
+		Shader* skyShader;
+		Texture* skyTexture;
 };
 
 #endif /* GRAPHICS_H */

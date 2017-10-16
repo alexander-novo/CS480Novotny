@@ -4,6 +4,10 @@ Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), 
 	Object::viewMatrix = &view;
 	Object::projectionMatrix = &projection;
 	Object::globalOffset = &m_cube->position;
+	
+	skybox = Model::load("models/Skybox.obj");
+	skyShader = Shader::load("shaders/vert_sky", "shaders/frag_sky");
+	skyTexture = Texture::load("textures/8k_stars_milky_way.jpg");
 }
 
 Graphics::~Graphics() {
@@ -35,6 +39,9 @@ bool Graphics::Initialize(int width, int height) {
 	glBindVertexArray(vao);
 	
 	m_cube->Init_GL();
+	skybox->initGL();
+	skyShader->Initialize();
+	skyTexture->initGL();
 	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -65,12 +72,43 @@ void Graphics::Render() {
 	// Render the object
 	m_cube->Render(modifiedLight, m_menu.options.drawOrbits);
 	
+	renderSkybox();
+	
 	// Get any errors from OpenGL
 	auto error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::string val = ErrorString(error);
 		std::cout << "Error initializing OpenGL! " << error << ", " << val << std::endl;
 	}
+}
+
+void Graphics::renderSkybox() {
+	skyShader->Enable();
+	
+	GLint OldCullFaceMode;
+	glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
+	GLint OldDepthFuncMode;
+	glGetIntegerv(GL_DEPTH_FUNC, &OldDepthFuncMode);
+	
+	glCullFace(GL_FRONT);
+	glDepthFunc(GL_LEQUAL);
+	
+	glm::mat4 modelMat(1.0);
+	modelMat = glm::translate(modelMat, eyePos);
+	modelMat = glm::scale(modelMat, glm::vec3(20, 20, 20));
+	
+	glm::mat4 MVPMatrix = projection * view * modelMat;
+	skyShader->uniformMatrix4fv("MVPMatrix", 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+	
+	skyTexture->bind(GL_COLOR_TEXTURE);
+	skyShader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
+	
+	skybox->drawModel();
+	
+	glCullFace(OldCullFaceMode);
+	glDepthFunc(OldDepthFuncMode);
+	
+	
 }
 
 void Graphics::calculateCamera() {
@@ -113,8 +151,10 @@ void Graphics::calculateCamera() {
 	backgroundVec -= *Object::globalOffset;
 	lookVec -= *Object::globalOffset;
 	
+	eyePos = glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z);
+	
 	//Also let's try and look down from above what we're looking at
-	view = glm::lookAt( glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z), //Eye Position
+	view = glm::lookAt( eyePos, //Eye Position
 	                                   glm::vec3(lookVec.x, lookVec.y, lookVec.z), //Focus point
 	                                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 }

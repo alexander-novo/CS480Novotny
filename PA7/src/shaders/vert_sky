@@ -1,0 +1,13 @@
+#version 330
+
+layout (location = 0) in vec3 positionM;
+layout (location = 1) in vec2 uv;
+
+uniform mat4 MVPMatrix;
+
+out vec2 uvCoord;
+
+void main(void) {
+    gl_Position = (MVPMatrix * vec4(positionM, 1.0)).xyww;
+    uvCoord = uv;
+}

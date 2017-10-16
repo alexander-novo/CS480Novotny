@@ -16,6 +16,10 @@ Model* Model::load(std::string filename) {
 	
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast);
+	if(scene == nullptr) {
+		std::cerr << "Could not load model from " << filename << std::endl;
+		return nullptr;
+	}
 	aiMesh* mesh = scene->mMeshes[0];
 	
 	//Add all our vertices
