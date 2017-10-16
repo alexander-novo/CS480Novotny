@@ -89,7 +89,7 @@ void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	}
 	
 	//Then rotate and scale so the satellites are unaffected
-	modelMat= glm::rotate(modelMat, ctx.axisTilt, glm::vec3(0.0, 0.0, 1.0));
+	modelMat= glm::rotate(modelMat, ctx.axisTilt + ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 	
