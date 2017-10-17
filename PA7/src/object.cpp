@@ -181,6 +181,14 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 	if(drawOrbits == DRAW_ALL_ORBITS
 	   || (drawOrbits == DRAW_PLANET_ORBITS && !isMoon())
 	   || (drawOrbits == DRAW_MOON_ORBITS && isMoon())) drawOrbit();
+	
+	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
+	if(lookingAt != this && menu->options.scale > 0.9 && !isMoonOf(lookingAt) && !lookingAt->isMoonOf(this)) {
+		for (const auto &i : _children) {
+			i->Render(lightPower, drawOrbits);
+		}
+		return;
+	}
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -340,4 +348,15 @@ unsigned Object::orbitDepth() const {
 	}
 	
 	return depth;
+}
+
+bool Object::isMoonOf(Object const* obj) const {
+	Object* parentPtr = parent;
+	
+	while(parentPtr != nullptr) {
+		if(parentPtr == obj) return true;
+		parentPtr = parentPtr->parent;
+	}
+	
+	return false;
 }

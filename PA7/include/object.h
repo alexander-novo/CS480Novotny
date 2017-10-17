@@ -81,6 +81,7 @@ class Object {
 		
 		bool isMoon() const;
 		unsigned orbitDepth() const;
+		bool isMoonOf(Object const *) const;
 		
 		//Returns a reference to a satellite
 		Object& operator[](int index);

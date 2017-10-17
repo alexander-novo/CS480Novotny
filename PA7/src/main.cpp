@@ -143,9 +143,6 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	
 	ctx.scaleMultiplier = scaleMultiplier;
 	
-	if (config["spins"] == "ccw") ctx.spinDir = 1;
-	else ctx.spinDir = -1;
-	
 	std::string filename = config["model"];
 	ctx.model = Model::load("models/" + filename);
 	if (ctx.model == NULL) {
