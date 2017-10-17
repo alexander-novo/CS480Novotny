@@ -49,17 +49,17 @@ Hold `ctrl` to only affect the spinning movement
 
 # Things to check out
 
-### Earth's Nighttime textures
-![Earth](https://i.imgur.com/wwPRcj1.png)
+### Earth's specular and normal maps
+![Earth](http://i.imgur.com/0yHGzvN.png)
 
-### The Moon's Orbit
-![Moon](https://i.imgur.com/d84EAvg.png)
+### Milky Way background
+![Sun](http://i.imgur.com/Qx8w4ov.jpg)
 
-### The Sun's Layered Textures
-![Sun](https://i.imgur.com/wOT7HgD.png)
+### Planet Rings
+![Moon](http://i.imgur.com/dW7Spk8.jpg)
 
 # Menu Usage
-![Menu](https://i.imgur.com/AIt1yMM.png)
+![Menu](http://i.imgur.com/SZOlIUE.png)
 
 **Camera Distance** - Changes how far the camera is away from the current object.  Zooms out to overhead view.
 **Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow  
