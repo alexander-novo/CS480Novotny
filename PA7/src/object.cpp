@@ -43,7 +43,7 @@ void Object::Init_GL() {
 	if(parent != nullptr) {
 		calcOrbit(1, 600, OB_REAL_FAR);
 		calcOrbit(1, ctx.orbitDistance, OB_REAL_ZOOMED);
-		calcOrbit(CLOSE_SCALE, pow(600, CLOSE_SCALE), OB_CLOSE);
+		calcOrbit(CLOSE_SCALE, 600 * CLOSE_SCALE, OB_CLOSE);
 	}
 	
 	//Initialise textures
@@ -102,7 +102,9 @@ void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 	
-	if(drawOrbits) updateOrbit(scaleExp);
+	if(drawOrbits == DRAW_ALL_ORBITS
+	   || (drawOrbits == DRAW_PLANET_ORBITS && !isMoon())
+	   || (drawOrbits == DRAW_MOON_ORBITS && isMoon())) updateOrbit(scaleExp);
 }
 
 void Object::updateOrbit(float scaleExp) {
@@ -139,7 +141,7 @@ void Object::updateOrbit(float scaleExp) {
 	
 	int numDashes = 600;
 	if(orbitInfo.lastFocus) {
-		numDashes = 100 / pow(ctx.moveScale, scaleExp);
+		numDashes = 600 * scaleExp;
 	}
 	calcOrbit(scaleExp, numDashes, OB);
 }
@@ -174,8 +176,10 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(float lightPower, bool drawOrbits) const {
-	if(drawOrbits) drawOrbit();
+void Object::Render(float lightPower, unsigned drawOrbits) const {
+	if(drawOrbits == DRAW_ALL_ORBITS
+	   || (drawOrbits == DRAW_PLANET_ORBITS && !isMoon())
+	   || (drawOrbits == DRAW_MOON_ORBITS && isMoon())) drawOrbit();
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -320,4 +324,19 @@ unsigned long Object::getNumChildren() const {
 Object& Object::operator[](int index) {
 	if(index >= _children.size()) throw std::out_of_range("Received child index out of range");
 	return *_children[index];
+}
+
+bool Object::isMoon() const {
+	return orbitDepth() >= 2;
+}
+
+unsigned Object::orbitDepth() const {
+	unsigned depth = 0;
+	Object const* obj = this;
+	while(obj->parent != nullptr) {
+		obj = obj->parent;
+		depth++;
+	}
+	
+	return depth;
 }

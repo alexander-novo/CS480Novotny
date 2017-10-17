@@ -72,7 +72,19 @@ void Graphics::Render() {
 	renderSkybox();
 	
 	// Render the object
-	m_cube->Render(modifiedLight, m_menu.options.drawOrbits);
+	unsigned orbits;
+	if(m_menu.options.drawOrbits) {
+		if(m_menu.options.drawMoonOrbits) {
+			orbits = DRAW_ALL_ORBITS;
+		} else {
+			orbits = DRAW_PLANET_ORBITS;
+		}
+	} else if(m_menu.options.drawMoonOrbits) {
+		orbits = DRAW_MOON_ORBITS;
+	} else {
+		orbits = DRAW_NO_ORBITS;
+	}
+	m_cube->Render(modifiedLight, orbits);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();

@@ -37,8 +37,10 @@ void Menu::update(int dt, float width, float height) {
 	ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
 	ImGui::RadioButton("Close Scale", &scaleTo, 0);
 	
-	ImGui::Checkbox("Draw Orbits", &_options.drawOrbits); ImGui::SameLine();
-	ImGui::Checkbox("Planet Labels", &_options.drawLabels);
+	ImGui::Checkbox("Planet Orbits", &_options.drawOrbits); ImGui::SameLine();
+	ImGui::Checkbox("Moon Orbits", &_options.drawMoonOrbits);
+	ImGui::Checkbox("Planet Labels", &_options.drawLabels); ImGui::SameLine();
+	ImGui::Checkbox("Moon Labels", &_options.drawMoonLabels);
 	
 
     if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing))
@@ -81,7 +83,7 @@ void Menu::update(int dt, float width, float height) {
 	ImGui::End();
 	
 	//Planet Labels
-	if(options.drawLabels) {
+	if(options.drawLabels || options.drawMoonLabels) {
 		//Make a new transparent window that covers the whole screen and doesn't take user input
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(width, height));
@@ -96,6 +98,7 @@ void Menu::update(int dt, float width, float height) {
 		//Then draw a label there
 		glm::vec4 screenPos;
 		for (const auto& pair : satelliteMap) {
+			if((!options.drawLabels || pair.second->isMoon()) && (!options.drawMoonLabels || !pair.second->isMoon())) continue;
 			//Multiply planet position by VP matrix
 			//No Model Matrix because planet position is already in world coordinates
 			screenPos = *Object::projectionMatrix *

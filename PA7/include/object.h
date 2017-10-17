@@ -8,6 +8,11 @@
 #include "shader.h"
 #include "Menu.h"
 
+#define DRAW_NO_ORBITS     0
+#define DRAW_ALL_ORBITS    1
+#define DRAW_PLANET_ORBITS 2
+#define DRAW_MOON_ORBITS   3
+
 class Menu;
 
 class Object {
@@ -56,7 +61,7 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt, float scaleExp, bool drawOrbits);
 		//Renders the planet on the screen
-		void Render(float lightPower, bool drawOrbits) const;
+		void Render(float lightPower, unsigned drawOrbits) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites
@@ -73,6 +78,9 @@ class Object {
 		Object* const parent;
 		
 		const glm::vec3& position;
+		
+		bool isMoon() const;
+		unsigned orbitDepth() const;
 		
 		//Returns a reference to a satellite
 		Object& operator[](int index);

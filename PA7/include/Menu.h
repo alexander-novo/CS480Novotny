@@ -26,7 +26,9 @@ class Menu {
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 			float scale = 1.0;    //Keep track of the current distance scale. Applied as an exponential modifier
 			bool drawOrbits = true;
+			bool drawMoonOrbits = false;
 			bool drawLabels = true;
+			bool drawMoonLabels = false;
 		};
 		
 		Menu(Window& window, Object& root);
