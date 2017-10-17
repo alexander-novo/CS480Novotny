@@ -8,7 +8,7 @@
 #include "graphics.h"
 #include "Menu.h"
 
-#define ENGINE_NAME_DEFAULT "Tutorial Window Name"
+#define ENGINE_NAME_DEFAULT "Solar System"
 #define ENGINE_WIDTH_DEFAULT 800
 #define ENGINE_HEIGHT_DEFAULT 600
 #define ENGINE_FULLSCREEN_DEFAULT false
