@@ -2,34 +2,27 @@
 
 // Interpolated values from the vertex shaders
 in vec2 uvCoord;
-in vec3 positionW;
-in vec3 normalC;
-in vec3 eyeC;
-in vec3 lightDirC;
 
 // Ouput data
 out vec4 frag_color;
 
-// Values that stay constant for the whole mesh.
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-
-uniform vec3 MaterialDiffuseColor;
-uniform vec3 MaterialAmbientColor;
-uniform vec3 MaterialSpecularColor;
-
-uniform float lightPower;
-
 uniform sampler2D gSampler;
-
 uniform float shaderTime;
 
 void main(void) {
-    // Normal of the computed fragment, in camera space
-    vec3 n = normalize( normalC );
-    // Eye vector (towards the camera)
-    vec3 E = normalize(eyeC);
 
-    frag_color = texture2D(gSampler, uvCoord);
+    // For Outer Swirly Effect
+    float shaderTimeMod = cos(2.5*shaderTime) * uvCoord.y;
+    float xoffset = sin(shaderTimeMod);
+    float yoffset = cos(shaderTimeMod*3); 
+    vec4 swirly = vec4(texture2D(gSampler, vec2(uvCoord.x + xoffset, (.6-uvCoord.y + yoffset))));
+    swirly = vec4(swirly.rgb, 1);
+
+    // Texture
+    vec4 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord);
+
+    //Color shift to make a little orange/yellower (Brighter)
+    vec4 colorShift = vec4(.3,.15, 0.0, 0.0);
+
+    frag_color = swirly * MaterialDiffuseTexture2d + colorShift;
 }
-
