@@ -156,10 +156,10 @@ void Engine::Keyboard() {
 	}
 	
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
-		float step = 0.05;
+		float step = 0.05 * m_menu->options.zoom;
 		//Scroll down
 		if(m_event.wheel.y > 0) {
-			step = -0.05f;
+			step *= -1;
 		}
 		
 		m_menu->setZoom(m_menu->options.zoom + step);
