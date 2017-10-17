@@ -42,7 +42,8 @@ void Object::Init_GL() {
 	
 	if(parent != nullptr) {
 		calcOrbit(1, 600, OB_REAL_FAR);
-		calcOrbit(1, ctx.orbitDistance, OB_REAL_ZOOMED);
+		int max = 600 > ctx.orbitDistance ? 600 : ctx.orbitDistance;
+		calcOrbit(1, max, OB_REAL_ZOOMED);
 		calcOrbit(CLOSE_SCALE, 600 * CLOSE_SCALE, OB_CLOSE);
 	}
 	

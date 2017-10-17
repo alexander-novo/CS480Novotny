@@ -174,8 +174,8 @@ void Engine::Keyboard() {
 				//Update our projection matrix in case the aspect ratio is different now
 				m_graphics->getProjection() = glm::perspective( 45.0f,
 				                               float(windowWidth)/float(windowHeight),
-				                               0.01f,
-				                               1000000.0f);
+				                               0.001f,
+				                               10000000.0f);
 				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT
