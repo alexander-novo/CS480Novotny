@@ -99,7 +99,16 @@ class Object {
 
 		GLuint VB;
 		GLuint IB;
-		GLuint OB;
+		
+		//Keep track of buffers for orbit vertices
+		//Pair of # vertices and actual buffer
+		std::pair<unsigned, GLuint> OB;
+		std::pair<unsigned, GLuint> OB_REAL_FAR;
+		std::pair<unsigned, GLuint> OB_REAL_ZOOMED;
+		std::pair<unsigned, GLuint> OB_CLOSE;
+		
+		//Which one we're actually using
+		std::pair<unsigned, GLuint> OB_cur;
 		
 		struct OrbitInfo {
 			glm::vec3 lastParentPos;
@@ -112,10 +121,10 @@ class Object {
 		//List of satellites
 		std::vector<Object*> _children;
 		
-		unsigned numOrbitVertices;
+		bool doOffset;
 		
-		void updateOrbit(float scaleExp, float scaleMult);
-		void calcOrbit(float scaleExp, float scaleMult, unsigned numDashes, GLuint buffer);
+		void updateOrbit(float scaleExp);
+		void calcOrbit(float scaleExp, unsigned numDashes, std::pair<unsigned, GLuint>& buffer);
 		void drawOrbit() const;
 		void RenderRings(float lightPower) const;
 };

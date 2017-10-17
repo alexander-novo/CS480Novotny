@@ -35,7 +35,16 @@ void Object::Init_GL() {
 	}
 	
 	//Set aside a buffer for our orbit vertices
-	glGenBuffers(1, &OB);
+	glGenBuffers(1, &OB.second);
+	glGenBuffers(1, &OB_REAL_FAR.second);
+	glGenBuffers(1, &OB_REAL_ZOOMED.second);
+	glGenBuffers(1, &OB_CLOSE.second);
+	
+	if(parent != nullptr) {
+		calcOrbit(1, 600, OB_REAL_FAR);
+		calcOrbit(1, ctx.orbitDistance, OB_REAL_ZOOMED);
+		calcOrbit(CLOSE_SCALE, pow(600, CLOSE_SCALE), OB_CLOSE);
+	}
 	
 	//Initialise textures
 	if(ctx.texture != nullptr) {
@@ -93,10 +102,10 @@ void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
 	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
 	
-	if(drawOrbits) updateOrbit(scaleExp, scaleMult);
+	if(drawOrbits) updateOrbit(scaleExp);
 }
 
-void Object::updateOrbit(float scaleExp, float scaleMult) {
+void Object::updateOrbit(float scaleExp) {
 	if(parent == nullptr) return;
 	
 	const glm::vec3& parentPosition = parent->position;
@@ -109,35 +118,56 @@ void Object::updateOrbit(float scaleExp, float scaleMult) {
 	orbitInfo.lastScale = scaleExp;
 	orbitInfo.lastFocus = (menu->getPlanet(menu->options.lookingAt) == this);
 	
+	//We generated these already, don't do it again
+	if(scaleExp == CLOSE_SCALE) {
+		OB_cur = OB_CLOSE;
+		doOffset = true;
+		return;
+	} else if(scaleExp == 1) {
+		doOffset = true;
+		if(orbitInfo.lastFocus) {
+			OB_cur = OB_REAL_ZOOMED;
+		} else {
+			OB_cur = OB_REAL_FAR;
+		}
+		return;
+	}
+	
+	doOffset = false;
+	
+	OB_cur = OB;
+	
 	int numDashes = 600;
 	if(orbitInfo.lastFocus) {
 		numDashes = 100 / pow(ctx.moveScale, scaleExp);
 	}
-	calcOrbit(scaleExp, scaleMult, numDashes, OB);
+	calcOrbit(scaleExp, numDashes, OB);
 }
 
-void Object::calcOrbit(float scaleExp, float scaleMult, unsigned numDashes, GLuint buffer) {
+void Object::calcOrbit(float scaleExp, unsigned numDashes, std::pair<unsigned, GLuint>& buffer) {
 	const glm::vec3& parentPosition = parent->position;
 	
+	double scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
 	double radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
 	double thetaStep = M_PI / numDashes;
 	double rCosPhi = radius * cos(ctx.orbitTilt);
 	double rSinPhi = radius * sin(ctx.orbitTilt);
 	double theta = 0;
 	
-	numOrbitVertices = numDashes * 2;
-	std::vector<glm::vec3> vertexList(numOrbitVertices);
+	buffer.first = numDashes * 2;
+	
+	std::vector<glm::vec3> vertexList(buffer.first);
 	
 	int i;
-	for(i = 0; i < numOrbitVertices; i++){
+	for(i = 0; i < buffer.first; i++){
 		theta = i * thetaStep;
 		vertexList[i] = glm::vec3(parentPosition.x + rCosPhi * cos(theta),
 		                          parentPosition.y + rSinPhi * cos(theta),
 		                          parentPosition.z + radius * sin(theta));
 	}
 	
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * numOrbitVertices, &vertexList[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer.second);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * buffer.first, &vertexList[0], GL_STATIC_DRAW);
 }
 
 const glm::mat4& Object::GetModel() const {
@@ -260,15 +290,19 @@ void Object::drawOrbit() const {
 	orbitShader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
 	orbitShader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 	
-	orbitShader->uniform3fv("globalOffset", 1, &Object::globalOffset->x);
+	glm::vec3 offset = *Object::globalOffset;
+	if(doOffset) {
+		offset -= parent->position;
+	}
+	orbitShader->uniform3fv("globalOffset", 1, &offset.x);
 	
 	glEnableVertexAttribArray(0);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, OB);
+	glBindBuffer(GL_ARRAY_BUFFER, OB_cur.second);
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
 	
-	glDrawArrays(GL_LINES, 0, numOrbitVertices);
+	glDrawArrays(GL_LINES, 0, OB_cur.first);
 	
 	glDisableVertexAttribArray(0);
 }
