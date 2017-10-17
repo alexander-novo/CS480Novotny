@@ -147,6 +147,14 @@
           "year": 103944,
           "tilt": 1.3
         },
+        "rings": {
+          "model": "Rings.obj",
+          "shaders": {
+            "fragment": "frag_rings",
+            "vertex": "vert_materials"
+          },
+          "texture": "2k_jupiter_rings.png"
+        },
         "axial-tilt": 3.13,
         "day": 9.9,
         "model": "Planet.obj",
@@ -311,8 +319,16 @@
           "year": 734136,
           "tilt": 0.8
         },
+        "rings": {
+          "model": "Rings.obj",
+          "shaders": {
+            "fragment": "frag_rings",
+            "vertex": "vert_materials"
+          },
+          "texture": "2k_uranus_rings.png"
+        },
         "axial-tilt": 97.77,
-        "day": -17.2,
+        "day": 17.2,
         "model": "Planet.obj",
         "texture": "2k_uranus.jpg",
         "satellites": [
@@ -382,6 +398,14 @@
           "year": 1435200,
           "tilt": 1.8
         },
+        "rings": {
+          "model": "Rings.obj",
+          "shaders": {
+            "fragment": "frag_rings",
+            "vertex": "vert_materials"
+          },
+          "texture": "2k_neptune_rings.png"
+        },
         "axial-tilt": 28.32,
         "day": 16.1,
         "model": "Planet.obj",
@@ -412,7 +436,7 @@
           "tilt": 17.2
         },
         "axial-tilt": 119.61,
-        "day": -153.3,
+        "day": 153.3,
         "model": "Planet.obj",
         "texture": "2k_pluto_imagiined.jpg",
         "satellites": []
