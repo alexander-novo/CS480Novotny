@@ -135,13 +135,13 @@ void Graphics::calculateCamera() {
 	float scale = lookingAt->ctx.scaleMultiplier / pow(lookingAt->ctx.scaleMultiplier, m_menu.options.scale) * pow(lookingAt->ctx.scale, m_menu.options.scale) * 15;
 	
 	//Find the coordinates of whatever the thing we're looking at is and whatever it is orbiting
-	lookVec = lookingAt->position;
+	lookVec = lookingAt->position - *Object::globalOffset;
 	
 	//If we're orbiting something, put that something in the background of the camera
 	if(parent != NULL) {
-		backgroundVec = parent->position;
+		backgroundVec = parent->position - *Object::globalOffset;
 	} else {
-		backgroundVec = lookVec + glm::vec3(0.0, 0.0, -5.0);
+		backgroundVec = lookVec + glm::vec3(0.0, 0.0, -5.0) - *Object::globalOffset;
 	}
 	
 	//Now do some math to find where to place the camera
@@ -157,9 +157,6 @@ void Graphics::calculateCamera() {
 	backgroundVec *= scale * m_menu.options.zoom;
 	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 	backgroundVec += lookVec;
-	
-	backgroundVec -= *Object::globalOffset;
-	lookVec -= *Object::globalOffset;
 	
 	eyePos = glm::vec3(backgroundVec.x, backgroundVec.y + 0.5 * scale * m_menu.options.zoom * m_menu.options.zoom, backgroundVec.z);
 	
