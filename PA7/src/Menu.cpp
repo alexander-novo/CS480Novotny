@@ -22,7 +22,7 @@ void Menu::update(int dt, float width, float height) {
 	
 	//Start a new window called "Controls"
 	//On first seeing this window, make it 650 x 400, but let the user resize it later
-	ImGui::SetNextWindowSize(ImVec2(550, 300), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(550, 315), ImGuiCond_FirstUseEver);
     // ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing); 
 	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
