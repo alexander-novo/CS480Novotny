@@ -230,16 +230,16 @@ void Object::Render(float lightPower, bool drawOrbits) const {
 	
 	glDisable(GL_BLEND);
 
-	if(ctx.hasRings)
-	{
-		RenderRings(lightPower);	
-	}
 
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(lightPower, drawOrbits);
 	}
-
+	
+	if(ctx.hasRings)
+	{
+		RenderRings(lightPower);	
+	}
 
 }
 
