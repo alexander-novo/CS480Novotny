@@ -100,7 +100,7 @@
         "name": "Mars",
         "radius": 3396,
         "orbit": {
-          "distance": 22790000,
+          "distance": 227900000,
           "year": 16488,
           "tilt": 1.9
         },
