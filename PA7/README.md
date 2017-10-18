@@ -35,9 +35,9 @@ make
 
 # Controls
 
-`w,a,s,d` - Detach camera from planet and move it around
-`shift` - Move camera down
-`spacebar` - Move camera up
+`w,a,s,d` - Detach camera from planet and move it around  
+`shift` - Move camera down  
+`spacebar` - Move camera up  
 `left/right` - Rotate camera
 
 `left click` - Drag to rotate camera around object  
