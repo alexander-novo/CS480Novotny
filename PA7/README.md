@@ -35,14 +35,10 @@ make
 
 # Controls
 
-`left arrow` - Slow down  
-`right arrow` - Speed up  
-`r` - Reverse  
-`s` - Stop  
-`esc` - Quit
-
-Hold `shift` to only affect the circular movement  
-Hold `ctrl` to only affect the spinning movement
+`w,a,s,d` - Detach camera from planet and move it around
+`shift` - Move camera down
+`spacebar` - Move camera up
+`left/right` - Rotate camera
 
 `left click` - Drag to rotate camera around object  
 `Scroll wheel` - Zoom in and out
