@@ -8,8 +8,11 @@ glm::vec3 const * Object::globalOffset;
 Menu* Object::menu;
 
 Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
+	//Make the planet start at a random position
 	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
 	time.spin = 0;
+	//Default value - just in case anything tries to read it
+	//The planet doesn't actually start here - this will be updated in Update()
 	_position = {0.0, 0.0, 0.0};
 }
 
@@ -30,7 +33,6 @@ void Object::Init_GL() {
 
 	if(ctx.hasRings)
 	{
-		ctx.ringsShader->Initialize();
 		ctx.ringsModel->initGL();	
 	}
 	
@@ -40,6 +42,7 @@ void Object::Init_GL() {
 	glGenBuffers(1, &OB_REAL_ZOOMED.second);
 	glGenBuffers(1, &OB_CLOSE.second);
 	
+	//Calculate some of the orbit vertices now, instead of every time we need them
 	if(parent != nullptr) {
 		calcOrbit(1, 600, OB_REAL_FAR);
 		int max = 600 > ctx.orbitDistance ? 600 : ctx.orbitDistance;
@@ -72,7 +75,7 @@ void Object::Init_GL() {
 
 void Object::Update(float dt, float scaleExp, bool drawOrbits) {
 	double timeMod = dt / 1000.0f * ctx.timeScale;
-	double scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp);
+	double scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp); //Makes the sun always the same size
 	double scale = scaleMult * pow(ctx.scale, scaleExp);
 	
 	//Update the timer
@@ -113,6 +116,8 @@ void Object::updateOrbit(float scaleExp) {
 	
 	const glm::vec3& parentPosition = parent->position;
 	
+	//Make certain something has changed since last time
+	//If nothing changed - don't recalculate
 	if(parentPosition == orbitInfo.lastParentPos
 	    && scaleExp == orbitInfo.lastScale
 	    && (menu->getPlanet(menu->options.lookingAt) == this) == orbitInfo.lastFocus) return;
@@ -141,7 +146,7 @@ void Object::updateOrbit(float scaleExp) {
 	OB_cur = OB;
 	
 	int numDashes = 600;
-	if(orbitInfo.lastFocus) {
+	if(orbitInfo.lastFocus) { //If we're looking at the planet, draw more
 		numDashes = 600 * scaleExp;
 	}
 	calcOrbit(scaleExp, numDashes, OB);
@@ -182,6 +187,7 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 	   || (drawOrbits == DRAW_PLANET_ORBITS && !isMoon())
 	   || (drawOrbits == DRAW_MOON_ORBITS && isMoon())) drawOrbit();
 	
+	//If we can't see this object, don't render it
 	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
 	if(lookingAt != this && menu->options.scale > 0.9 && !isMoonOf(lookingAt) && !lookingAt->isMoonOf(this)) {
 		for (const auto &i : _children) {
@@ -232,7 +238,7 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 	//Timer for shader
 	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
 	
-	//Enable blending
+	//Enable blending (for transparent stuff)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -242,47 +248,31 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glDisable(GL_BLEND);
+	
+	if(ctx.hasRings)
+	{
+		RenderRings(lightPower);
+	}
 
 
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(lightPower, drawOrbits);
 	}
-	
-	if(ctx.hasRings)
-	{
-		RenderRings(lightPower);	
-	}
 
 }
 
 void Object::RenderRings(float lightPower) const {
-	ctx.ringsShader->Enable();
-
-	//Send our shaders the MVP matrices
-	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
-	ctx.ringsShader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
-	ctx.ringsShader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
-	ctx.ringsShader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
-	ctx.ringsShader->uniformMatrix4fv("modelViewMatrix", 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
-	
 	//Send the material information
-	ctx.ringsShader->uniform3fv("MaterialAmbientColor", 1, &ctx.ringsModel->material.ambient.r);
-	ctx.ringsShader->uniform3fv("MaterialDiffuseColor", 1, &ctx.ringsModel->material.diffuse.r);
-	ctx.ringsShader->uniform3fv("MaterialSpecularColor", 1, &ctx.ringsModel->material.specular.r);
+	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.ringsModel->material.ambient.r);
+	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.ringsModel->material.diffuse.r);
+	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.ringsModel->material.specular.r);
 	ctx.shader->uniform1fv("shininess", 1, &ctx.model->material.shininess);
-	
-	glm::vec3 oppOffset = *Object::globalOffset;
-	oppOffset *= -1;
-	ctx.ringsShader->uniform3fv("lightW3", 1, &oppOffset.x);
-	
-	//And light
-	ctx.ringsShader->uniform1fv("lightPower", 1, &lightPower);
 	
 	//If we have a texture, use it
 	if(ctx.ringsTexture != nullptr) {
 		ctx.ringsTexture->bind(GL_COLOR_TEXTURE);
-		ctx.ringsShader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
+		ctx.shader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
 	}
 
 	//Enable blending

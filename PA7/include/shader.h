@@ -20,6 +20,7 @@ class Shader {
 		//Get uniform location from shader
 		GLint GetUniformLocation(const char *pUniformName);
 		
+		//Set uniforms within shader
 		bool uniform1fv(const char* uniform, GLsizei size, const GLfloat* value);
 		bool uniform3fv(const char* uniform, GLsizei size, const GLfloat* value);
 		bool uniform1i(const char* uniform, GLint value);

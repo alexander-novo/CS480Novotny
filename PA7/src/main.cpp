@@ -197,16 +197,10 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		ctx.ringsModel = Model::load("models/" + filename);
 		filename = config["rings"]["texture"];
 		ctx.ringsTexture = Texture::load("textures/" + filename);
-
-		std::string vertexLocation = config["rings"]["shaders"]["vertex"];
-		std::string fragLocation = config["rings"]["shaders"]["fragment"];
-		ctx.ringsShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 	}
 	else
 	{
-
 		ctx.hasRings = false;
-		ctx.ringsShader = nullptr;
 		ctx.ringsModel = nullptr;
 		ctx.ringsTexture = nullptr;
 	}

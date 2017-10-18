@@ -30,11 +30,11 @@ void main(void) {
     // Direction of the light (from the fragment to the light)
     vec3 l = normalize( lightDirC );
 
-    vec3 MaterialDiffuseTexture2d;
-    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
+    vec4 MaterialDiffuseTexture2d;
+    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
 
     //Start with a basis of the diffuse color. This will later become our texture
-    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d;
+    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d.rgb;
 
     //How far away we are - light depends on distance
     float distance = length(lightW3 - positionW);
@@ -59,9 +59,9 @@ void main(void) {
         // Ambient : simulates indirect lighting
         materialAmbientModified +
         // Diffuse : "color" of the object
-        MaterialDiffuseTexture2d * lightColor * lightPower * cosTheta / distance +
+        MaterialDiffuseTexture2d.rgb * lightColor * lightPower * cosTheta / distance +
         // Specular : reflective highlight, like a mirror
         MaterialSpecularColor * lightColor * lightPower * pow(cosAlpha,shininess) / distance;
-    frag_color.a = 1;
+    frag_color.a = MaterialDiffuseTexture2d.a;
 }
 

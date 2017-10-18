@@ -28,15 +28,16 @@ class Engine {
 		
 		~Engine();
 		
+		//Initialise OpenGL
+		//Call after starting OpenGL
 		bool Initialize();
 		
+		//Run the actual program
 		void Run();
 		
-		void Keyboard(unsigned dt);
-		void eventHandler();
-		
+		//Get number of milliseconds since last frame
 		unsigned int getDT();
-		
+		//Get the current time in milliseconds
 		long long GetCurrentTimeMillis();
 		
 		//Read-only
@@ -62,6 +63,11 @@ class Engine {
 		Menu *m_menu;
 		
 		bool mouseDown;
+		
+		//Handle keyboard controls
+		void Keyboard(unsigned dt);
+		//Handle other events (mouse, etc.)
+		void eventHandler();
 };
 
 #endif // ENGINE_H

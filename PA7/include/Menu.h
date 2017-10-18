@@ -55,6 +55,7 @@ class Menu {
 		//and numSatellites keeps track of the number of planets added to the list
 		void buildSatelliteList(Object& root, std::string pre, int& numSatellites);
 		
+		//Used to smooth into close/realistic scale
 		void updateScale(int dt);
 		
 		//Keep track of where we're rendering and the sun

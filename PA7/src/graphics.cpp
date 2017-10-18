@@ -7,6 +7,7 @@ Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), 
 	
 	cameraMode = CAMERA_MODE_FOLLOW;
 	
+	//Load skybox stuff
 	skybox = Model::load("models/Skybox.obj");
 	skyShader = Shader::load("shaders/vert_sky", "shaders/frag_sky");
 	skyTexture = Texture::load("textures/8k_stars_milky_way.jpg");
@@ -63,8 +64,10 @@ void Graphics::Update(unsigned int dt) {
 	// Update the object
 	m_cube->Update(dt, m_menu.options.scale, m_menu.options.drawOrbits);
 	
+	//Calculate what our offset changed by, in case we need to move the camera
 	offsetChange -= *Object::globalOffset;
 	
+	//Calculate where our camera should be and update the View matrix
 	calculateCamera(offsetChange);
 }
 
@@ -74,9 +77,11 @@ void Graphics::Render() {
 	
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
 	
+	//Render our background
+	//Done first so that transparent objects (rings) work properly
 	renderSkybox();
 	
-	// Render the object
+	//Decide if we should render orbits (and if so - what kinds)
 	unsigned orbits;
 	if(m_menu.options.drawOrbits) {
 		if(m_menu.options.drawMoonOrbits) {
@@ -89,6 +94,8 @@ void Graphics::Render() {
 	} else {
 		orbits = DRAW_NO_ORBITS;
 	}
+	
+	//Render planets
 	m_cube->Render(modifiedLight, orbits);
 	
 	// Get any errors from OpenGL
@@ -102,6 +109,7 @@ void Graphics::Render() {
 void Graphics::renderSkybox() {
 	skyShader->Enable();
 	
+	//Make certain we can see the inside faces, because we will always be inside the skybox
 	GLint OldCullFaceMode;
 	glGetIntegerv(GL_CULL_FACE_MODE, &OldCullFaceMode);
 	GLint OldDepthFuncMode;
@@ -110,6 +118,9 @@ void Graphics::renderSkybox() {
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_LEQUAL);
 	
+	//Make certain the skybox is centered on the camera
+	//We don't have to worry about making it big enough to cover everything
+	//the shader will make certain it's always in the background
 	glm::mat4 modelMat(1.0);
 	modelMat = glm::translate(modelMat, eyePos);
 	modelMat = glm::scale(modelMat, glm::vec3(20, 20, 20));

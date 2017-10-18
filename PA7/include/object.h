@@ -45,7 +45,6 @@ class Object {
 			Texture* normalMap = nullptr;
 			Texture* specularMap = nullptr;
 			Shader* shader;
-			Shader* ringsShader;
 			
 			bool isLightSource = false;
 			
@@ -77,10 +76,14 @@ class Object {
 		//Pointer to the planet this one is orbiting - NULL for sun-type objects
 		Object* const parent;
 		
+		//Where in the world the planet is
 		const glm::vec3& position;
 		
+		//Returns true if the object isn't orbiting the sun (or is the sun itself)
 		bool isMoon() const;
+		//Returns how many things this object is orbiting
 		unsigned orbitDepth() const;
+		//Returns true if this object is orbiting the given object
 		bool isMoonOf(Object const *) const;
 		
 		//Returns a reference to a satellite
@@ -132,9 +135,13 @@ class Object {
 		
 		bool doOffset;
 		
+		//Determine which orbit buffer to use, and generate more if neccesary
 		void updateOrbit(float scaleExp);
+		//Generates orbit vertices and stuffs them into the given buffer
 		void calcOrbit(float scaleExp, unsigned numDashes, std::pair<unsigned, GLuint>& buffer);
+		//Render orbit dashes
 		void drawOrbit() const;
+		//Render rings (if they exist)
 		void RenderRings(float lightPower) const;
 };
 

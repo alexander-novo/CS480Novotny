@@ -84,11 +84,6 @@ void Engine::Run() {
 
 void Engine::Keyboard(unsigned dt) {
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	
-	if(keyState[SDL_SCANCODE_ESCAPE]) {
-		m_running = false;
-		return;
-	}
 	float cameraSpeed = glm::length(m_graphics->lookAt - m_graphics->eyePos) * dt / 500;
 	
 	if(SDL_GetModState() & KMOD_SHIFT) {
@@ -165,8 +160,9 @@ void Engine::Keyboard(unsigned dt) {
 }
 
 void Engine::eventHandler() {
+	//Quit program
 	if (m_event.type == SDL_QUIT
-	    || m_event.type == SDL_KEYDOWN && m_event.key.type == SDLK_ESCAPE) {
+	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
 		m_running = false;
 	}
 	
@@ -199,6 +195,7 @@ void Engine::eventHandler() {
 		m_menu->setZoom(m_menu->options.zoom + step);
 	}
 	
+		//Window resize
 	else if(m_event.type == SDL_WINDOWEVENT) {
 		switch(m_event.window.event) {
 			case SDL_WINDOWEVENT_SIZE_CHANGED:

@@ -33,42 +33,52 @@ class Model {
 			glm::vec3 specular = {0.0, 0.0, 0.0}; //Ks
 			
 			float shininess = 0.0f;               //Ns
-		};
+		} material;
+		
+		//Load a model from a file
 		static Model* load(std::string filename);
 		
 		std::vector<Vertex> _vertices;
 		std::vector<unsigned int> _indices;
 		
-		Material material;
-		
+		//Initalise OpenGL
+		//Call after starting OpenGL, but before using drawModel()
 		void initGL();
+		//Draw the model to the screen
 		void drawModel();
 		
 	private:
 		Model();
 		
+		//OpenGL buffers
 		GLuint VB;
 		GLuint IB;
 		
+		//Keeps track of whether of not initGL() has been called yet
 		bool initialised;
-		
-		std::unordered_map<std::string, Material> materialList;
 };
 
 class Texture {
 	public:
+		//Load texture from file
 		static Texture* load(std::string filename);
 		
+		//Initalise OpenGL
+		//Call after starting OpenGL, but before using bind()
 		void initGL();
+		//Bind the texture for use
 		void bind(GLenum textureTarget);
 		
 	private:
 		Texture();
 		
+		//Keeps track of whether of not initGL() has been called yet
 		bool initialised;
 		
+		//OpenGL texture location
 		GLuint m_textureObj;
 		
+		//ImageMagick data
 		Magick::Image* m_Image;
 		Magick::Blob* m_Blob;
 };
