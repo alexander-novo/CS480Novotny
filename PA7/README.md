@@ -40,8 +40,8 @@ make
 `spacebar` - Move camera up  
 `left/right` - Rotate camera
 
-`left click` - Drag to rotate camera around object  
-`Scroll wheel` - Zoom in and out
+`left click` - Drag to rotate camera around object (With planet selected)   
+`Scroll wheel` - Zoom in and out (With planet selected)   
 
 # Things to check out
 
