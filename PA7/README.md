@@ -72,6 +72,18 @@ Click on the header to open.
 **Orbit Speed** - How fast the currently selected object orbits, as well as the direction  
 **Spin Speed** - How fast the currently selected object spins, as well as the direction 
 
+# Extra Credit Checklist
+
+- Live adjustment of configuration speed  
+- Configuration file  
+- Planet orbit paths  
+- Realistic view / scaled view  
+- Rings on proper planets  
+- GUI  
+- Skybox  
+- Alternate nighttime textures on Earth  
+- Specular/Normal maps on Earth
+
 # Command Line Parameters
 
 ## Command Usage
