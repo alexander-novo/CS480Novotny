@@ -53,11 +53,12 @@ void Engine::Run() {
 		// Update the DT
 		m_DT = getDT();
 		
-		// Check the keyboard input
 		while (SDL_PollEvent(&m_event) != 0) {
-			Keyboard();
+			eventHandler();
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
+		// Check the keyboard input
+		Keyboard(m_DT);
 		
 		//Make certain whatever we're looking at is at origin
 		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
@@ -67,6 +68,8 @@ void Engine::Run() {
 		
 		// Update menu options and labels
 		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
+		
+		if(m_menu->options.switchedPlanetView) m_graphics->cameraMode = CAMERA_MODE_FOLLOW;
 		
 		//Render everything
 		m_graphics->Render();
@@ -79,64 +82,95 @@ void Engine::Run() {
 	ImGui_ImplSdlGL3_Shutdown();
 }
 
-void Engine::Keyboard() {
-	float *scaleHandler;
-	float minimum = MIN_MOVE_SCALE, maximum = MAX_MOVE_SCALE;
+void Engine::Keyboard(unsigned dt) {
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
 	
-	//Use keyboard mods to determine what property to change
-	if (SDL_GetModState() & KMOD_SHIFT) {
-		scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.moveScale);
-	} else if (SDL_GetModState() & KMOD_CTRL) {
-		scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.spinScale);
-	} else {
-		scaleHandler = &(m_menu->getPlanet(m_menu->options.planetSelector)->ctx.timeScale);
-		minimum = MIN_TIME_SCALE;
-		maximum = MAX_TIME_SCALE;
+	if(keyState[SDL_SCANCODE_ESCAPE]) {
+		m_running = false;
+		return;
 	}
+	float cameraSpeed = glm::length(m_graphics->lookAt - m_graphics->eyePos) * dt / 500;
 	
-	if (m_event.type == SDL_QUIT) {
+	if(SDL_GetModState() & KMOD_SHIFT) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go Down
+		glm::vec3 moveDir = {0.0, -1.0, 0.0};
+		moveDir *= cameraSpeed;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	if(keyState[SDL_SCANCODE_SPACE]) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go Up
+		glm::vec3 moveDir = {0.0, 1.0, 0.0};
+		moveDir *= cameraSpeed;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	if(keyState[SDL_SCANCODE_W]) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go forward
+		glm::vec3 moveDir = glm::normalize(m_graphics->lookAt - m_graphics->eyePos);
+		moveDir *= cameraSpeed;
+		moveDir.y = 0;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	if(keyState[SDL_SCANCODE_A]) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go left
+		glm::vec3 moveDir = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), m_graphics->lookAt - m_graphics->eyePos));
+		moveDir *= cameraSpeed;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	if(keyState[SDL_SCANCODE_S]) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go back
+		glm::vec3 moveDir = glm::normalize(m_graphics->eyePos - m_graphics->lookAt);
+		moveDir.y = 0;
+		moveDir *= cameraSpeed;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	if(keyState[SDL_SCANCODE_D]) {
+		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		//Go right
+		glm::vec3 moveDir = glm::normalize(glm::cross(m_graphics->lookAt - m_graphics->eyePos, glm::vec3(0.0, 1.0, 0.0)));
+		moveDir *= cameraSpeed;
+		m_graphics->lookAt += moveDir;
+		m_graphics->eyePos += moveDir;
+	}
+	//Rotations
+	if(keyState[SDL_SCANCODE_LEFT]) {
+		float step = 0.05 * dt;
+		m_menu->setRotation(m_menu->options.rotation + step);
+		if(m_graphics->cameraMode == CAMERA_MODE_FREE) {
+			step *= M_PI / -180;
+			glm::vec3 toLookAt = m_graphics->lookAt - m_graphics->eyePos;
+			m_graphics->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->eyePos.x;
+			m_graphics->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->eyePos.z;
+		}
+	}
+	if(keyState[SDL_SCANCODE_RIGHT]) {
+		float step = 0.05 * dt;
+		m_menu->setRotation(m_menu->options.rotation - step);
+		if(m_graphics->cameraMode == CAMERA_MODE_FREE) {
+			step *= M_PI / 180;
+			glm::vec3 toLookAt = m_graphics->lookAt - m_graphics->eyePos;
+			m_graphics->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->eyePos.x;
+			m_graphics->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->eyePos.z;
+		}
+	}
+}
+
+void Engine::eventHandler() {
+	if (m_event.type == SDL_QUIT
+	    || m_event.type == SDL_KEYDOWN && m_event.key.type == SDLK_ESCAPE) {
 		m_running = false;
 	}
-		
-		//Keyboard
 	
-	else if (m_event.type == SDL_KEYDOWN && !ImGui::GetIO().WantCaptureKeyboard) {
-		// handle key down events here
-		switch (m_event.key.keysym.sym) {
-			//Stop program
-			case SDLK_ESCAPE:
-				m_running = false;
-				break;
-				
-				//Change overall speed
-			case SDLK_LEFT:
-				*scaleHandler -= .05;
-				break;
-			case SDLK_RIGHT:
-				*scaleHandler += .05;
-				break;
-				
-				//Reverse direction
-			case SDLK_r:
-				if (SDL_GetModState() & KMOD_SHIFT) {
-					m_menu->getPlanet(m_menu->options.planetSelector)->ctx.moveDir *= -1;
-				} else if (SDL_GetModState() & KMOD_CTRL) {
-					m_menu->getPlanet(m_menu->options.planetSelector)->ctx.spinDir *= -1;
-				} else {
-					m_menu->getPlanet(m_menu->options.planetSelector)->ctx.timeScale *= -1;
-				}
-				break;
-				
-				//Stop object
-			case SDLK_s:
-				*scaleHandler = 0.0;
-				break;
-		}
-		
-	}
-		
-		//Mouse - click and drag rotation
-	
+	//Mouse - click and drag rotation
 	else if (m_event.type == SDL_MOUSEBUTTONDOWN && !ImGui::GetIO().WantCaptureMouse) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
@@ -173,9 +207,9 @@ void Engine::Keyboard() {
 				
 				//Update our projection matrix in case the aspect ratio is different now
 				m_graphics->getProjection() = glm::perspective( 45.0f,
-				                               float(windowWidth)/float(windowHeight),
-				                               0.001f,
-				                               10000000.0f);
+				                                                float(windowWidth)/float(windowHeight),
+				                                                0.001f,
+				                                                10000000.0f);
 				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT
@@ -183,9 +217,6 @@ void Engine::Keyboard() {
 				break;
 		}
 	}
-	
-	if (*scaleHandler < minimum) *scaleHandler = minimum;
-	if (*scaleHandler > maximum) *scaleHandler = maximum;
 }
 
 unsigned int Engine::getDT() {

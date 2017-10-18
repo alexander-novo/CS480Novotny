@@ -29,6 +29,7 @@ class Menu {
 			bool drawMoonOrbits = false;
 			bool drawLabels = true;
 			bool drawMoonLabels = false;
+			bool switchedPlanetView = false; //True if we switched planets in the last frame
 		};
 		
 		Menu(Window& window, Object& root);

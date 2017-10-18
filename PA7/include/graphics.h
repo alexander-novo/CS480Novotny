@@ -8,6 +8,9 @@
 #include "object.h"
 #include "Menu.h"
 
+#define CAMERA_MODE_FOLLOW 1
+#define CAMERA_MODE_FREE   2
+
 class Graphics {
 	public:
 		Graphics(Object *sun, float lightPower, Menu& menu);
@@ -25,14 +28,17 @@ class Graphics {
 		Object *getCube();
 		
 		glm::mat4& getProjection();
+		
+		glm::vec3 lookAt;
+		glm::vec3 eyePos;
+		
+		int cameraMode;
 	
 	private:
 		std::string ErrorString(GLenum error);
 		
-		void calculateCamera();
+		void calculateCamera(glm::vec3 offsetChange);
 		void renderSkybox();
-		
-		glm::vec3 eyePos;
 		
 		Menu& m_menu;
 		

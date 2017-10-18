@@ -32,7 +32,8 @@ class Engine {
 		
 		void Run();
 		
-		void Keyboard();
+		void Keyboard(unsigned dt);
+		void eventHandler();
 		
 		unsigned int getDT();
 		
