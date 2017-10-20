@@ -26,6 +26,9 @@ uniform sampler2D gSampler;
 uniform sampler2D gAltSampler;
 uniform sampler2D gNormalSampler;
 uniform sampler2D gSpecularSampler;
+uniform samplerCube gShadowMap;
+
+uniform int usingShadows;
 
 void main(void) {
     //What color
@@ -45,7 +48,12 @@ void main(void) {
     //How far away we are - light depends on distance
     float distance = length(lightW3 - positionW);
 
-    if(cosTheta > -0.05) {
+    if(usingShadows == 1 ) {
+        frag_color.rgba = vec4(texture(gShadowMap, normalize(positionW - lightW3)).r, 0.0, 0.0, 1.0);
+    } else {
+        frag_color.rgba = vec4(0.0, 0.0, 0.0, 1.0);
+    }/*
+    else if(cosTheta > -0.05) {
         vec3 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
 
         //Start with a basis of the diffuse color. This will later become our texture
@@ -65,9 +73,9 @@ void main(void) {
             // Ambient : simulates indirect lighting
             materialAmbientModified +
             // Diffuse : "color" of the object
-            MaterialDiffuseTexture2d * lightColor * lightPower * abs(cosTheta) / distance +
+            MaterialDiffuseTexture2d * lightColor * lightPower * shadowFactor * abs(cosTheta) / distance +
             // Specular : reflective highlight, like a mirror
-            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * pow(cosAlpha,20) / distance;
+            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * shadowFactor * pow(cosAlpha,20) / distance;
 
         if(cosTheta <= 0.05) {
             cosTheta += 0.05;
@@ -78,7 +86,6 @@ void main(void) {
         }
     }  else {
         frag_color.rgb = texture2D(gAltSampler, uvCoord.st).xyz;
-    }
-    frag_color.a = 1;
+    }*/
 }
 

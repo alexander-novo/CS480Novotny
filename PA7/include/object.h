@@ -60,7 +60,8 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt, float scaleExp, bool drawOrbits);
 		//Renders the planet on the screen
-		void Render(float lightPower, unsigned drawOrbits) const;
+		void Render(float lightPower, unsigned drawOrbits, GLuint shadowMap) const;
+		void renderShadow(Shader* shadowShader) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
 		//Gets the number of satellites

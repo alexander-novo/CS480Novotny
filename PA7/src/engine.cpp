@@ -31,7 +31,7 @@ bool Engine::Initialize() {
 	m_menu = new Menu(*m_window, *m_cube);
 	
 	// Start the graphics
-	m_graphics = new Graphics(m_cube, m_light, *m_menu);
+	m_graphics = new Graphics(m_cube, m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
 	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT)) {
 		printf("The graphics failed to initialize.\n");
 		return false;
@@ -62,7 +62,7 @@ void Engine::Run() {
 		
 		//Make certain whatever we're looking at is at origin
 		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
-		
+
 		// Update planet positions
 		m_graphics->Update(m_DT);
 		
@@ -206,7 +206,7 @@ void Engine::eventHandler() {
 				m_graphics->getProjection() = glm::perspective( 45.0f,
 				                                                float(windowWidth)/float(windowHeight),
 				                                                0.001f,
-				                                                10000000.0f);
+				                                                FAR_FRUSTRUM);
 				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT

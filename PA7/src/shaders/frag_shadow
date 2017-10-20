@@ -1,0 +1,11 @@
+#version 330 core
+
+in vec3 worldPos;
+
+uniform vec3 lightW3;
+
+layout (location = 0) out float fragDepth;
+
+void main(void) {
+    fragDepth = (length(worldPos - lightW3) - 1) / (1000000 - 1);
+}

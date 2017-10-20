@@ -28,6 +28,7 @@ bool Shader::Initialize() {
 		
 		if (!AddShader(GL_VERTEX_SHADER, vertexShader)) return false;
 		if (!AddShader(GL_FRAGMENT_SHADER, fragmentShader)) return false;
+		if (geometryShader != "" && !AddShader(GL_GEOMETRY_SHADER, geometryShader)) return false;
 		
 		initialised = true;
 		
@@ -63,7 +64,7 @@ bool Shader::AddShader(GLenum ShaderType, const std::string &s) {
 	if (!success) {
 		GLchar InfoLog[1024];
 		glGetShaderInfoLog(ShaderObj, 1024, NULL, InfoLog);
-		std::cerr << "Error with " << s << std::endl;
+		std::cerr << "Error with " << key << std::endl;
 		std::cerr << "Error compiling: " << InfoLog << std::endl;
 		return false;
 	}
@@ -85,15 +86,18 @@ bool Shader::Finalize() {
 	glGetProgramiv(m_shaderProg, GL_LINK_STATUS, &Success);
 	if (Success == 0) {
 		glGetProgramInfoLog(m_shaderProg, sizeof(ErrorLog), nullptr, ErrorLog);
-		std::cerr << "Error linking shader program: " << ErrorLog << std::endl;
+		std::cerr << "Error linking shader program (" << key << "): " << ErrorLog << std::endl;
 		return false;
 	}
+	
+	Enable();
+	uniform1i("gShadowMap", GL_SHADOW_TEXTURE_OFFSET);
 	
 	glValidateProgram(m_shaderProg);
 	glGetProgramiv(m_shaderProg, GL_VALIDATE_STATUS, &Success);
 	if (!Success) {
 		glGetProgramInfoLog(m_shaderProg, sizeof(ErrorLog), nullptr, ErrorLog);
-		std::cerr << "Invalid shader program: " << ErrorLog << std::endl;
+		std::cerr << "Invalid shader program(" << key << "): " << ErrorLog << std::endl;
 		return false;
 	}
 	
@@ -119,14 +123,16 @@ GLint Shader::GetUniformLocation(const char *pUniformName) {
 	return Location;
 }
 
-Shader *Shader::load(std::string vertexLocation, std::string fragmentLocation) {
-	std::string key = vertexLocation + ", " + fragmentLocation;
+Shader *Shader::load(std::string vertexLocation, std::string fragmentLocation, std::string geometryLocation) {
+	std::string key = vertexLocation + ", " + fragmentLocation + ", " + geometryLocation;
 	
 	if(loadedShaders.find(key) != loadedShaders.end()) {
 		return loadedShaders[key];
 	}
 	
 	auto * newShader = new Shader();
+	
+	newShader->key = key;
 	
 	std::ifstream vertexFile(vertexLocation);
 	if (!vertexFile.is_open()) {
@@ -141,6 +147,17 @@ Shader *Shader::load(std::string vertexLocation, std::string fragmentLocation) {
 		return nullptr;
 	}
 	newShader->fragmentShader = std::string(std::istreambuf_iterator<char>(fragFile), {});
+	
+	if(geometryLocation != "") {
+		std::ifstream geoFile(fragmentLocation);
+		if (!geoFile.is_open()) {
+			std::cerr << "Could not find geometry shader file: " << geometryLocation << std::endl;
+			return nullptr;
+		}
+		newShader->geometryShader = std::string(std::istreambuf_iterator<char>(geoFile), {});
+	} else {
+		newShader->geometryShader = "";
+	}
 	
 	
 	newShader->initialised = false;

@@ -182,7 +182,7 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render(float lightPower, unsigned drawOrbits) const {
+void Object::Render(float lightPower, unsigned drawOrbits, GLuint shadowMap) const {
 	if(drawOrbits == DRAW_ALL_ORBITS
 	   || (drawOrbits == DRAW_PLANET_ORBITS && !isMoon())
 	   || (drawOrbits == DRAW_MOON_ORBITS && isMoon())) drawOrbit();
@@ -191,7 +191,7 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
 	if(lookingAt != this && menu->options.scale > 0.9 && !isMoonOf(lookingAt) && !lookingAt->isMoonOf(this)) {
 		for (const auto &i : _children) {
-			i->Render(lightPower, drawOrbits);
+			i->Render(lightPower, drawOrbits, shadowMap);
 		}
 		return;
 	}
@@ -234,6 +234,14 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 		ctx.specularMap->bind(GL_SPECULAR_TEXTURE);
 		ctx.shader->uniform1i("gSpecularSampler", GL_SPECULAR_TEXTURE_OFFSET);
 	}
+	if(menu->options.drawShadows) {
+		glActiveTexture(GL_SHADOW_TEXTURE);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMap);
+		ctx.shader->uniform1i("gShadowMap", GL_SHADOW_TEXTURE_OFFSET);
+		ctx.shader->uniform1i("usingShadows", 1);
+	} else {
+		ctx.shader->uniform1i("usingShadows", 0);
+	}
 	
 	//Timer for shader
 	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
@@ -257,9 +265,29 @@ void Object::Render(float lightPower, unsigned drawOrbits) const {
 
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
-		i->Render(lightPower, drawOrbits);
+		i->Render(lightPower, drawOrbits, shadowMap);
 	}
 
+}
+
+void Object::renderShadow(Shader* shadowShader) const {
+	
+	//If we can't see this object, don't render it
+	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
+	if(lookingAt != this && menu->options.scale > 0.9 && !isMoonOf(lookingAt) && !lookingAt->isMoonOf(this)) {
+		return;
+	}
+	
+	shadowShader->uniformMatrix4fv("M", 1, GL_FALSE, glm::value_ptr(modelMat));
+	
+	//Now draw our planet
+	ctx.model->drawModel();
+	
+	//Now pass the function down the chain to our satellites
+	for (const auto &i : _children) {
+		i->renderShadow(shadowShader);
+	}
+	
 }
 
 void Object::RenderRings(float lightPower) const {

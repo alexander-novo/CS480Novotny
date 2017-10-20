@@ -6,6 +6,7 @@
 #include <map>
 #include <unordered_map>
 
+#include "model.h"
 #include "graphics_headers.h"
 
 #define SHADER_DIR "shaders/"
@@ -27,7 +28,7 @@ class Shader {
 		bool uniformMatrix4fv(const char* uniform, GLsizei size, GLboolean transpose, const GLfloat* value);
 		
 		//Load a shader from a file
-		static Shader *load(std::string vertexFile, std::string fragmentFile);
+		static Shader *load(std::string vertexFile, std::string fragmentFile, std::string geometryFile = "");
 	
 	private:
 		Shader();
@@ -44,6 +45,8 @@ class Shader {
 		
 		std::string vertexShader;
 		std::string fragmentShader;
+		std::string geometryShader;
+		std::string key;
 		
 		static std::unordered_map<std::string, Shader*> loadedShaders;
 };

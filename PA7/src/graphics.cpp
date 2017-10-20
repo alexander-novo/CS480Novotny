@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), lightPower(lightStrength), m_menu(menu) {
+Graphics::Graphics(Object* sun, float lightStrength, Menu& menu, const int& w, const int& h) : windowWidth(w), windowHeight(h), m_cube(sun), lightPower(lightStrength), m_menu(menu) {
 	Object::viewMatrix = &view;
 	Object::projectionMatrix = &projection;
 	Object::globalOffset = &m_cube->position;
@@ -11,6 +11,8 @@ Graphics::Graphics(Object* sun, float lightStrength, Menu& menu) : m_cube(sun), 
 	skybox = Model::load("models/Skybox.obj");
 	skyShader = Shader::load("shaders/vert_sky", "shaders/frag_sky");
 	skyTexture = Texture::load("textures/8k_stars_milky_way.jpg");
+	
+	shadowShader = Shader::load("shaders/vert_shadow", "shaders/frag_shadow");
 }
 
 Graphics::~Graphics() {
@@ -46,6 +48,34 @@ bool Graphics::Initialize(int width, int height) {
 	skyShader->Initialize();
 	skyTexture->initGL();
 	
+	shadowShader->Initialize();
+	
+	glGenFramebuffers(1, &depthBuffer);
+	
+	glGenTextures(1, &shadowMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMap);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	
+	for (uint i = 0 ; i < 6 ; i++) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, 1024, 1024, 0, GL_RED, GL_FLOAT, NULL);
+	}
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X, shadowMap, 0);
+	//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMap, 0);
+	
+	glGenRenderbuffers(1, &renderBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
+	
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -53,7 +83,7 @@ bool Graphics::Initialize(int width, int height) {
 	projection = glm::perspective( 45.0f, //the FoV typically 90 degrees is good which is what this is set to
 	                               float(width)/float(height), //Aspect Ratio, so Circles stay Circular
 	                               0.001f, //Distance to the near plane, normally a small value like this
-	                               10000000.0f); //Distance to the far plane,
+	                               FAR_FRUSTRUM); //Distance to the far plane,
 	
 	return true;
 }
@@ -72,6 +102,10 @@ void Graphics::Update(unsigned int dt) {
 }
 
 void Graphics::Render() {
+	if(m_menu.options.drawShadows) renderShadowMap();
+	
+	//Switch to rendering on the screen
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -95,8 +129,13 @@ void Graphics::Render() {
 		orbits = DRAW_NO_ORBITS;
 	}
 	
+	if(m_menu.options.drawShadows) {
+		glActiveTexture(GL_SHADOW_TEXTURE);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMap);
+	}
+	
 	//Render planets
-	m_cube->Render(modifiedLight, orbits);
+	m_cube->Render(modifiedLight, orbits, shadowMap);
 	
 	// Get any errors from OpenGL
 	auto error = glGetError();
@@ -135,6 +174,41 @@ void Graphics::renderSkybox() {
 	
 	glCullFace(OldCullFaceMode);
 	glDepthFunc(OldDepthFuncMode);
+}
+
+void Graphics::renderShadowMap() {
+	shadowShader->Enable();
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glViewport(0,0,1024,1024);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	
+	//glm::mat4 oldView = view;
+	//glm::mat4 oldProj = projection;
+	
+	glm::vec3 offset = *Object::globalOffset;
+	offset *= -1;
+	
+	lprojection = glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, FAR_FRUSTRUM);
+	
+	glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+	for (int i = 0; i < 6; i++) {
+		lshadowTrans[i] = lprojection * glm::lookAt(offset, offset + gCameraDirections[i].Target, gCameraDirections[i].up);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, gCameraDirections[i].CubemapFace, shadowMap, 0);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		shadowShader->uniformMatrix4fv("VP", 1, GL_FALSE, glm::value_ptr(lshadowTrans[i]));
+		for(int j = 0; j < m_cube->getNumChildren(); j++) {
+			(*m_cube)[j].renderShadow(shadowShader);
+		}
+	}
+	
+	//view = oldView;
+	//projection = oldProj;
+	glViewport(0, 0, windowWidth, windowHeight);
 }
 
 void Graphics::calculateCamera(glm::vec3 offsetChange) {

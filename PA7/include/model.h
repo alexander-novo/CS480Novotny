@@ -18,12 +18,14 @@
 #define GL_ALT_TEXTURE2     GL_TEXTURE2
 #define GL_NORMAL_TEXTURE   GL_TEXTURE3
 #define GL_SPECULAR_TEXTURE GL_TEXTURE4
+#define GL_SHADOW_TEXTURE   GL_TEXTURE5
 //And the offset (for sending to the sampler)
 #define GL_COLOR_TEXTURE_OFFSET    0
 #define GL_ALT_TEXTURE_OFFSET      1
 #define GL_ALT_TEXTURE2_OFFSET     2
 #define GL_NORMAL_TEXTURE_OFFSET   3
 #define GL_SPECULAR_TEXTURE_OFFSET 4
+#define GL_SHADOW_TEXTURE_OFFSET   5
 
 class Model {
 	public:

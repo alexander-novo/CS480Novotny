@@ -80,6 +80,14 @@ void Menu::update(int dt, float width, float height) {
 		
 		ImGui::EndChild();
 	}
+	if (ImGui::CollapsingHeader("Experimental Features", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing)) {
+		ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
+		ImGui::BeginChild("Experimental Features", ImVec2(0, 50), true, ImGuiWindowFlags_NoScrollbar);
+		
+		ImGui::Checkbox("Draw Shadows", &_options.drawShadows);
+		
+		ImGui::EndChild();
+	}
 	//End the window
 	ImGui::End();
 	
