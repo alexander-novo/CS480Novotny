@@ -24,7 +24,7 @@ class Menu {
 			int lookingAt = 0;    //Which planet our camera should be looking at
 			float zoom = 1.0;     //Keeps track of how far our camera should be away from the planet we're looking at
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
-			float scale = 1.0;    //Keep track of the current distance scale. Applied as an exponential modifier
+			float scale = CLOSE_SCALE;    //Keep track of the current distance scale. Applied as an exponential modifier
 			bool drawOrbits = true;
 			bool drawMoonOrbits = false;
 			bool drawLabels = true;
@@ -66,7 +66,7 @@ class Menu {
 		Options _options;
 		
 		//Keep track of what we should be changing our scale to
-		int scaleTo = 1;
+		int scaleTo = CLOSE_SCALE;
 		
 		//Drop down menu string
 		std::string satelliteList;
