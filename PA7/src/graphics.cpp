@@ -63,7 +63,7 @@ bool Graphics::Initialize(int width, int height) {
 	//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 	
 	for (uint i = 0 ; i < 6 ; i++) {
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, 1024, 1024, 0, GL_RED, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, 5120, 5120, 0, GL_RGB, GL_FLOAT, NULL);
 	}
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
@@ -72,7 +72,7 @@ bool Graphics::Initialize(int width, int height) {
 	
 	glGenRenderbuffers(1, &renderBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 5120, 5120);
 	
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
 	
@@ -102,7 +102,7 @@ void Graphics::Update(unsigned int dt) {
 }
 
 void Graphics::Render() {
-	if(m_menu.options.drawShadows) renderShadowMap();
+	if(m_menu.options.drawShadows && m_menu.options.scale == CLOSE_SCALE) renderShadowMap();
 	
 	//Switch to rendering on the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -180,7 +180,9 @@ void Graphics::renderShadowMap() {
 	shadowShader->Enable();
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	glViewport(0,0,1024,1024);
+	glViewport(0,0,5120,5120);
+	
+	glCullFace(GL_FRONT);
 	
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -191,10 +193,11 @@ void Graphics::renderShadowMap() {
 	glm::vec3 offset = *Object::globalOffset;
 	offset *= -1;
 	
-	lprojection = glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, FAR_FRUSTRUM);
+	lprojection = glm::perspective(glm::radians(90.0f), 1.0f, 1.0f, 100.0f);
+	shadowShader->uniform3fv("lightW3", 1, &offset.x);
 	
 	glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		lshadowTrans[i] = lprojection * glm::lookAt(offset, offset + gCameraDirections[i].Target, gCameraDirections[i].up);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, gCameraDirections[i].CubemapFace, shadowMap, 0);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);

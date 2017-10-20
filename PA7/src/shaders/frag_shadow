@@ -4,8 +4,10 @@ in vec3 worldPos;
 
 uniform vec3 lightW3;
 
-layout (location = 0) out float fragDepth;
+layout (location = 0) out vec3 fragColor;
 
 void main(void) {
-    fragDepth = (length(worldPos - lightW3) - 1) / (1000000 - 1);
+    float fragDepth = (length(worldPos - lightW3) - 1.0) / (100.0 - 1.0);
+    vec3 normalPos = normalize(worldPos - lightW3);
+    fragColor = vec3(fragDepth, fragDepth, fragDepth);
 }

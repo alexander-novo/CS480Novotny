@@ -18,6 +18,7 @@ uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 
 uniform vec3 lightW3;
+uniform vec3 alsoLightW;
 
 uniform float lightPower;
 uniform float shininess;
@@ -46,14 +47,19 @@ void main(void) {
     float cosTheta = dot( n,l );
 
     //How far away we are - light depends on distance
-    float distance = length(lightW3 - positionW);
+    vec3 lightToPos = positionW - lightW3;
+    float distance = length(lightToPos);
 
     if(usingShadows == 1 ) {
-        frag_color.rgba = vec4(texture(gShadowMap, normalize(positionW - lightW3)).r, 0.0, 0.0, 1.0);
-    } else {
-        frag_color.rgba = vec4(0.0, 0.0, 0.0, 1.0);
-    }/*
-    else if(cosTheta > -0.05) {
+        float shadowDistance = texture(gShadowMap, lightToPos).r;
+        float depth = (distance - 1.0) / (100.0 - 1.0);
+        float difference = depth - shadowDistance;
+
+        if(difference > 0.01) {
+            cosTheta = 0;
+        }
+    }
+    if(cosTheta > -0.05) {
         vec3 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st).xyz;
 
         //Start with a basis of the diffuse color. This will later become our texture
@@ -73,9 +79,9 @@ void main(void) {
             // Ambient : simulates indirect lighting
             materialAmbientModified +
             // Diffuse : "color" of the object
-            MaterialDiffuseTexture2d * lightColor * lightPower * shadowFactor * abs(cosTheta) / distance +
+            MaterialDiffuseTexture2d * lightColor * lightPower * abs(cosTheta) / distance +
             // Specular : reflective highlight, like a mirror
-            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * shadowFactor * pow(cosAlpha,20) / distance;
+            texture2D(gSpecularSampler, uvCoord).rgb * lightColor * lightPower * pow(cosAlpha,20) / distance;
 
         if(cosTheta <= 0.05) {
             cosTheta += 0.05;
@@ -86,6 +92,8 @@ void main(void) {
         }
     }  else {
         frag_color.rgb = texture2D(gAltSampler, uvCoord.st).xyz;
-    }*/
+    }
+
+    frag_color.a = 1.0;
 }
 

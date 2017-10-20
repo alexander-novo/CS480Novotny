@@ -212,7 +212,8 @@ void Object::Render(float lightPower, unsigned drawOrbits, GLuint shadowMap) con
 	
 	glm::vec3 oppOffset = *Object::globalOffset;
 	oppOffset *= -1;
-	ctx.shader->uniform3fv("lightW3", 1, &oppOffset.x);
+	
+	ctx.shader->uniform3fv("lightW3", 1, glm::value_ptr(oppOffset));
 	
 	//And light
 	ctx.shader->uniform1fv("lightPower", 1, &lightPower);
