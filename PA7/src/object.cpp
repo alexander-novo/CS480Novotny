@@ -257,16 +257,16 @@ void Object::Render(float lightPower, unsigned drawOrbits, GLuint shadowMap) con
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glDisable(GL_BLEND);
-	
-	if(ctx.hasRings)
-	{
-		RenderRings(lightPower);
-	}
 
 
 	//Now pass the function down the chain to our satellites
 	for (const auto &i : _children) {
 		i->Render(lightPower, drawOrbits, shadowMap);
+	}
+	
+	if(ctx.hasRings)
+	{
+		RenderRings(lightPower);
 	}
 
 }
@@ -292,11 +292,19 @@ void Object::renderShadow(Shader* shadowShader) const {
 }
 
 void Object::RenderRings(float lightPower) const {
+	ctx.shader->Enable();
+	
 	//Send the material information
 	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.ringsModel->material.ambient.r);
 	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.ringsModel->material.diffuse.r);
 	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.ringsModel->material.specular.r);
 	ctx.shader->uniform1fv("shininess", 1, &ctx.model->material.shininess);
+	
+	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
+	ctx.shader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
+	ctx.shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
+	ctx.shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
+	ctx.shader->uniformMatrix4fv("modelViewMatrix", 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
 	
 	//If we have a texture, use it
 	if(ctx.ringsTexture != nullptr) {
