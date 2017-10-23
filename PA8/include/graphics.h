@@ -7,6 +7,7 @@
 #include "shader.h"
 #include "object.h"
 #include "Menu.h"
+#include "physics_world.h"
 
 #define CAMERA_MODE_FOLLOW 1
 #define CAMERA_MODE_FREE   2
@@ -93,6 +94,8 @@ class Graphics {
 		Texture* skyTexture;
 		
 		Shader* shadowShader;
+
+		PhysicsWorld* p_world;
 };
 
 #endif /* GRAPHICS_H */

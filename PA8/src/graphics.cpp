@@ -4,6 +4,7 @@ Graphics::Graphics(Object* sun, float lightStrength, Menu& menu, const int& w, c
 	Object::viewMatrix = &view;
 	Object::projectionMatrix = &projection;
 	Object::globalOffset = &m_cube->position;
+	p_world = new PhysicsWorld;
 	
 	cameraMode = CAMERA_MODE_FOLLOW;
 	
@@ -16,7 +17,8 @@ Graphics::Graphics(Object* sun, float lightStrength, Menu& menu, const int& w, c
 }
 
 Graphics::~Graphics() {
-
+	delete p_world;
+	p_world = NULL;
 }
 
 bool Graphics::Initialize(int width, int height) {

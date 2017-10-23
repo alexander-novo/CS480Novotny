@@ -101,7 +101,7 @@ class Object {
 		
 		static Menu* menu;
 	
-	private:
+	protected:
 		//Timing information for keeping track of orbits and such
 		struct Time {
 			float spin, move;
