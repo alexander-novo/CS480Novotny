@@ -1,0 +1,13 @@
+# Blender MTL File: 'SaturnRing2.blend'
+# Material Count: 1
+
+newmtl RingsMaterial
+Ns 96.078431
+Ka 0.737162 0.737162 0.737162
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.112000 0.112000 0.112000
+Ni 1.000000
+d 0.838384
+illum 2
+map_Kd /home/matt/Downloads/CS480/CodeBase/cs480Novotny/PA7/textures/2k_saturn_ring.png
