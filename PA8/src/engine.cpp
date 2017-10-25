@@ -8,6 +8,7 @@ Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun), windowWidth(m_WIN
 	m_FULLSCREEN = ctx.fullscreen;
 	
 	m_light = ctx.lightStrength;
+	physWorld = ctx.physWorld;
 	
 	mouseDown = false;
 }
@@ -31,7 +32,7 @@ bool Engine::Initialize() {
 	m_menu = new Menu(*m_window, *m_cube);
 	
 	// Start the graphics
-	m_graphics = new Graphics(m_cube, m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
+	m_graphics = new Graphics(m_cube, m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT, physWorld);
 	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT)) {
 		printf("The graphics failed to initialize.\n");
 		return false;
@@ -69,7 +70,7 @@ void Engine::Run() {
 		// Update menu options and labels
 		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
 		
-		if(m_menu->options.switchedPlanetView) m_graphics->cameraMode = CAMERA_MODE_FOLLOW;
+		if(m_menu->options.switchedPlanetView) m_graphics->getCamView()->cameraMode = CAMERA_MODE_FOLLOW;
 		
 		//Render everything
 		m_graphics->Render();
@@ -84,77 +85,77 @@ void Engine::Run() {
 
 void Engine::Keyboard(unsigned dt) {
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	float cameraSpeed = glm::length(m_graphics->lookAt - m_graphics->eyePos) * dt / 500;
+	float cameraSpeed = glm::length(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos) * dt / 500;
 	
 	if(SDL_GetModState() & KMOD_SHIFT) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go Down
 		glm::vec3 moveDir = {0.0, -1.0, 0.0};
 		moveDir *= cameraSpeed;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_SPACE]) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go Up
 		glm::vec3 moveDir = {0.0, 1.0, 0.0};
 		moveDir *= cameraSpeed;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_W]) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go forward
-		glm::vec3 moveDir = glm::normalize(m_graphics->lookAt - m_graphics->eyePos);
+		glm::vec3 moveDir = glm::normalize(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos);
 		moveDir *= cameraSpeed;
 		moveDir.y = 0;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_A]) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go left
-		glm::vec3 moveDir = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), m_graphics->lookAt - m_graphics->eyePos));
+		glm::vec3 moveDir = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos));
 		moveDir *= cameraSpeed;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_S]) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go back
-		glm::vec3 moveDir = glm::normalize(m_graphics->eyePos - m_graphics->lookAt);
+		glm::vec3 moveDir = glm::normalize(m_graphics->getCamView()->eyePos - m_graphics->getCamView()->lookAt);
 		moveDir.y = 0;
 		moveDir *= cameraSpeed;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_D]) {
-		m_graphics->cameraMode = CAMERA_MODE_FREE;
+		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go right
-		glm::vec3 moveDir = glm::normalize(glm::cross(m_graphics->lookAt - m_graphics->eyePos, glm::vec3(0.0, 1.0, 0.0)));
+		glm::vec3 moveDir = glm::normalize(glm::cross(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos, glm::vec3(0.0, 1.0, 0.0)));
 		moveDir *= cameraSpeed;
-		m_graphics->lookAt += moveDir;
-		m_graphics->eyePos += moveDir;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
 		float step = 0.05 * dt;
 		m_menu->setRotation(m_menu->options.rotation + step);
-		if(m_graphics->cameraMode == CAMERA_MODE_FREE) {
+		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
 			step *= M_PI / -180;
-			glm::vec3 toLookAt = m_graphics->lookAt - m_graphics->eyePos;
-			m_graphics->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->eyePos.x;
-			m_graphics->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->eyePos.z;
+			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
+			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
+			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
 		}
 	}
 	if(keyState[SDL_SCANCODE_RIGHT]) {
 		float step = 0.05 * dt;
 		m_menu->setRotation(m_menu->options.rotation - step);
-		if(m_graphics->cameraMode == CAMERA_MODE_FREE) {
+		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
 			step *= M_PI / 180;
-			glm::vec3 toLookAt = m_graphics->lookAt - m_graphics->eyePos;
-			m_graphics->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->eyePos.x;
-			m_graphics->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->eyePos.z;
+			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
+			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
+			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
 		}
 	}
 }
@@ -203,7 +204,7 @@ void Engine::eventHandler() {
 				m_WINDOW_HEIGHT = m_event.window.data2;
 				
 				//Update our projection matrix in case the aspect ratio is different now
-				m_graphics->getProjection() = glm::perspective( 45.0f,
+				m_graphics->getCamView()->GetProjection() = glm::perspective( 45.0f,
 				                                                float(windowWidth)/float(windowHeight),
 				                                                0.001f,
 				                                                FAR_FRUSTRUM);

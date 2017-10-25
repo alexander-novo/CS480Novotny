@@ -5,13 +5,9 @@
 #include <cmath>
 #include "graphics_headers.h"
 #include "model.h"
+#include "physics_model.h"
 #include "shader.h"
 #include "Menu.h"
-
-#define DRAW_NO_ORBITS     0
-#define DRAW_ALL_ORBITS    1
-#define DRAW_PLANET_ORBITS 2
-#define DRAW_MOON_ORBITS   3
 
 class Menu;
 
@@ -38,8 +34,7 @@ class Object {
 			std::string fragmentShader;
 			
 			Model* model;
-			Model* ringsModel = nullptr;
-			Texture* ringsTexture = nullptr;
+			PhysicsModel *physModel;
 			Texture* texture = nullptr;
 			Texture* altTexture = nullptr;
 			Texture* normalMap = nullptr;
@@ -58,9 +53,9 @@ class Object {
 		//Initialises the planet's model and textures for OpenGL
 		void Init_GL();
 		//Updates the physics for the planet
-		void Update(float dt, float scaleExp, bool drawOrbits);
+		void Update(float dt, float scaleExp);
 		//Renders the planet on the screen
-		void Render(float lightPower, unsigned drawOrbits, GLuint shadowMap) const;
+		void Render(float lightPower, GLuint shadowMap) const;
 		void renderShadow(Shader* shadowShader) const;
 		//Adds a satellite to this planet with the specified properties
 		Object& addChild(const Context& ctx);
@@ -79,13 +74,6 @@ class Object {
 		
 		//Where in the world the planet is
 		const glm::vec3& position;
-		
-		//Returns true if the object isn't orbiting the sun (or is the sun itself)
-		bool isMoon() const;
-		//Returns how many things this object is orbiting
-		unsigned orbitDepth() const;
-		//Returns true if this object is orbiting the given object
-		bool isMoonOf(Object const *) const;
 		
 		//Returns a reference to a satellite
 		Object& operator[](int index);
@@ -109,25 +97,6 @@ class Object {
 		
 		//OpenGL information for rendering
 		glm::mat4 modelMat;
-
-		GLuint VB;
-		GLuint IB;
-		
-		//Keep track of buffers for orbit vertices
-		//Pair of # vertices and actual buffer
-		std::pair<unsigned, GLuint> OB;
-		std::pair<unsigned, GLuint> OB_REAL_FAR;
-		std::pair<unsigned, GLuint> OB_REAL_ZOOMED;
-		std::pair<unsigned, GLuint> OB_CLOSE;
-		
-		//Which one we're actually using
-		std::pair<unsigned, GLuint> OB_cur;
-		
-		struct OrbitInfo {
-			glm::vec3 lastParentPos;
-			float lastScale;
-			bool lastFocus;
-		} orbitInfo;
 		
 		glm::vec3 _position;
 		
@@ -135,15 +104,6 @@ class Object {
 		std::vector<Object*> _children;
 		
 		bool doOffset;
-		
-		//Determine which orbit buffer to use, and generate more if neccesary
-		void updateOrbit(float scaleExp);
-		//Generates orbit vertices and stuffs them into the given buffer
-		void calcOrbit(float scaleExp, unsigned numDashes, std::pair<unsigned, GLuint>& buffer);
-		//Render orbit dashes
-		void drawOrbit() const;
-		//Render rings (if they exist)
-		void RenderRings(float lightPower) const;
 };
 
 #endif /* OBJECT_H */

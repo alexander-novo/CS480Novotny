@@ -1,6 +1,8 @@
 //
 // Created by alex on 9/20/17.
 //
+#ifndef MODEL
+#define MODEL
 
 #include "model.h"
 
@@ -22,60 +24,9 @@ Model* Model::load(std::string filename) {
 	}
 	aiMesh* mesh = scene->mMeshes[0];
 	
-	//Add all our vertices
-	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
-		aiVector3D& vertex = mesh->mVertices[vertexIndex];
-		aiVector3D& normal = mesh->mNormals[vertexIndex];
-		aiVector3D uv = {0.0, 0.0, 0.0};
-		aiVector3D tangent = {0.0, 0.0, 0.0};
-		aiVector3D bitangent = {0.0, 0.0, 0.0};
-		
-		if(mesh->HasTextureCoords(0)) {
-			uv = mesh->mTextureCoords[0][vertexIndex];
-		}
-		
-		if(mesh->HasTangentsAndBitangents()) {
-			tangent = mesh->mTangents[vertexIndex];
-			bitangent = mesh->mBitangents[vertexIndex];
-		}
-		
-		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
-		                  {uv.x, uv.y},
-		                  {normal.x, normal.y, normal.z},
-		                  {tangent.x, tangent.y, tangent.z},
-		                  {bitangent.x, bitangent.y, bitangent.z}};
-		
-		newModel->_vertices.push_back(newVert);
-	}
-	
-	//Now our indices
-	for(unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
-		aiFace& face = mesh->mFaces[faceIndex];
-		
-		for(unsigned vertexIndex = 0; vertexIndex < 3; vertexIndex++) {
-			newModel->_indices.push_back(face.mIndices[vertexIndex]);
-		}
-	}
-	
-	//Now material stuff
-	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	aiColor3D ambientColor(0.0f, 0.0f, 0.0f);
-	aiColor3D diffuseColor(0.0f, 0.0f, 0.0f);
-	aiColor3D specularColor(0.0f, 0.0f, 0.0f);
-	
-	material->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
-	material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
-	material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
-	
-	Material modelMaterial;
-	modelMaterial.ambient = {ambientColor.r, ambientColor.g, ambientColor.b};
-	modelMaterial.diffuse = {diffuseColor.r, diffuseColor.g, diffuseColor.b};
-	modelMaterial.specular = {specularColor.r, specularColor.g, specularColor.b};
-	
-	material->Get(AI_MATKEY_SHININESS, modelMaterial.shininess);
-	
-	newModel->material = modelMaterial;
-	
+	newModel->loadVertices(mesh, newModel);
+	newModel->loadIndices(mesh, newModel);
+	newModel->material = newModel->loadMaterials(scene);
 	newModel->initialised = false;
 	
 	//Now save this model for later in case we need to use it again
@@ -126,6 +77,79 @@ void Model::drawModel() {
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 	glDisableVertexAttribArray(4);
+}
+
+void Model::loadVertices(aiMesh *mesh, Model *newModel)
+{
+	//Add all our vertices for openGL
+	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) 
+	{
+		Vertex newVert = loadVerticesExtended(mesh, vertexIndex);
+		newModel->_vertices.push_back(newVert);
+	}
+}
+
+Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
+{
+		aiVector3D& vertex = mesh->mVertices[vertexIndex];
+		aiVector3D& normal = mesh->mNormals[vertexIndex];
+		aiVector3D uv = {0.0, 0.0, 0.0};
+		aiVector3D tangent = {0.0, 0.0, 0.0};
+		aiVector3D bitangent = {0.0, 0.0, 0.0};
+		
+		if(mesh->HasTextureCoords(0)) {
+			uv = mesh->mTextureCoords[0][vertexIndex];
+		}
+		
+		if(mesh->HasTangentsAndBitangents()) {
+			tangent = mesh->mTangents[vertexIndex];
+			bitangent = mesh->mBitangents[vertexIndex];
+		}
+		
+		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
+		                  {uv.x, uv.y},
+		                  {normal.x, normal.y, normal.z},
+		                  {tangent.x, tangent.y, tangent.z},
+		                  {bitangent.x, bitangent.y, bitangent.z}};
+
+        return newVert;
+}
+
+void Model::loadIndices(aiMesh *mesh, Model *newModel)
+{
+	//Now our indices
+	for(unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) 
+	{
+		aiFace& face = mesh->mFaces[faceIndex];
+		
+		for(unsigned vertexIndex = 0; vertexIndex < 3; vertexIndex++) 
+		{
+			newModel->_indices.push_back(face.mIndices[vertexIndex]);
+		}
+	}
+}
+
+
+Material Model::loadMaterials(const aiScene *scene)
+{
+	//Now material stuff
+	aiMaterial* material = scene->mMaterials[scene->mMeshes[0]->mMaterialIndex];
+	aiColor3D ambientColor(0.0f, 0.0f, 0.0f);
+	aiColor3D diffuseColor(0.0f, 0.0f, 0.0f);
+	aiColor3D specularColor(0.0f, 0.0f, 0.0f);
+	
+	material->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
+	material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+	material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+	
+	Material modelMaterial;
+	modelMaterial.ambient = {ambientColor.r, ambientColor.g, ambientColor.b};
+	modelMaterial.diffuse = {diffuseColor.r, diffuseColor.g, diffuseColor.b};
+	modelMaterial.specular = {specularColor.r, specularColor.g, specularColor.b};
+	
+	material->Get(AI_MATKEY_SHININESS, modelMaterial.shininess);
+	
+	return modelMaterial;
 }
 
 Texture* Texture::load(std::string filename) {
@@ -181,3 +205,5 @@ void Texture::bind(GLenum textureTarget) {
 }
 
 Texture::Texture(){}
+
+#endif /* model */

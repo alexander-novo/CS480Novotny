@@ -2,15 +2,16 @@
 // Created by alex on 9/20/17.
 //
 
+#ifndef MODEL_H
+#define MODEL_H
+
 #include <string>
 #include <fstream>
 #include <vector>
 #include <unordered_map>
 
 #include "graphics_headers.h"
-
-#ifndef TUTORIAL_MODEL_H
-#define TUTORIAL_MODEL_H
+#include "physics_world.h"
 
 //Set up which texture channels to use with which type of texture
 #define GL_COLOR_TEXTURE    GL_TEXTURE0
@@ -27,15 +28,17 @@
 #define GL_SPECULAR_TEXTURE_OFFSET 4
 #define GL_SHADOW_TEXTURE_OFFSET   5
 
+struct Material {
+	glm::vec3 ambient = {0.2, 0.2, 0.2};  //Ka
+	glm::vec3 diffuse = {0.8, 0.8, 0.8};  //Kd
+	glm::vec3 specular = {0.0, 0.0, 0.0}; //Ks
+	
+	float shininess = 0.0f;               //Ns
+};
+
 class Model {
 	public:
-		struct Material {
-			glm::vec3 ambient = {0.2, 0.2, 0.2};  //Ka
-			glm::vec3 diffuse = {0.8, 0.8, 0.8};  //Kd
-			glm::vec3 specular = {0.0, 0.0, 0.0}; //Ks
-			
-			float shininess = 0.0f;               //Ns
-		} material;
+		Material material;
 		
 		//Load a model from a file
 		static Model* load(std::string filename);
@@ -49,9 +52,14 @@ class Model {
 		//Draw the model to the screen
 		void drawModel();
 		
-	private:
+	protected:
 		Model();
-		
+		void loadVertices(aiMesh *mesh, Model *newModel);
+		Vertex loadVerticesExtended(aiMesh *mesh, int vertexIndex);
+		void loadIndices(aiMesh *mesh, Model *newModel);
+		void loadBulletIndices(aiMesh *mesh, Model *newModel, PhysicsWorld physWorld);
+		Material loadMaterials(const aiScene *scene);
+
 		//OpenGL buffers
 		GLuint VB;
 		GLuint IB;
@@ -85,3 +93,4 @@ class Texture {
 		Magick::Blob* m_Blob;
 };
 #endif //TUTORIAL_MODEL_H
+

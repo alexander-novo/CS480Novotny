@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 	//Stores the properties of our engine, such as window name/size, fullscreen, and shader info
 	Engine::Context ctx;
 	Object *sun;
-	
+
 	//Do command line arguments
 	json config;
 	int exit = processConfig(argc, argv, config, ctx, sun);
@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
 	}
 	
 	engine->Run();
-	
 	//If we changed window resolution, save it for next time
 	if(config["window"]["width"] != engine->windowWidth || config["window"]["height"] != engine->windowHeight) {
 		config["window"]["width"] = engine->windowWidth;
@@ -54,6 +53,8 @@ int main(int argc, char **argv) {
 	engine = NULL;
 	delete sun;
 	sun = NULL;
+	delete ctx.physWorld;
+	ctx.physWorld = NULL;
 	
 	return 0;
 }
@@ -87,13 +88,16 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		ctx.fullscreen = config["window"]["fullscreen"];
 		
 		ctx.lightStrength = config["sunlight"];
+
+		PhysicsWorld *physWorld = new PhysicsWorld();
+		ctx.physWorld = physWorld;
 		
 		Object::orbitShader = Shader::load("shaders/vert_orbits", "shaders/frag_orbits");
 		
 		Object::Context sunCtx;
 		
 		//Load the sun's properties
-		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0, defaultShader);
+		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0, defaultShader, ctx.physWorld);
 		if (error != -1) return error;
 		
 		//make certain we set it to a light source
@@ -103,7 +107,7 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 		sun = new Object(sunCtx, NULL);
 		
 		//Now load all the rest of the planets
-		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"], defaultShader);
+		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"], defaultShader, ctx.physWorld);
 		if (error != -1) return error;
 
 	}
@@ -111,23 +115,23 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 	return -1;
 }
 
-int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Shader* defaultShader) {
+int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Shader* defaultShader, PhysicsWorld *physWorld) {
 	Object::Context ctx;
 	int error;
 	
 	for (auto &i : config["satellites"]) {
-		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier, defaultShader);
+		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier, defaultShader, physWorld);
 		if (error != -1) return error;
 		
 		Object &newPlanet = sun.addChild(ctx);
-		error = loadPlanets(i, newPlanet, spaceScale, timeScale, defaultShader);
+		error = loadPlanets(i, newPlanet, spaceScale, timeScale, defaultShader, physWorld);
 		if (error != -1) return error;
 	}
 	
 	return -1;
 }
 
-int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier, Shader* defaultShader) {
+int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier, Shader* defaultShader, PhysicsWorld *physWorld) {
 	ctx.name = config["name"];
 
 	if(config["orbit"]["year"] != 0) ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
@@ -144,11 +148,24 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	ctx.scaleMultiplier = scaleMultiplier;
 	
 	std::string filename = config["model"];
-	ctx.model = Model::load("models/" + filename);
-	if (ctx.model == NULL) {
-		std::cout << "Could not load model file " << config["model"] << std::endl;
-		return 1;
+	if(ctx.name != "Earth")
+	{
+		ctx.model = Model::load("models/" + filename);
+		if (ctx.model == NULL) {
+			std::cout << "Could not load model file " << config["model"] << std::endl;
+			return 1;
+		}
 	}
+	else
+	{
+		bool isDynamic = true;
+		ctx.model = PhysicsModel::load("models/" + filename, physWorld, isDynamic);
+		if (ctx.model == NULL) {
+			std::cout << "Could not load model file " << config["model"] << std::endl;
+			return 1;
+		}
+	}
+
 	
 	//Check if the planet has a texture
 	if(config.find("texture") != config.end()) {
@@ -186,23 +203,6 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 		ctx.shader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 	} else {
 		ctx.shader = defaultShader;
-	}
-
-	// Find planet rings in config file
-	if(config.find("rings") != config.end())
-	{
-		ctx.hasRings = true;
-
-		filename = config["rings"]["model"];
-		ctx.ringsModel = Model::load("models/" + filename);
-		filename = config["rings"]["texture"];
-		ctx.ringsTexture = Texture::load("textures/" + filename);
-	}
-	else
-	{
-		ctx.hasRings = false;
-		ctx.ringsModel = nullptr;
-		ctx.ringsTexture = nullptr;
 	}
 	
 	if (ctx.model == NULL) {

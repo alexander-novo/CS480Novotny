@@ -8,7 +8,7 @@
 #include "graphics.h"
 #include "Menu.h"
 
-#define ENGINE_NAME_DEFAULT "Solar System"
+#define ENGINE_NAME_DEFAULT "Pinball"
 #define ENGINE_WIDTH_DEFAULT 800
 #define ENGINE_HEIGHT_DEFAULT 600
 #define ENGINE_FULLSCREEN_DEFAULT false
@@ -22,6 +22,7 @@ class Engine {
 			bool fullscreen = ENGINE_FULLSCREEN_DEFAULT;
 			
 			float lightStrength = 1.0f;
+			PhysicsWorld *physWorld;
 		};
 		
 		Engine(const Context &ctx, Object* sun);
@@ -52,6 +53,7 @@ class Engine {
 		int m_WINDOW_HEIGHT;
 		bool m_FULLSCREEN;
 		float m_light;
+		PhysicsWorld *physWorld;
 		SDL_Event m_event;
 		
 		Graphics *m_graphics;

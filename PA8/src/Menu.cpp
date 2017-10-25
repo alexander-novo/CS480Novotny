@@ -22,74 +22,74 @@ void Menu::update(int dt, float width, float height) {
 	
 	//Start a new window called "Controls"
 	//On first seeing this window, make it 550 x 350, but let the user resize it later
-	ImGui::SetNextWindowSize(ImVec2(550, 350), ImGuiCond_FirstUseEver);
-	// ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing);
-	ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
+	// ImGui::SetNextWindowSize(ImVec2(550, 350), ImGuiCond_FirstUseEver);
+	// // ImGui::SetNextWindowCollapsed(true, ImGuiCond_Appearing);
+	// ImGui::Begin("Controls", NULL, ImGuiWindowFlags_ShowBorders);
 	
-	//Zoom slider
-	ImGui::PushItemWidth(ImGui::GetWindowWidth() * .55f);
-	ImGui::SliderFloat("Camera Distance", &_options.zoom, 0.1f, 10.0f); ImGui::SameLine(0, 10);
-	if (ImGui::Button("Reset##zoom", ImVec2(40, 20))) _options.zoom = 1.0;
+	// //Zoom slider
+	// ImGui::PushItemWidth(ImGui::GetWindowWidth() * .55f);
+	// ImGui::SliderFloat("Camera Distance", &_options.zoom, 0.1f, 10.0f); ImGui::SameLine(0, 10);
+	// if (ImGui::Button("Reset##zoom", ImVec2(40, 20))) _options.zoom = 1.0;
 	
-	ImGui::SliderFloat("Camera Rotation", &_options.rotation, 0.0f, 360.0f); ImGui::SameLine(0, 10);
-	if (ImGui::Button("Reset##rot", ImVec2(40, 20))) _options.rotation = 1.0;
+	// ImGui::SliderFloat("Camera Rotation", &_options.rotation, 0.0f, 360.0f); ImGui::SameLine(0, 10);
+	// if (ImGui::Button("Reset##rot", ImVec2(40, 20))) _options.rotation = 1.0;
 	
-	ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
-	ImGui::RadioButton("Close Scale", &scaleTo, 0);
+	// ImGui::RadioButton("Realistic Scale", &scaleTo, 1); ImGui::SameLine();
+	// ImGui::RadioButton("Close Scale", &scaleTo, 0);
 	
-	ImGui::Checkbox("Planet Orbits", &_options.drawOrbits); ImGui::SameLine();
-	ImGui::Checkbox("Moon Orbits", &_options.drawMoonOrbits);
-	ImGui::Checkbox("Planet Labels", &_options.drawLabels); ImGui::SameLine();
-	ImGui::Checkbox("Moon Labels", &_options.drawMoonLabels);
+	// ImGui::Checkbox("Planet Orbits", &_options.drawOrbits); ImGui::SameLine();
+	// ImGui::Checkbox("Moon Orbits", &_options.drawMoonOrbits);
+	// ImGui::Checkbox("Planet Labels", &_options.drawLabels); ImGui::SameLine();
+	// ImGui::Checkbox("Moon Labels", &_options.drawMoonLabels);
 	
 	
-	if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing)) {
-		ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
-		ImGui::BeginChild("Planet Controls", ImVec2(0, 145), true, ImGuiWindowFlags_NoScrollbar);
+	// if (ImGui::CollapsingHeader("Planet Controls", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing)) {
+	// 	ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
+	// 	ImGui::BeginChild("Planet Controls", ImVec2(0, 145), true, ImGuiWindowFlags_NoScrollbar);
 		
 		
-		//Get information of whatever planet we're currently looking at
-		Object::Context& ctx = getPlanet(_options.planetSelector)->ctx;
-		const Object::Context& originalCtx = getPlanet(_options.planetSelector)->originalCtx;
+	// 	//Get information of whatever planet we're currently looking at
+	// 	Object::Context& ctx = getPlanet(_options.planetSelector)->ctx;
+	// 	const Object::Context& originalCtx = getPlanet(_options.planetSelector)->originalCtx;
 		
-		//Drop down planet list
-		//Change the planet we're looking at
-		if (ImGui::Combo("Select Satellite", &_options.planetSelector, satelliteList.c_str(), 10)) {
-			_options.lookingAt = _options.planetSelector;
-			_options.switchedPlanetView = true;
-		} else {
-			_options.switchedPlanetView = false;
-		}
+	// 	//Drop down planet list
+	// 	//Change the planet we're looking at
+	// 	if (ImGui::Combo("Select Satellite", &_options.planetSelector, satelliteList.c_str(), 10)) {
+	// 		_options.lookingAt = _options.planetSelector;
+	// 		_options.switchedPlanetView = true;
+	// 	} else {
+	// 		_options.switchedPlanetView = false;
+	// 	}
 		
 		
-		//Time Scale slider and reset (logarithmic slider [base 10])
-		ImGui::SliderFloat("Time Scale", &ctx.timeScale, -1000.0f, 1000.0, "%.3f", 10.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
-		if (ImGui::Button("Reset##timeScale")) ctx.timeScale = originalCtx.timeScale;
+	// 	//Time Scale slider and reset (logarithmic slider [base 10])
+	// 	ImGui::SliderFloat("Time Scale", &ctx.timeScale, -1000.0f, 1000.0, "%.3f", 10.0f); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+	// 	if (ImGui::Button("Reset##timeScale")) ctx.timeScale = originalCtx.timeScale;
 		
-		//Orbit speed, reset, and direction
-		ImGui::SliderFloat("Orbit Speed", &ctx.moveScale, 0.0, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
-		if (ImGui::Button("Reset##moveScale")) ctx.moveScale = originalCtx.moveScale, ctx.moveDir = originalCtx.moveDir;
-		ImGui::RadioButton("cw##move", &ctx.moveDir, -1); ImGui::SameLine();
-		ImGui::RadioButton("ccw##move", &ctx.moveDir, 1);
+	// 	//Orbit speed, reset, and direction
+	// 	ImGui::SliderFloat("Orbit Speed", &ctx.moveScale, 0.0, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+	// 	if (ImGui::Button("Reset##moveScale")) ctx.moveScale = originalCtx.moveScale, ctx.moveDir = originalCtx.moveDir;
+	// 	ImGui::RadioButton("cw##move", &ctx.moveDir, -1); ImGui::SameLine();
+	// 	ImGui::RadioButton("ccw##move", &ctx.moveDir, 1);
 		
-		//Spin speed, reset, and direction
-		ImGui::SliderFloat("Spin Speed", &ctx.spinScale, 0.0, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
-		if (ImGui::Button("Reset##spinScale")) ctx.spinScale = originalCtx.spinScale, ctx.spinDir = originalCtx.spinDir;
-		ImGui::RadioButton("cw##spin", &ctx.spinDir, -1); ImGui::SameLine();
-		ImGui::RadioButton("ccw##spin", &ctx.spinDir, 1);
+	// 	//Spin speed, reset, and direction
+	// 	ImGui::SliderFloat("Spin Speed", &ctx.spinScale, 0.0, 5.0); ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+	// 	if (ImGui::Button("Reset##spinScale")) ctx.spinScale = originalCtx.spinScale, ctx.spinDir = originalCtx.spinDir;
+	// 	ImGui::RadioButton("cw##spin", &ctx.spinDir, -1); ImGui::SameLine();
+	// 	ImGui::RadioButton("ccw##spin", &ctx.spinDir, 1);
 		
-		ImGui::EndChild();
-	}
-	if (ImGui::CollapsingHeader("Experimental Features", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing)) {
-		ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
-		ImGui::BeginChild("Experimental Features", ImVec2(0, 50), true, ImGuiWindowFlags_NoScrollbar);
+	// 	ImGui::EndChild();
+	// }
+	// if (ImGui::CollapsingHeader("Experimental Features", ImGuiTreeNodeFlags_Framed | ImGuiCond_Appearing)) {
+	// 	ImGui::PushItemWidth(ImGui::GetWindowWidth() * .6f);
+	// 	ImGui::BeginChild("Experimental Features", ImVec2(0, 50), true, ImGuiWindowFlags_NoScrollbar);
 		
-		ImGui::Checkbox("Draw Shadows", &_options.drawShadows);
+	// 	ImGui::Checkbox("Draw Shadows", &_options.drawShadows);
 		
-		ImGui::EndChild();
-	}
-	//End the window
-	ImGui::End();
+	// 	ImGui::EndChild();
+	// }
+	// //End the window
+	// ImGui::End();
 	
 	//Planet Labels
 	if (options.drawLabels || options.drawMoonLabels) {
@@ -108,8 +108,7 @@ void Menu::update(int dt, float width, float height) {
 		//Then draw a label there
 		glm::vec4 screenPos;
 		for (const auto& pair : satelliteMap) {
-			if ((!options.drawLabels || pair.second->isMoon()) &&
-			    (!options.drawMoonLabels || !pair.second->isMoon()))
+			if ((!options.drawLabels))
 				continue;
 			//Multiply planet position by VP matrix
 			//No Model Matrix because planet position is already in world coordinates
