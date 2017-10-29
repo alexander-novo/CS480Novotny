@@ -10,14 +10,32 @@
     "vertex": "vert_materials",
     "fragment": "frag_materials"
   },
-  "shaders" : {
-    "vertex": "vert_materials",
-    "fragment": "frag_sun"
-  },
-  "texture": "concrete.jpg",
   "sunlight": 50,
-  "surface_plane": "plane.obj",
   "game_objects": [
+    {
+      "name": "Surface Plane",
+      "model": "plane.obj",
+      "shape": "plane",
+      "shaders" : {
+        "vertex": "vert_materials",
+        "fragment": "frag_sun"
+      },
+      "isLightSource": true,
+      "texture": "concrete.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": -2
+      },
+      "height": 1,
+      "width": 0,
+      "depth": 0,
+      "mass": 0,
+      "scale": 1
+    },
     {
       "name": "Cube",
       "model": "Cube.obj",
@@ -36,7 +54,28 @@
         "x": -1,
         "y": 5
       },
-      "mass": 0.5
+      "mass": 1.5
+    },
+    {
+      "name": "Cube Kinematic",
+      "model": "Cube.obj",
+      "shape": "box",
+      "shaders" : {
+        "vertex": "vert_materials",
+        "fragment": "frag_materials"
+      },
+      "texture": "2k_sun.jpg",
+      "isDynamic": true,
+      "isKinematic": true,
+      "height": 1,
+      "width": 1,
+      "depth": 1,
+      "location": {
+        "z": -1,
+        "x": -1,
+        "y": 5
+      },
+      "mass": 1.5
     },
     {
       "name": "Cylinder1",
@@ -53,7 +92,7 @@
       "location": {
         "z": -10,
         "x": 10,
-        "y": 1
+        "y": 0
       },
       "mass": 0,
       "scale": 2
@@ -73,7 +112,7 @@
       "location": {
         "z": 5,
         "x": 5,
-        "y": 1
+        "y": 0
       },
       "mass": 0,
       "scale": 4
@@ -100,7 +139,7 @@
       "mass": 1
     },
     {
-      "name": "Earth",
+      "name": "Earth1",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"

@@ -78,6 +78,7 @@ int PhysicsWorld::addBody(btRigidBody* bodyToAdd)
 int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMesh, PhysicsWorld::Context *objCtx)
 {
 
+    int flags = 0;
     btVector3 inertia(0,0,0);
     float xPos, yPos, zPos, mass;
     mass = objCtx->mass;
@@ -115,8 +116,11 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     }
     else if(objCtx->shape == 4)
     {   // PLANE(ground)
-        btVector3 planeNormal = {0, 1, 0};
-        btScalar planeConstant = 1000;
+        // The plane's normal (direction, [0,1,0] means it faces up in the y direction
+        // defined by a 1 in the config file object's width(x), height(y), or depth(z)
+        btVector3 planeNormal = {objCtx->widthX, objCtx->heightY, objCtx->lengthZ};
+        // using default of 1 for thickness of plane
+        btScalar planeConstant = 0;
         newShape = new btStaticPlaneShape(planeNormal, planeConstant);
     }
     // create shape from mesh
@@ -146,8 +150,17 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
         info.m_restitution = .5f;
     }
 
+
     // takes in the body
     btRigidBody * body = new btRigidBody(info);
+
+    // Set the body to a kinematic object if it is one
+    if(objCtx->isKinematic)
+    {
+        flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
+        body->setCollisionFlags(flags);
+    }
+
     //body->setGravity( btVector3(0,-4, 0));
     // add the object's body to the physics world
     int bodyIndex = addBody(body);

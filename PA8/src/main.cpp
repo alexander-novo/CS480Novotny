@@ -85,11 +85,7 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx) {
 		}
 
 		config << configFile;
-		std::string vertexLocation = config["default_shaders"]["vertex"];
-		std::string fragLocation = config["default_shaders"]["fragment"];
-		std::string planeName = "Game Surface";
 
-		
 		//Window properties
 		//I don't think fullscreen works yet - maybe eventually
 		ctx.height = config["window"]["height"];
@@ -98,33 +94,15 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx) {
 		ctx.name = "Pinball";
 		ctx.lightStrength = config["sunlight"];
 
-        // First object will be used as the floor/surface plane
-		Object::Context surfaceCtx;
-		surfaceCtx.name = planeName;
-		surfaceCtx.vertexShader = vertexLocation;
-		surfaceCtx.fragmentShader = fragLocation;
-        surfaceCtx.shader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
-        error = loadObjectContext(config, surfaceCtx, surfaceCtx.shader, physWorld);
-		if (error != -1) return error;
-		//origin in a light source
-		surfaceCtx.isLightSource = true;
-		surfaceCtx.isDynamic = false;
-		std::string modelFile = config["surface_plane"];
-        PhysicsWorld::Context worldCtx;
-        worldCtx.isDynamic = false;
-		// NOTE: Do not set worldCtx.shape here (currently breaks world)
-		surfaceCtx.shape = 4; // plane
-		surfaceCtx.model = PhysicsModel::load("models/" + modelFile, physWorld, &worldCtx );
-		surfaceCtx.physicsBody = (*(physWorld->getLoadedBodies()))[surfaceCtx.model->getRigidBodyIndex()];
-
 		//The configuration of the game world
-		Object *surfacePlane = new Object(surfaceCtx);
-		gameCtx->worldObjects.push_back(surfacePlane);
+		std::string vertexLocation = config["default_shaders"]["vertex"];
+		std::string fragLocation = config["default_shaders"]["fragment"];
+		Shader *defaultShader =  Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 
 		//Load the gameworld's objects
         Object::Context objCtx;
         for (auto &i : config["game_objects"]) {
-            error = loadObjectContext(i, objCtx, surfaceCtx.shader, physWorld);
+            error = loadObjectContext(i, objCtx, defaultShader, physWorld);
             if (error != -1) return error;
             Object *newObject = new Object(objCtx);
             gameCtx->worldObjects.push_back(newObject);
@@ -191,6 +169,10 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 	{
 		objectPhysics.isBounceType = config["isBounceType"];
 	}
+    if(config.find("isLightSource") != config.end())
+    {
+        ctx.isLightSource = config["isLightSource"];
+    }
 
     std::string filename;
 
