@@ -1,0 +1,166 @@
+% This tells the program how to initially format my document.
+\documentclass[twoside]{article}
+
+% List of packages to be included for the use of special commands and symbols.
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{qtree}
+\usepackage[letterpaper]{geometry}
+\usepackage{tasks} % For multi-column lists
+
+
+% Automatically inserts and formats a title page for the document, to be used when the \maketitle command is entered.
+\title{Solar System}
+\date{October 20, 2017}
+\author{Alexander Novotny \and Matthew Johnson}
+
+
+% This is where the bulk of the document begins.
+\begin{document}
+
+% This makes it so that the title page does not have page numbering.
+\pagenumbering{gobble}
+\maketitle
+
+\newpage
+
+% Blank page after title page for double-sided printing
+\shipout\null
+
+% This is where I designate the creation of my Table of Contents.
+\tableofcontents
+
+\newpage
+
+% Blank page after toc for double-sided printing
+\shipout\null
+
+\pagenumbering{arabic}
+
+\section{Tech Manual}
+
+\subsection{Dependencies}
+
+This project requires GLEW, GLM, SDL, Assimp, and ImageMagick. These libraries can be installed using \texttt{sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev libmagick++-dev} on Ubuntu.
+
+This project also uses ImGUI and Json for Modern C++, but the headers for those are already included
+
+\subsection{Building and Running}
+
+To build the project, cmake is required. Simply use the \texttt{cmake} command to generate a makefile, and then the \texttt{make} command to build the project. If this is successful, there are several ways to run the program:
+
+
+\begin{tasks}[counter-format=\ ](1)
+	\task \texttt{Tutorial} - Run the program with the default config.json file
+	\task \texttt{Tutorial --help} - Pull up the help menu
+	\task \texttt{Tutorial <config>} - Run the program with the specififed config file
+\end{tasks}
+
+\subsection{Controls}
+
+\begin{tasks}[counter-format=\ ](1)
+	\task WASD - Detach the camera from any planet and move it in the cardinal directions
+	\task Space - Move the camera upwards
+	\task Shift - Move the camera downwards
+	\task left/right arrows - Rotate the camera
+	\task CLick and Drag to rotate the camera around a planet
+	\task Scroll wheel to zome in and out on a planet
+\end{tasks}
+
+\newpage
+
+\subsection{Menu}
+
+\begin{figure}[h]
+\centering
+\includegraphics{menu.png}
+\end{figure}
+
+\begin{tasks}[counter-format=\ ](1)
+	\task \textbf{Camera Distance} - Change how far away the camera is from a planet
+	\task \textbf{Camera Rotation} - Change where the camera looks at the planet from
+	\task \textbf{Realistic/Close Scale} - Make planets have correctly scaled sizes and distances, or easily viewable
+	\task \textbf{Orbits} - Draw orbit lines
+	\task \textbf{Labels} - Label planet/moon names
+\end{tasks}
+
+\subsubsection{Planet Controls}
+
+\begin{tasks}[counter-format=\ ](1)
+	\task \textbf{Select Satellite} - Center Camera on a specific planet/moon, and choose which planet the controls affect
+	\task \textbf{Time Scale} - Simulation Speed for this planet and all of its satellites
+	\task \textbf{Orbit/Spin Speed} - Change how fast a plant orbits or rotates
+	\task \textbf{Orbit/Spin Direction} - Change the orbit/spin direction of a planet
+\end{tasks}
+
+\subsubsection{Experimental Features}
+
+\begin{tasks}[counter-format=\ ](1)
+	\task \textbf{Draw Shadows} - Make planets and moons cast shadows on each other
+\end{tasks}
+
+\newpage
+
+\subsection{Extra Credit}
+
+\begin{tasks}[counter-format=tsk[1])](1)
+	\task Menu System
+	\task Configuration File
+	\task Live Adjustment of Simulation Speed (see section 1.4)
+	\task Planet Orbit Paths
+	\task Scaled/Realistic View
+	\task Planet Rings
+	\task Specular/Normal Maps on Earth
+	\task Earth nighttime textures
+	\task Shadow Mapping
+	\task Tilted Orbits
+	\task Skybox
+\end{tasks}
+
+\newpage
+
+\section{Showcase}
+
+\begin{figure}[h]
+\centering
+\caption{The tilted orbits of Uranus' moons and rings}
+\includegraphics[width=0.79\textwidth]{uranus.png}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\caption{A view of The Sun and Mars from Mars' moon Deimos}
+\includegraphics[width=0.79\textwidth]{deimos.png}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering}
+\caption{Earth's normal map makes the Andes cast a shadow over Western South America, causing their mornings to be later}
+\includegraphics[width=0.79\textwidth]{nightEarth.png}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering}
+\caption{The Sun shines on the Red Sea}
+\includegraphics[width=0.79\textwidth]{dayEarth.png}
+\end{figure}
+
+\newpage
+
+\section{Report}
+
+\subsection{Class Diagram}
+
+\Tree[.Engine [.Window ]
+              [.Graphics [.Object [.Shader ]
+                                  [.Model ]
+                                  [.Texture ] ] ]
+              [.Menu ] ]
+
+\end{document}
