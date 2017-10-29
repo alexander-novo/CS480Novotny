@@ -4,7 +4,7 @@ int main(int argc, char **argv) {
 	
 	//If no arguments, use default (basic) config file
 	if (argc == 1) {
-		std::string newArgv = "config.json";
+		std::string newArgv = "config_pinball.json";
 		argv[1] = new char[newArgv.size()+1]; 
 		argv[1][newArgv.size()] = 0; 
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());	
@@ -12,22 +12,22 @@ int main(int argc, char **argv) {
 
 	//Stores the properties of our engine, such as window name/size, fullscreen, and shader info
 	Engine::Context ctx;
-	Object *sun;
+	ctx.gameWorldCtx = gameCtx;
 
 	//Do command line arguments
 	json config;
-	int exit = processConfig(argc, argv, config, ctx, sun);
+	int exit = processConfig(argc, argv, config, ctx);
 	
 	if (exit != -1) {
 		return exit;
 	}
 	
 	// Start an engine and run it then cleanup after
-	Engine *engine = new Engine(ctx, sun);
+	Engine *engine = new Engine(ctx);
 	if (!engine->Initialize()) {
 		printf("The engine failed to start.\n");
 		delete engine;
-		engine = NULL;
+		engine = nullptr;
 		return 1;
 	}
 	
@@ -46,149 +46,217 @@ int main(int argc, char **argv) {
 	if (argc == 1)
 	{
 		delete [] argv[1];
-		argv[1] = NULL;
+		argv[1] = nullptr;
 	}
-	
+
+  	// memory clean-up
+    for(int i = 0; (i < (ctx.gameWorldCtx->worldObjects.size())); i++)
+    {
+        delete ctx.gameWorldCtx->worldObjects[i];
+        ctx.gameWorldCtx->worldObjects[i]= nullptr;
+    }
 	delete engine;
-	engine = NULL;
-	delete sun;
-	sun = NULL;
+	engine = nullptr;
 	delete ctx.physWorld;
-	ctx.physWorld = NULL;
+	ctx.physWorld = nullptr;
+	delete gameCtx;
+	gameCtx = nullptr;
 	
 	return 0;
 }
 
 //Takes argc and argv from main and stuffs all the necessary information into ctx
-int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Object *&sun) {
-	
+int processConfig(int argc, char **argv, json& config, Engine::Context &ctx) {
 	int error = -1;
 	
 	if (!strcmp(argv[1], "--help")) {
 		helpMenu();
 		return 0;
 	} else {
+		// Add the physics world (not defined in config)
+		PhysicsWorld *physWorld = new PhysicsWorld();
+		ctx.physWorld = physWorld;
+
 		//Load and process config file
 		ifstream configFile(argv[1]);
 		if (!configFile.is_open()) {
 			std::cout << "Could not open config file '" << argv[1] << "'" << std::endl;
 			return 1;
 		}
-		
+
 		config << configFile;
-		
-		std::string vertexLocation = config["shaders"]["vertex"];
-		std::string fragLocation = config["shaders"]["fragment"];
-		Shader* defaultShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
+		std::string vertexLocation = config["default_shaders"]["vertex"];
+		std::string fragLocation = config["default_shaders"]["fragment"];
+		std::string planeName = "Game Surface";
+
 		
 		//Window properties
 		//I don't think fullscreen works yet - maybe eventually
 		ctx.height = config["window"]["height"];
 		ctx.width = config["window"]["width"];
 		ctx.fullscreen = config["window"]["fullscreen"];
-		
+		ctx.name = "Pinball";
 		ctx.lightStrength = config["sunlight"];
 
-		PhysicsWorld *physWorld = new PhysicsWorld();
-		ctx.physWorld = physWorld;
-		
-		Object::orbitShader = Shader::load("shaders/vert_orbits", "shaders/frag_orbits");
-		
-		Object::Context sunCtx;
-		
-		//Load the sun's properties
-		error = loadPlanetContext(config["sun"], sunCtx, config["scale"]["distance"], config["scale"]["time"], 0, defaultShader, ctx.physWorld);
+        // First object will be used as the floor/surface plane
+		Object::Context surfaceCtx;
+		surfaceCtx.name = planeName;
+		surfaceCtx.vertexShader = vertexLocation;
+		surfaceCtx.fragmentShader = fragLocation;
+        surfaceCtx.shader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
+        error = loadObjectContext(config, surfaceCtx, surfaceCtx.shader, physWorld);
 		if (error != -1) return error;
-		
-		//make certain we set it to a light source
-		sunCtx.isLightSource = true;
-		sunCtx.scaleMultiplier = sunCtx.scale;
-		
-		sun = new Object(sunCtx, NULL);
-		
-		//Now load all the rest of the planets
-		error = loadPlanets(config["sun"], *sun, config["scale"]["distance"], config["scale"]["time"], defaultShader, ctx.physWorld);
-		if (error != -1) return error;
+		//origin in a light source
+		surfaceCtx.isLightSource = true;
+		surfaceCtx.isDynamic = false;
+		std::string modelFile = config["surface_plane"];
+        PhysicsWorld::Context worldCtx;
+        worldCtx.isDynamic = false;
+		// NOTE: Do not set worldCtx.shape here (currently breaks world)
+		surfaceCtx.shape = 4; // plane
+		surfaceCtx.model = PhysicsModel::load("models/" + modelFile, physWorld, &worldCtx );
+		surfaceCtx.physicsBody = (*(physWorld->getLoadedBodies()))[surfaceCtx.model->getRigidBodyIndex()];
 
+		//The configuration of the game world
+		Object *surfacePlane = new Object(surfaceCtx);
+		gameCtx->worldObjects.push_back(surfacePlane);
+
+		//Load the gameworld's objects
+        Object::Context objCtx;
+        for (auto &i : config["game_objects"]) {
+            error = loadObjectContext(i, objCtx, surfaceCtx.shader, physWorld);
+            if (error != -1) return error;
+            Object *newObject = new Object(objCtx);
+            gameCtx->worldObjects.push_back(newObject);
+        }
+		if (error != -1) return error;
 	}
-	
 	return -1;
 }
 
-int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Shader* defaultShader, PhysicsWorld *physWorld) {
-	Object::Context ctx;
-	int error;
-	
-	for (auto &i : config["satellites"]) {
-		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier, defaultShader, physWorld);
-		if (error != -1) return error;
-		
-		Object &newPlanet = sun.addChild(ctx);
-		error = loadPlanets(i, newPlanet, spaceScale, timeScale, defaultShader, physWorld);
-		if (error != -1) return error;
-	}
-	
-	return -1;
-}
+int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader, PhysicsWorld *physWorld) {
 
-int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, float timeScale, float scaleMultiplier, Shader* defaultShader, PhysicsWorld *physWorld) {
-	ctx.name = config["name"];
+    PhysicsWorld::Context objectPhysics;
+    if(config.find("name") != config.end())
+    {
+        ctx.name = config["name"];
+    }
 
-	if(config["orbit"]["year"] != 0) ctx.moveScale = timeScale / ((float) config["orbit"]["year"]);
-	else ctx.moveScale = 0;
-	if(config["day"] != 0) ctx.spinScale = timeScale / ((float) config["day"]);
-	else ctx.spinScale = 0;
-	
-	ctx.orbitTilt = tan(M_PI * ((float) config["orbit"]["tilt"]) / 180);
-	ctx.axisTilt = M_PI * ((float) config["axial-tilt"]) / 180;
-	
-	ctx.orbitDistance = ((float) config["orbit"]["distance"]) / spaceScale;
-	ctx.scale = ((float) config["radius"]) / spaceScale;
-	
-	ctx.scaleMultiplier = scaleMultiplier;
-	
-	std::string filename = config["model"];
-	if(ctx.name != "Earth")
-	{
-		ctx.model = Model::load("models/" + filename);
-		if (ctx.model == NULL) {
-			std::cout << "Could not load model file " << config["model"] << std::endl;
-			return 1;
+    if(config.find("shape") != config.end())
+    {
+        if(config["shape"] == "sphere")
+        {
+            ctx.shape = 1;
+        }
+        else if(config["shape"] == "box")
+        {
+            ctx.shape = 2;
+        }
+        else if(config["shape"] == "cylinder")
+        {
+            ctx.shape = 3;
+        }
+		else if(config["shape"] == "plane")
+		{
+			ctx.shape = 4;
 		}
-	}
-	else
+        else
+        {
+            ctx.shape = 0;
+        }
+		objectPhysics.shape = ctx.shape;
+    }
+
+	if(config.find("height") != config.end())
 	{
-		bool isDynamic = true;
-		ctx.model = PhysicsModel::load("models/" + filename, physWorld, isDynamic);
-		if (ctx.model == NULL) {
-			std::cout << "Could not load model file " << config["model"] << std::endl;
-			return 1;
-		}
+		objectPhysics.heightY = config["height"];
+	}
+	if(config.find("width") != config.end())
+	{
+		objectPhysics.widthX = config["width"];
+	}
+	if(config.find("depth") != config.end())
+	{
+		objectPhysics.lengthZ = config["depth"];
+	}
+	if(config.find("isDynamic") != config.end())
+	{
+		objectPhysics.isDynamic = config["isDynamic"];
+	}
+	if(config.find("isKinematic") != config.end())
+	{
+		objectPhysics.isKinematic = config["isKinematic"];
+	}
+	if(config.find("isBounceType") != config.end())
+	{
+		objectPhysics.isBounceType = config["isBounceType"];
 	}
 
-	
-	//Check if the planet has a texture
+    std::string filename;
+
+	//Check if the object has a special starting location
+	if(config.find("location") != config.end()) {
+		ctx.zLoc= config["location"]["z"];
+		ctx.xLoc= config["location"]["x"];
+		ctx.yLoc= config["location"]["y"];
+		objectPhysics.xLoc = ctx.xLoc;
+		objectPhysics.yLoc = ctx.yLoc;
+		objectPhysics.zLoc = ctx.zLoc;
+	}
+
+	if(config.find("mass") != config.end())
+	{
+		ctx.mass = config["mass"];
+        objectPhysics.mass = ctx.mass;
+	}
+
+	//Check if the object is a static or dynamic object
+	if(config.find("isDynamic") != config.end()) {
+		ctx.isDynamic = config["isDynamic"];
+		objectPhysics.isDynamic = ctx.isDynamic;
+	} else {
+		ctx.isDynamic = false;
+		objectPhysics.isDynamic = ctx.isDynamic;
+	}
+
+	if(config.find("model") != config.end())
+	{
+		filename = config["model"];
+
+		ctx.model = PhysicsModel::load("models/" + filename, physWorld, &objectPhysics);
+		ctx.physicsBody = (*(physWorld->getLoadedBodies()))[ctx.model->getRigidBodyIndex()];
+	}
+	else if (ctx.name != "Game Surface")
+	{
+		std::cout << config["name"] <<  "Object has no model " << std::endl;
+		return 1;
+	}
+
+	//Check if the object has a texture
 	if(config.find("texture") != config.end()) {
 		filename = config["texture"];
 		ctx.texture = Texture::load("textures/" + filename);
 	} else {
 		ctx.texture = nullptr;
 	}
-	
+
+	//Night-time/Alternative texture
 	if(config.find("alt-texture") != config.end()) {
 		filename = config["alt-texture"];
 		ctx.altTexture = Texture::load("textures/" + filename);
 	} else {
 		ctx.altTexture = nullptr;
 	}
-	
+
+	//Normal Map texture
 	if(config.find("normal-texture") != config.end()) {
 		filename = config["normal-texture"];
 		ctx.normalMap = Texture::load("textures/" + filename);
 	} else {
 		ctx.normalMap = nullptr;
 	}
-	
+
+	//Specular map texture
 	if(config.find("specular-texture") != config.end()) {
 		filename = config["specular-texture"];
 		ctx.specularMap = Texture::load("textures/" + filename);
@@ -204,11 +272,16 @@ int loadPlanetContext(json &config, Object::Context &ctx, float spaceScale, floa
 	} else {
 		ctx.shader = defaultShader;
 	}
-	
-	if (ctx.model == NULL) {
-		std::cout << "Could not load model file " << config["model"] << std::endl;
+
+	if (ctx.model == nullptr && ctx.name != "Game Surface") {
+		std::cout << ctx.name << " Could not load model file " << config["model"] << std::endl;
 		return 1;
 	}
+
+    if(config.find("mass") != config.end())
+    {
+        ctx.mass = config["mass"];
+    }
 
 	return -1;
 }

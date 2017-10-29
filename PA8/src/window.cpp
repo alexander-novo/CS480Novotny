@@ -16,8 +16,10 @@ Window::~Window()
 
 bool Window::Initialize(const string &name, int* width, int* height)
 {
-    // Start SDL
-  if(SDL_Init(SDL_INIT_VIDEO) < 0)
+  // Start SDL
+  // SDL_INIT_EVERYTHING
+  // (Timer, Audio, Video, Joystick, Haptic, GameController, Events)
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
   {
     printf("SDL failed to initialize: %s\n", SDL_GetError());
     return false;
@@ -56,13 +58,6 @@ bool Window::Initialize(const string &name, int* width, int* height)
     printf("OpenGL context not created: %s\n", SDL_GetError());
     return false;
   }
-
-  // Use VSync
-  /*if(SDL_GL_SetSwapInterval(1) < 0)
-  {
-    printf("Unable to use VSync: %s\n", SDL_GetError());
-    return false;
-  }*/
 
   return true;
 }

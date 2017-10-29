@@ -114,7 +114,7 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx, Obj
 int loadPlanets(json &config, Object &sun, float spaceScale, float timeScale, Shader* defaultShader) {
 	Object::Context ctx;
 	int error;
-	
+
 	for (auto &i : config["satellites"]) {
 		error = loadPlanetContext(i, ctx, spaceScale, timeScale, sun.ctx.scaleMultiplier, defaultShader);
 		if (error != -1) return error;

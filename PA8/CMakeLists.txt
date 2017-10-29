@@ -1,6 +1,9 @@
 PROJECT(Tutorial)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
+#export compile commands for use in visualizations
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules")
 add_definitions( -DMAGICKCORE_QUANTUM_DEPTH=16 )
 add_definitions( -DMAGICKCORE_HDRI_ENABLE=0 )
@@ -47,6 +50,7 @@ FILE(COPY src/shaders DESTINATION .)
 FILE(COPY models DESTINATION .)
 FILE(COPY textures DESTINATION .)
 FILE(COPY config.json DESTINATION .)
+FILE(COPY config_pinball.json DESTINATION .)
 
 # Set sources
 FILE(GLOB_RECURSE SOURCES "src/*.cpp")

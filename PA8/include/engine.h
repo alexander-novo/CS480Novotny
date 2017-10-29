@@ -3,10 +3,12 @@
 
 #include <sys/time.h>
 #include <assert.h>
+#include <random>
 
 #include "window.h"
 #include "graphics.h"
 #include "Menu.h"
+#include "gameworldctx.h"
 
 #define ENGINE_NAME_DEFAULT "Pinball"
 #define ENGINE_WIDTH_DEFAULT 800
@@ -23,9 +25,10 @@ class Engine {
 			
 			float lightStrength = 1.0f;
 			PhysicsWorld *physWorld;
+			GameWorld::ctx *gameWorldCtx;
 		};
 		
-		Engine(const Context &ctx, Object* sun);
+		Engine(const Context &ctx);
 		
 		~Engine();
 		
@@ -54,14 +57,14 @@ class Engine {
 		bool m_FULLSCREEN;
 		float m_light;
 		PhysicsWorld *physWorld;
+		GameWorld::ctx *gameWorldCtx;
 		SDL_Event m_event;
 		
 		Graphics *m_graphics;
 		unsigned int m_DT;
 		long long m_currentTimeMillis;
 		bool m_running;
-		
-		Object* m_cube;
+
 		Menu *m_menu;
 		
 		bool mouseDown;

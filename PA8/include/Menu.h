@@ -33,7 +33,7 @@ class Menu {
 			bool drawShadows = false;
 		};
 		
-		Menu(Window& window, Object& root);
+		Menu(Window& window);
 		
 		//Returns a planet based on its index in the drop down
 		Object* getPlanet(int index) const;
@@ -61,7 +61,6 @@ class Menu {
 		
 		//Keep track of where we're rendering and the sun
 		Window& window;
-		Object& root;
 		
 		Options _options;
 		

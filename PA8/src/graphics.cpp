@@ -1,7 +1,6 @@
 #include "graphics.h"
 
-Graphics::Graphics(Object* sun, float lightStrength, Menu& menu, const int& w, const int& h, PhysicsWorld *pW) : windowWidth(w), windowHeight(h), m_cube(sun), lightPower(lightStrength), m_menu(menu), physWorld(pW) {
-	Object::globalOffset = &m_cube->position;
+Graphics::Graphics(float lightStrength, Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc) : windowWidth(w), windowHeight(h), lightPower(lightStrength), m_menu(menu), physWorld(pW), gameWorldCtx(gwc) {
 	camView = new Camera(menu);
 
 	// camView->setMenu(*menu);
@@ -44,13 +43,17 @@ bool Graphics::Initialize(int width, int height) {
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	
-	m_cube->Init_GL();
+
 	skybox->initGL();
 	skyShader->Initialize();
 	skyTexture->initGL();
 	
 	shadowShader->Initialize();
+
+    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
+    {
+        gameWorldCtx->worldObjects[i]->Init_GL();
+    }
 	
 	glGenFramebuffers(1, &depthBuffer);
 	
@@ -83,13 +86,16 @@ bool Graphics::Initialize(int width, int height) {
 }
 
 void Graphics::Update(unsigned int dt) {
-	glm::vec3 offsetChange = *Object::globalOffset;
+	glm::vec3 offsetChange = {0,0,0};
 	
 	// Update the object
-	m_cube->Update(dt, m_menu.options.scale);
-	
+    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
+    {
+        gameWorldCtx->worldObjects[i]->Update(dt);
+    }
+
 	//Calculate what our offset changed by, in case we need to move the camera
-	offsetChange -= *Object::globalOffset;
+//	offsetChange -= *Object::globalOffset;
 	
 	//Calculate where our camera should be and update the View matrix
 	camView->calculateCamera(offsetChange);
@@ -97,26 +103,30 @@ void Graphics::Update(unsigned int dt) {
 
 void Graphics::Render() {
 	if(m_menu.options.drawShadows && m_menu.options.scale == CLOSE_SCALE) renderShadowMap();
-	
+
 	//Switch to rendering on the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	float modifiedLight = pow(lightPower, m_menu.options.scale);
-	
+
 	//Render our background
 	//Done first so that transparent objects (rings) work properly
 	renderSkybox();
-	
+
 	if(m_menu.options.drawShadows) {
 		glActiveTexture(GL_SHADOW_TEXTURE);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMap);
 	}
-	
+
 	//Render planets
-	m_cube->Render(modifiedLight, shadowMap);
-	
+    // Update the object
+    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
+    {
+        gameWorldCtx->worldObjects[i]->Render(modifiedLight, shadowMap);
+    }
+
 	// Get any errors from OpenGL
 	auto error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -184,9 +194,10 @@ void Graphics::renderShadowMap() {
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		shadowShader->uniformMatrix4fv("VP", 1, GL_FALSE, glm::value_ptr(lshadowTrans[i]));
-		for(int j = 0; j < m_cube->getNumChildren(); j++) {
-			(*m_cube)[j].renderShadow(shadowShader);
-		}
+        for(int j = 0; j<gameWorldCtx->worldObjects.size(); i++)
+        {
+            gameWorldCtx->worldObjects[i]->renderShadow(shadowShader);
+        }
 	}
 	
 	//view = oldView;
@@ -210,8 +221,8 @@ std::string Graphics::ErrorString(GLenum error) {
 	}
 }
 
-Object *Graphics::getObject() {
-	return m_cube;
+vector <Object *> *Graphics::getObject() {
+	return &gameWorldCtx->worldObjects;
 }
 
 Camera *Graphics::getCamView()

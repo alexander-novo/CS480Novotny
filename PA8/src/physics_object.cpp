@@ -1,11 +1,10 @@
 #ifndef PHYSICS_OBJECT
 #define PHYSICS_OBJECT
-#include "physics_object.h"
 
 
 // void renderSphere(btRigidBody * sphere)
 // {
-//     if(sphere->getCollisionShape()->getShapeType() != SPHERE_SHAPE_PROXY_TYPE)
+//     if(sphere->getCollisionShape()->getShapeType() != SPHERE_SHAPE_PROXYTYPE)
 //     {
 //         return;
 //     }
@@ -27,33 +26,33 @@
 //     glPopMatrix();
 // }
 
-// void renderPlane(btRigidBody * plane)
-// {
-//     if(plane->getCollisionShape()->getShapeType() != STATIC_PLANE_PROXY_TYPE)
-//     {
-//         return;
-//     }
-
-//     //grey color
-//     glColor3f(.8,0.8,0.8);
-//     //cast rigidbody to the sphere shape and then get the radius of the sphere
-//     btTransform tPlane;
-//     plane->getMotionState()->getWorldTransform(t);
-
-//     //16 element matrix
-//     float mat[16];
-//     tPlane.getOpenGLMatrix(mat);
-//     glPushMatrix();
-//     // multiply model_view matrix with mat 
-//       glMultMatrixf(mat); // translation, rotation
-//       glBegin(GL_QUADS);
-//         glVertex3f(-1000, 0, 1000);
-//         glVertex3f(-1000, 0, -1000);
-//         glVertex3f(1000, 0, 1000);
-//         glVertex3f(1000, 0, -1000);
-//       glEnd();
-//     glPopMatrix();
-// }
+//void renderPlane(btRigidBody * plane)
+//{
+//    if(plane->getCollisionShape()->getShapeType() != STATIC_PLANE_PROXYTYPE)
+//    {
+//        return;
+//    }
+//
+//    //grey color
+//    glColor3f(.8,0.8,0.8);
+//    //cast rigidbody to the sphere shape and then get the radius of the sphere
+//    btTransform tPlane;
+//    plane->getMotionState()->getWorldTransform(tPlane);
+//
+//    //16 element matrix
+//    float mat[16];
+//    tPlane.getOpenGLMatrix(mat);
+//    glPushMatrix();
+//    // multiply model_view matrix with mat
+//    glMultMatrixf(mat); // translation, rotation
+//    glBegin(GL_QUADS);
+//    glVertex3f(-1000, 0, 1000);
+//    glVertex3f(-1000, 0, -1000);
+//    glVertex3f(1000, 0, 1000);
+//    glVertex3f(1000, 0, -1000);
+//    glEnd();
+//    glPopMatrix();
+//}
 
 // //inside p_world
 // for (int i = 0; i<loadedBodies.size(); i++)

@@ -8,19 +8,26 @@
 
 PhysicsModel::PhysicsModel(){}
 
-PhysicsModel* PhysicsModel::load(std::string filename, PhysicsWorld *physWorld, bool isDynamic) 
+PhysicsModel::~PhysicsModel()
+{
+    // clean up Bullet's meshes (ha ha ha)
+    delete objTriMesh;
+    objTriMesh = nullptr;
+}
+
+PhysicsModel* PhysicsModel::load(std::string filename, PhysicsWorld *physWorld, PhysicsWorld::Context *worldCtx)
 {
     static std::unordered_map<std::string, PhysicsModel*> loadedModels;
-    
     // If we already loaded this model before
     // add another physics object, but use the same model
-    if(loadedModels.find(filename) != loadedModels.end()) {
-        // TODO: Add already loaded model as new object in the physics world
-        return loadedModels[filename];
-    }
+//    if(loadedModels.find(filename) != loadedModels.end()) {
+//        // TODO: Add already loaded model as new object in the physics world
+//        return loadedModels[filename];
+//    }
 
     PhysicsModel *newModel = new PhysicsModel();
-    
+    newModel->mass = worldCtx->mass;
+
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(filename, aiProcessPreset_TargetRealtime_Fast);
     if(scene == nullptr) {
@@ -30,7 +37,7 @@ PhysicsModel* PhysicsModel::load(std::string filename, PhysicsWorld *physWorld, 
     aiMesh* mesh = scene->mMeshes[0];
     
     newModel->loadVertices(mesh, newModel);
-    newModel->loadIndices(mesh, newModel, physWorld, isDynamic);
+    newModel->loadIndices(mesh, newModel, physWorld, worldCtx);
     newModel->material = newModel->loadMaterials(scene);
     newModel->initialised = false;
     
@@ -50,14 +57,14 @@ void PhysicsModel::loadVertices(aiMesh *mesh, PhysicsModel *newModel)
     }
 }
 
-void PhysicsModel::loadIndices(aiMesh *mesh, PhysicsModel *newModel, PhysicsWorld *physWorld, bool isDynamic)
+void PhysicsModel::loadIndices(aiMesh *mesh, PhysicsModel *newModel, PhysicsWorld *physWorld, PhysicsWorld::Context *ctx)
 {
     static int phsyics_world_model_index = 0;
     std::string indexName = std::to_string(phsyics_world_model_index);
     phsyics_world_model_index++;
     //Bullet needs this info
     btVector3 triArray[3];
-    btTriangleMesh *objTriMesh = new btTriangleMesh();
+    objTriMesh = new btTriangleMesh();
     //Now our indices
     for(unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) 
     {
@@ -75,10 +82,15 @@ void PhysicsModel::loadIndices(aiMesh *mesh, PhysicsModel *newModel, PhysicsWorl
 
     // create the mesh and add it to the world
     // btCollisionShape *triMeshShape = new btBvhTriangleMeshShape(objTriMesh, true);
-    physWorld->createObject(indexName, objTriMesh, isDynamic);
+    // TODO: Make sure triangle mesh is being used correctly.
 
-    // clean up Bullet's meshes (ha ha ha)
-    delete objTriMesh;
+    rigidBodyIndex = physWorld->createObject(indexName, objTriMesh, ctx);
+    int abc = rigidBodyIndex;
+}
+
+int PhysicsModel::getRigidBodyIndex()
+{
+    return rigidBodyIndex;
 }
 
 #endif /* PHYSICS_MODEL */

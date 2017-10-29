@@ -9,10 +9,11 @@
 #include "Menu.h"
 #include "physics_world.h"
 #include "camera.h"
+#include "gameworldctx.h"
 
 class Graphics {
 	public:
-		Graphics(Object* sun, float lightPower, Menu& menu, const int& w, const int& h, PhysicsWorld *pW);
+		Graphics(float lightPower, Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc);
 		~Graphics();
 		
 		//Initialise OpenGL
@@ -24,8 +25,8 @@ class Graphics {
 		//Render models
 		void Render();
 		
-		//Return pointer to main Object (sun)
-		Object* getObject();
+		//Return pointer to vector of objects
+		vector<Object *> *getObject();
 
 		Camera * getCamView();
 	
@@ -39,7 +40,7 @@ class Graphics {
 		void renderSkybox();
 		
 		void renderShadowMap();
-		
+
 		Menu& m_menu;
 		
 		glm::mat4 lprojection;
@@ -51,10 +52,7 @@ class Graphics {
 		GLuint depthBuffer;
 		GLuint renderBuffer;
 		GLuint shadowMap;
-		
-		//The sun
-		Object* m_cube;
-		
+
 		const int& windowWidth;
 		const int& windowHeight;
 		
@@ -66,6 +64,7 @@ class Graphics {
 		Shader* shadowShader;
 
 		PhysicsWorld* physWorld;
+		GameWorld::ctx *gameWorldCtx;
 };
 
 #endif /* GRAPHICS_H */

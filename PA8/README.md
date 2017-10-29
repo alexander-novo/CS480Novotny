@@ -16,9 +16,11 @@ This project uses OpenGL 3.3. Some computers, such as virtual machines in the EC
 This project uses ImageMagick++ for loading textures. We have found that there are various forms of ImageMagick++ that can conflict with each other. In order to be sure that ImageMagick++ is installed properly for this project, we recommend removing all other forms before installing the libmagick++-dev library. 
 ``` sudo apt-get remove *magick* ``` should handle this removal.
 
+This project uses [Bullet Physics](https://bulletphysics.org).
+
 ### Ubuntu/Linux
 ```bash
-sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev libmagick++-dev
+sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev libmagick++-dev libbullet-dev
 ```
 
 ## Building and Running
@@ -41,14 +43,9 @@ make
 `spacebar` - Move camera up  
 `left/right` - Rotate camera
 
-`left click` - Drag to rotate camera around object (With planet selected)   
-`Scroll wheel` - Zoom in and out (With planet selected)   
-
-**Camera Distance** - Changes how far the camera is away from the current object.  Zooms out to overhead view.
-**Camera Rotation** - Rotates the camera around whatever the camera is looking at. Useful for getting out of a planet's shadow  
-**Realistic/Close Scale** - Switch between the two to get realistic planet scaling (where the sun is *much* bigger than the planets and everything is very far apart) or an easier to see scale  
-**Labels** - Check appropriate box to display names over planets or moons
-
+`left click` - Drag to rotate camera
+`right click` - Shoot several dynamic objects in random directions.
+`Scroll wheel` - Zoom in and out
 
 # Command Line Parameters
 

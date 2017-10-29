@@ -4,33 +4,30 @@
 glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
 Shader* Object::orbitShader;
-glm::vec3 const * Object::globalOffset;
+// TODO: fix this global offset stuff
+glm::vec3 globOff = {0,0,-2};
+glm::vec3 const * Object::globalOffset = &globOff;
 Menu* Object::menu;
 
-Object::Object(const Context &a, Object* b) : ctx(a), originalCtx(a), parent(b), position(_position) {
-	//Make the planet start at a random position
-	time.move = ((float) rand()) / RAND_MAX * 2 * M_PI;
-	time.spin = 0;
+Object::Object(const Context &a) : ctx(a), originalCtx(a), position(glm::vec3(ctx.xLoc, ctx.yLoc, ctx.zLoc)) {
 	//Default value - just in case anything tries to read it
 	//The planet doesn't actually start here - this will be updated in Update()
-	_position = {0.0, 0.0, 0.0};
+	_position = {a.xLoc, a.yLoc, a.zLoc};
+	modelMat = glm::translate(modelMat, position);
 }
 
-Object::~Object() {
-	for (auto &i : _children) {
-		delete i;
-	}
-	_children.clear();
-}
+Object::~Object() {}
 
 void Object::Init_GL() {
 	//Initialise shaders
-	orbitShader->Initialize();
 	ctx.shader->Initialize();
 	
 	//Initialise models
-	ctx.model->initGL();
-		
+	if(ctx.model != nullptr)
+	{
+		ctx.model->initGL();
+	}
+
 	//Initialise textures
 	if(ctx.texture != nullptr) {
 		ctx.texture->initGL();
@@ -44,45 +41,23 @@ void Object::Init_GL() {
 	if(ctx.specularMap != nullptr) {
 		ctx.specularMap->initGL();
 	}
-	//Now do the same for all our children
-	for(auto& child : _children) {
-		child->Init_GL();
-	}
 }
 
-void Object::Update(float dt, float scaleExp) {
-	double timeMod = dt / 1000.0f * ctx.timeScale;
-	double scaleMult = ctx.scaleMultiplier / pow(ctx.scaleMultiplier, scaleExp); //Makes the sun always the same size
-	double scale = scaleMult * pow(ctx.scale, scaleExp);
-	
-	//Update the timer
-	time.spin += timeMod * ctx.spinScale * ctx.spinDir;
-	time.move += timeMod * ctx.moveScale * ctx.moveDir;
-	
-	if(parent != nullptr) {
-		//Move into place
-		//Add the scales to the distance to make certain they never overlap
-		double radius = scaleMult * pow(parent->ctx.scale, scaleExp) + scaleMult * pow(ctx.scale, scaleExp) + pow(ctx.orbitDistance, scaleExp);
-		
-		double cosTheta = cos(-time.move);
-		_position = {parent->position.x + radius * cos(ctx.orbitTilt) * cosTheta,
-		             parent->position.y + radius * sin(ctx.orbitTilt) * cosTheta,
-		             parent->position.z + radius * sin(-time.move)};
-		modelMat = glm::translate(position - *globalOffset);
-	} else {
-		modelMat = glm::translate(glm::vec3(0) - *globalOffset);
+void Object::Update(float dt) {
+	if(ctx.hasPhysics)
+	{
+		btTransform transformObject;
+		ctx.physicsBody->getMotionState()->getWorldTransform(transformObject);
+
+		//16 element matrix
+		float mat[16];
+		transformObject.getOpenGLMatrix(mat);
+		modelMat = glm::make_mat4(mat);
 	}
-	
-	//Update all satellites after moving, so they follow us around
-	for (auto &i : _children) {
-		i->Update(dt * ctx.timeScale, scaleExp);
-	}
-	
-	//Then rotate and scale so the satellites are unaffected
-	modelMat= glm::rotate(modelMat, ctx.axisTilt + ctx.orbitTilt, glm::vec3(0.0, 0.0, 1.0));
-	modelMat= glm::rotate(modelMat, -time.spin, glm::vec3(0.0, 1.0, 0.0));
-	modelMat= glm::scale(modelMat, glm::vec3(scale, scale, scale));
-	
+
+
+	// Get Model from physics
+//	modelMat = glm::translate(glm::vec3(0) - *globalOffset);
 }
 
 const glm::mat4& Object::GetModel() const {
@@ -92,13 +67,10 @@ const glm::mat4& Object::GetModel() const {
 void Object::Render(float lightPower, GLuint shadowMap) const {
 	
 	//If we can't see this object, don't render it
-	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
-	if(lookingAt != this && menu->options.scale > 0.9) {
-		for (const auto &i : _children) {
-			i->Render(lightPower, shadowMap);
-		}
-		return;
-	}
+//	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
+//	if(lookingAt != this && menu->options.scale > 0.9) {
+//		return;
+//	}
 	ctx.shader->Enable();
 
 	//Send our shaders the MVP matrices
@@ -149,7 +121,11 @@ void Object::Render(float lightPower, GLuint shadowMap) const {
 	}
 	
 	//Timer for shader
-	ctx.shader->uniform1fv("shaderTime", 1, &time.spin);
+//    if(ctx.isDynamic || ctx.isLightSource)
+//    {
+		float timeMod = 16 / 1000.0f;
+        ctx.shader->uniform1fv("shaderTime", 1, &timeMod);
+//    }
 	
 	//Enable blending (for transparent stuff)
 	glEnable(GL_BLEND);
@@ -161,46 +137,18 @@ void Object::Render(float lightPower, GLuint shadowMap) const {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
 	glDisable(GL_BLEND);
-
-
-	//Now pass the function down the chain to our satellites
-	for (const auto &i : _children) {
-		i->Render(lightPower, shadowMap);
-	}
-
 }
 
 void Object::renderShadow(Shader* shadowShader) const {
-	
+
 	//If we can't see this object, don't render it
 	Object* lookingAt = menu->getPlanet(menu->options.lookingAt);
 	if(lookingAt != this && menu->options.scale > 0.9) {
 		return;
 	}
-	
+
 	shadowShader->uniformMatrix4fv("M", 1, GL_FALSE, glm::value_ptr(modelMat));
 	
 	//Now draw our planet
 	ctx.model->drawModel();
-	
-	//Now pass the function down the chain to our satellites
-	for (const auto &i : _children) {
-		i->renderShadow(shadowShader);
-	}
-	
-}
-
-Object& Object::addChild(const Object::Context& ctx) {
-	auto* newPlanet = new Object(ctx, this);
-	_children.push_back(newPlanet);
-	return *newPlanet;
-}
-
-unsigned long Object::getNumChildren() const {
-	return _children.size();
-}
-
-Object& Object::operator[](int index) {
-	if(index >= _children.size()) throw std::out_of_range("Received child index out of range");
-	return *_children[index];
 }

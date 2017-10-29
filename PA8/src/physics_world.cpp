@@ -34,46 +34,10 @@ PhysicsWorld::PhysicsWorld()
     // ====================== </Initialization> ==================
 
     // Earth Gravity in the Y direction
-    dynamicsWorld->setGravity(btVector3(0, -9.81, 0)); 
-    dynamicsWorld->stepSimulation(1/60.0);
-} 
+    dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
 
-PhysicsWorld::PhysicsWorld(float dt)
-{
-    // ====================== <Initialization> ===================
-
-    // Create a *broadphase*
-    // Used to check for collisions between objects. (Also helps eliminate object pairs that shouldn't collide)
-    broadphase = new btDbvtBroadphase();
-
-    // Create a *collision configuration*
-    // The collision algorithm that can be used to regiser a callback that filters overlapping broadphase
-    // proxies so that the collisions are not processed by the rest of the system.
-    // ....whatever that means
-    collisionConfiguration = new btDefaultCollisionConfiguration();
-
-    // Create a *dispatcher*
-    // Takes collision config pointer as a parameter
-    // Along with collisionConfig, it sends events to the objects 
-    dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-    //Create a solver
-    // Causes objects to interact properly, taking into account gravity, forces, collisions, hinge constraints
-    // World and Objects are both handled with this pointer.
-    solver = new btSequentialImpulseConstraintSolver;
-
-    // Create World!
-    // World uses the initialization parameters
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-
-    // ====================== </Initialization> ==================
-
-    // Earth Gravity in the Y direction
-    dynamicsWorld->setGravity(btVector3(0, -9.81, 0)); 
-
-    // The time between ticks of checking for collisions in the world.
-    dynamicsWorld->stepSimulation(dt/1000);
-} 
+    addInvisibleWalls();
+}
 
 PhysicsWorld::~PhysicsWorld()
 {
@@ -84,7 +48,7 @@ PhysicsWorld::~PhysicsWorld()
         btMotionState * motionState = loadedBodies[i]->getMotionState();
         btCollisionShape * collisionShape = loadedBodies[i]->getCollisionShape();
         delete loadedBodies[i];
-        loadedBodies[i] = NULL;
+        loadedBodies[i] = nullptr;
         delete motionState;
         delete collisionShape;
     }
@@ -96,45 +60,73 @@ PhysicsWorld::~PhysicsWorld()
     delete solver;
     delete dynamicsWorld;
 
-    broadphase = NULL;
-    collisionConfiguration = NULL;
-    dispatcher = NULL;
-    solver = NULL;
-    dynamicsWorld = NULL;
+    broadphase = nullptr;
+    collisionConfiguration = nullptr;
+    dispatcher = nullptr;
+    solver = nullptr;
+    dynamicsWorld = nullptr;
 }
 
 
-bool PhysicsWorld::addBody(btRigidBody* bodyToAdd)
+int PhysicsWorld::addBody(btRigidBody* bodyToAdd)
 {
     dynamicsWorld->addRigidBody(bodyToAdd);
     loadedBodies.push_back(bodyToAdd);
-    return true;
+    return (int) loadedBodies.size()-1;
 }
 
-bool PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMesh, bool isDynamic)
+int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMesh, PhysicsWorld::Context *objCtx)
 {
 
+    btVector3 inertia(0,0,0);
     float xPos, yPos, zPos, mass;
-    if(isDynamic)
-    {
-        mass = 1;
-    }
-    else
+    mass = objCtx->mass;
+    xPos = objCtx->xLoc;
+    yPos = objCtx->yLoc;
+    zPos = objCtx->zLoc;
+    if(objCtx->isDynamic = false)
     {
         mass = 0;
+        inertia = {0,0,0};
     }
 
-    xPos = zPos = yPos = 0;
+
 
     btTransform transform;
     transform.setIdentity();
     transform.setOrigin(btVector3(xPos,yPos,zPos));
 
+    btCollisionShape *newShape;
+
+    if(objCtx->shape == 1)
+    {   // SPHERE
+        btScalar radius = 1;
+        newShape = new btSphereShape (radius);
+    }
+    else if(objCtx->shape == 2)
+    {   // BOX - half-extends are the half the height/width/depth of the box (from a point p out)
+        btVector3 boxHalfExtents = {objCtx->widthX, objCtx->heightY, objCtx->lengthZ};
+        newShape = new btBoxShape(boxHalfExtents);
+    }
+    else if(objCtx->shape == 3)
+    {   // CYLINDER
+        btVector3 boxHalfExtents = {1, 1, 1};
+        newShape = new btCylinderShape(boxHalfExtents);
+    }
+    else if(objCtx->shape == 4)
+    {   // PLANE(ground)
+        btVector3 planeNormal = {0, 1, 0};
+        btScalar planeConstant = 1000;
+        newShape = new btStaticPlaneShape(planeNormal, planeConstant);
+    }
     // create shape from mesh
-    btCollisionShape *newShape = new btBvhTriangleMeshShape(objTriMesh, true);
+    else
+    {
+        newShape = new btBvhTriangleMeshShape(objTriMesh, true);
+    }
 
     // inertia vector
-    btVector3 inertia(0,0,0);
+
 
     if(mass != 0.0)
         newShape->calculateLocalInertia(mass, inertia);
@@ -143,72 +135,144 @@ bool PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMe
     btMotionState *motion = new btDefaultMotionState(transform);
 
     // (mass [0 = static], motionstate, collisionshape, inertia)
-    btRigidBody::btRigidBodyConstructionInfo info(mass, motion, newShape);
+    btRigidBody::btRigidBodyConstructionInfo info(mass, motion, newShape, inertia);
+
+    if(objCtx->isBounceType)
+    {
+        info.m_restitution = 7.0f;
+    }
+    else if (objCtx->shape = 1)
+    {
+        info.m_restitution = .5f;
+    }
 
     // takes in the body
     btRigidBody * body = new btRigidBody(info);
-
+    //body->setGravity( btVector3(0,-4, 0));
     // add the object's body to the physics world
-    addBody(body);
+    int bodyIndex = addBody(body);
+    // TODO: add check for if it exists
     loadedPhysicsObjects[objectName] = newShape;
-    return true;
+    return bodyIndex;
 }
 
-bool PhysicsWorld::addFloor()
+bool PhysicsWorld::addInvisibleWalls()
 {
     //Set location/orientation of bullet object
-    btTransform transform;
+    btTransform transform[6];
     // orientation/position to 0,0,0
-    transform.setIdentity();
-    transform.setOrigin(btVector3(0,0,0));
+    for(int i = 0; i<6; i++)
+    {
+        transform[i].setIdentity();
+    }
 
-    // plane looking up (btVector3), distnace from origin = 0 
-    btStaticPlaneShape *plane = new btStaticPlaneShape(btVector3(0.0,1.0,0.0), 0);
-    btMotionState *motion = new btDefaultMotionState(transform);
+    //floor
+    transform[0].setOrigin(btVector3(0,-1,0));
+    //backwall
+    transform[1].setOrigin(btVector3(0,0,-40));
+    //frontwall
+    transform[2].setOrigin(btVector3(0,0,40));
+    //leftside
+    transform[3].setOrigin(btVector3(-20,0,0));
+    //rightside
+    transform[4].setOrigin(btVector3(20,0,0));
+    //ceiling
+    transform[5].setOrigin(btVector3(0,135,0));
+
+    // plane looking up (btVector3), distance from origin = 0
+    // btVector3 tells which direction the plane is facing (xyz openGL co-ords)
+    btStaticPlaneShape *floor = new btStaticPlaneShape(btVector3(0.0,1,0.0), 0);
+    btStaticPlaneShape *backWall = new btStaticPlaneShape(btVector3(0.0,0,1), 0);
+    btStaticPlaneShape *frontWall = new btStaticPlaneShape(btVector3(0.0,0,-1), 0);
+    btStaticPlaneShape *leftSideWall = new btStaticPlaneShape(btVector3(1, 0.0,0.0), 0);
+    btStaticPlaneShape *rightSideWall = new btStaticPlaneShape(btVector3(-1, 0.0,0.0), 0);
+    btStaticPlaneShape *ceiling = new btStaticPlaneShape(btVector3(0.0,-1,0.0), 0);
+
+    btMotionState *motionFloor = new btDefaultMotionState(transform[0]);
+    btMotionState *motionbackWall = new btDefaultMotionState(transform[1]);
+    btMotionState *motionfrontWall = new btDefaultMotionState(transform[2]);
+    btMotionState *motionleftSideWall = new btDefaultMotionState(transform[3]);
+    btMotionState *motionrightSideWall = new btDefaultMotionState(transform[4]);
+    btMotionState *motionceiling = new btDefaultMotionState(transform[5]);
 
     // (mass [0 = static], motionstate, collisionshape, inertia)
-    btRigidBody::btRigidBodyConstructionInfo info(0, motion, plane);
+    btRigidBody::btRigidBodyConstructionInfo floorInfo(0, motionFloor, floor);
+    btRigidBody::btRigidBodyConstructionInfo backWallInfo(0, motionbackWall, backWall);
+    btRigidBody::btRigidBodyConstructionInfo frontWallInfo(0, motionfrontWall, frontWall);
+    btRigidBody::btRigidBodyConstructionInfo leftSideWallInfo(0, motionleftSideWall, leftSideWall);
+    btRigidBody::btRigidBodyConstructionInfo rightSideWallInfo(0, motionrightSideWall, rightSideWall);
+    btRigidBody::btRigidBodyConstructionInfo ceilingInfo(0, motionceiling, ceiling);
 
+    // Gives walls a bit of allowance for bounce
+//    floorInfo.m_restitution = 0.0f;
+    backWallInfo.m_restitution = 0.7f;
+    frontWallInfo.m_restitution = 0.7f;
+    leftSideWallInfo.m_restitution = 0.7f;
+    rightSideWallInfo.m_restitution = 0.7f;
+//    ceilingInfo.m_restitution = 1.0f;
+
+    int flags = floorPlane->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
     // takes in the body
-    btRigidBody *body = new btRigidBody(info);
-    addBody(body);
+    floorPlane = new btRigidBody(floorInfo);
+    backWallPlane = new btRigidBody(backWallInfo);
+    frontWallPlane = new btRigidBody(frontWallInfo);
+    leftSidePlane = new btRigidBody(leftSideWallInfo);
+    rightSidePlane = new btRigidBody(rightSideWallInfo);
+    ceilingPlane= new btRigidBody(ceilingInfo);
+
+    floorPlane->setCollisionFlags(flags);
+    backWallPlane->setCollisionFlags(flags);
+    frontWallPlane->setCollisionFlags(flags);
+    leftSidePlane->setCollisionFlags(flags);
+    rightSidePlane->setCollisionFlags(flags);
+    ceilingPlane->setCollisionFlags(flags);
+
+    floorPlane->setActivationState(DISABLE_DEACTIVATION);
+    backWallPlane->setActivationState(DISABLE_DEACTIVATION);
+    frontWallPlane->setActivationState(DISABLE_DEACTIVATION);
+    leftSidePlane->setActivationState(DISABLE_DEACTIVATION);
+    rightSidePlane->setActivationState(DISABLE_DEACTIVATION);
+    ceilingPlane->setActivationState(DISABLE_DEACTIVATION);
+
+    addBody(floorPlane);
+    addBody(backWallPlane);
+    addBody(frontWallPlane);
+    addBody(leftSidePlane);
+    addBody(rightSidePlane);
+    addBody(ceilingPlane);
     return true;
 }
 
-bool PhysicsWorld::createDefaultSphere()
+void PhysicsWorld::renderPlane()
 {
-    float radius, xPos, yPos, zPos, mass;
-    mass = radius = 1;
-    xPos = zPos = 0;
-    yPos = 20; // 20 meters above plane
-    btTransform tSphere;
-    tSphere.setIdentity();
-    tSphere.setOrigin(btVector3(xPos,yPos,zPos));
+    if(floorPlane->getCollisionShape()->getShapeType() != STATIC_PLANE_PROXYTYPE)
+    {
+        return;
+    }
 
-    // Sphere with radius passed in as parameter
-    btSphereShape * sphere = new btSphereShape(radius);
+    //grey color
+    //cast rigidbody to the sphere shape and then get the radius of the sphere
+    btTransform tPlane;
+    floorPlane->getMotionState()->getWorldTransform(tPlane);
 
-    // inertia vector
-    btVector3 inertia(0,0,0);
-
-    if(mass != 0.0)
-        sphere->calculateLocalInertia(mass, inertia);
-
-    // Motion state of the sphere
-    btMotionState *motion = new btDefaultMotionState(tSphere);
-
-    // (mass [0 = static], motionstate, collisionshape, inertia)
-    btRigidBody::btRigidBodyConstructionInfo info(mass, motion, sphere);
-
-    // takes in the body
-    btRigidBody * body = new btRigidBody(info);
-    addBody(body);
-    return true;
+    //16 element matrix
+    float mat[16];
+    tPlane.getOpenGLMatrix(mat);
 }
 
-std::unordered_map<std::string, btCollisionShape*> PhysicsWorld::getLoadedPhysicsObjects()
+std::vector<btRigidBody*> * PhysicsWorld::getLoadedBodies()
 {
-    return loadedPhysicsObjects;
+    return &loadedBodies;
+}
+
+void PhysicsWorld::update(float dt)
+{
+    // The time between ticks of checking for collisions in the world.
+//    dynamicsWorld->stepSimulation(dt/1000);
+//    dynamicsWorld->stepSimulation(1/60.0);
+    // The time between ticks of checking for collisions in the world.
+    dynamicsWorld->stepSimulation(120, 1);
 }
 
 #endif
+

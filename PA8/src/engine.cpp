@@ -1,7 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun), windowWidth(m_WINDOW_WIDTH), windowHeight(m_WINDOW_HEIGHT) {
+Engine::Engine(const Context &ctx) : windowWidth(m_WINDOW_WIDTH), windowHeight(m_WINDOW_HEIGHT) {
 	m_WINDOW_NAME = ctx.name;
 	m_WINDOW_WIDTH = ctx.width;
 	m_WINDOW_HEIGHT = ctx.height;
@@ -9,6 +9,7 @@ Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun), windowWidth(m_WIN
 	
 	m_light = ctx.lightStrength;
 	physWorld = ctx.physWorld;
+	gameWorldCtx = ctx.gameWorldCtx;
 	
 	mouseDown = false;
 }
@@ -16,8 +17,8 @@ Engine::Engine(const Context &ctx, Object *sun) : m_cube(sun), windowWidth(m_WIN
 Engine::~Engine() {
 	delete m_window;
 	delete m_graphics;
-	m_window = NULL;
-	m_graphics = NULL;
+	m_window = nullptr;
+	m_graphics = nullptr;
 }
 
 bool Engine::Initialize() {
@@ -29,10 +30,10 @@ bool Engine::Initialize() {
 	}
 	
 	//Start the menu and connect it to the window
-	m_menu = new Menu(*m_window, *m_cube);
+	m_menu = new Menu(*m_window);
 	
 	// Start the graphics
-	m_graphics = new Graphics(m_cube, m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT, physWorld);
+	m_graphics = new Graphics(m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT, physWorld, gameWorldCtx);
 	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT)) {
 		printf("The graphics failed to initialize.\n");
 		return false;
@@ -49,7 +50,7 @@ bool Engine::Initialize() {
 
 void Engine::Run() {
 	m_running = true;
-	
+	int zoom = 0;
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
@@ -62,19 +63,27 @@ void Engine::Run() {
 		Keyboard(m_DT);
 		
 		//Make certain whatever we're looking at is at origin
-		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
+//		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
 
 		// Update planet positions
 		m_graphics->Update(m_DT);
-		
+        physWorld->update(m_DT);
+
 		// Update menu options and labels
 		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
 		
 		if(m_menu->options.switchedPlanetView) m_graphics->getCamView()->cameraMode = CAMERA_MODE_FOLLOW;
-		
+		else if(zoom < 50)
+		{
+			float step = 0.05f * m_menu->options.zoom;
+			m_menu->setZoom(m_menu->options.zoom + step);
+            zoom++;
+		}
+
 		//Render everything
 		m_graphics->Render();
 		m_menu->render();
+        physWorld->renderPlane();
 		
 		// Swap to the Window
 		m_window->Swap();
@@ -84,7 +93,7 @@ void Engine::Run() {
 }
 
 void Engine::Keyboard(unsigned dt) {
-	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	const Uint8* keyState = SDL_GetKeyboardState(nullptr);
 	float cameraSpeed = glm::length(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos) * dt / 500;
 	
 	if(SDL_GetModState() & KMOD_SHIFT) {
@@ -139,7 +148,7 @@ void Engine::Keyboard(unsigned dt) {
 	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
-		float step = 0.05 * dt;
+		float step = 0.05f * dt;
 		m_menu->setRotation(m_menu->options.rotation + step);
 		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
 			step *= M_PI / -180;
@@ -149,7 +158,7 @@ void Engine::Keyboard(unsigned dt) {
 		}
 	}
 	if(keyState[SDL_SCANCODE_RIGHT]) {
-		float step = 0.05 * dt;
+		float step = 0.05f * dt;
 		m_menu->setRotation(m_menu->options.rotation - step);
 		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
 			step *= M_PI / 180;
@@ -171,8 +180,23 @@ void Engine::eventHandler() {
 	else if (m_event.type == SDL_MOUSEBUTTONDOWN && !ImGui::GetIO().WantCaptureMouse) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
+			{
 				mouseDown = true;
 				break;
+			}
+			case SDL_BUTTON_RIGHT:
+			{
+
+
+				unsigned seed = GetCurrentTimeMillis();
+				std::default_random_engine generator(seed);
+				std::uniform_int_distribution<int> distribution(-50,50);
+				for(int i = 1; i < gameWorldCtx->worldObjects.size(); i++)
+				{
+					btVector3 shootIt(distribution(generator),0,distribution(generator));
+					gameWorldCtx->worldObjects[i]->ctx.physicsBody->applyCentralImpulse(shootIt);
+				}
+			}
 		}
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
@@ -180,19 +204,20 @@ void Engine::eventHandler() {
 				mouseDown = false;
 				break;
 		}
-	} else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
+	}
+	else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
 		float scale = 360.0f / m_WINDOW_WIDTH;
 		
 		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * scale);
 	}
-	
+
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
-		float step = 0.05 * m_menu->options.zoom;
+		float step = 0.05f * m_menu->options.zoom;
 		//Scroll down
 		if(m_event.wheel.y > 0) {
 			step *= -1;
 		}
-		
+
 		m_menu->setZoom(m_menu->options.zoom + step);
 	}
 	
@@ -227,7 +252,7 @@ unsigned int Engine::getDT() {
 
 long long Engine::GetCurrentTimeMillis() {
 	timeval t;
-	gettimeofday(&t, NULL);
+	gettimeofday(&t, nullptr);
 	long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
 	return ret;
 }

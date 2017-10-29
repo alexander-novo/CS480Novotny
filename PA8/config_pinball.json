@@ -15,28 +15,68 @@
     "fragment": "frag_sun"
   },
   "texture": "concrete.jpg",
-  "sunlight": 1,
+  "sunlight": 50,
   "surface_plane": "plane.obj",
   "game_objects": [
     {
       "name": "Cube",
       "model": "Cube.obj",
+      "shape": "box",
       "shaders" : {
         "vertex": "vert_materials",
         "fragment": "frag_materials"
       },
-      "shape": "box",
       "texture": "concrete.jpg",
       "isDynamic": true,
-      "location": {
-        "z": -1,
-        "x": -1,
-        "y": 20
-      },
       "height": 1,
       "width": 1,
       "depth": 1,
-      "mass": 1
+      "location": {
+        "z": -1,
+        "x": -1,
+        "y": 5
+      },
+      "mass": 0.5
+    },
+    {
+      "name": "Cylinder1",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "shaders" : {
+        "vertex": "vert_materials",
+        "fragment": "frag_materials"
+      },
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": -10,
+        "x": 10,
+        "y": 1
+      },
+      "mass": 0,
+      "scale": 2
+    },
+    {
+      "name": "Cylinder2",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "shaders" : {
+        "vertex": "vert_materials",
+        "fragment": "frag_materials"
+      },
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": 5,
+        "x": 5,
+        "y": 1
+      },
+      "mass": 0,
+      "scale": 4
     },
     {
       "name": "Earth",
@@ -51,6 +91,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -71,6 +112,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -91,6 +133,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -99,7 +142,7 @@
       "mass": 1
     },
     {
-      "name": "Earth",
+      "name": "Earth3",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -111,6 +154,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -119,7 +163,7 @@
       "mass": 1
     },
     {
-      "name": "Earth",
+      "name": "Earth4",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -131,6 +175,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -139,7 +184,7 @@
       "mass": 1
     },
     {
-      "name": "Earth2",
+      "name": "Earth5",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -151,6 +196,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -159,7 +205,7 @@
       "mass": 1
     },
     {
-      "name": "Earth",
+      "name": "Earth6",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -171,6 +217,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -179,7 +226,7 @@
       "mass": 1
     },
     {
-      "name": "Earth2",
+      "name": "Earth7",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -191,6 +238,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 0,
@@ -199,7 +247,7 @@
       "mass": 500
     },
     {
-      "name": "Earth3",
+      "name": "Earth8",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -211,6 +259,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 5,
@@ -219,7 +268,7 @@
       "mass": 250
     },
     {
-      "name": "Earth3",
+      "name": "Earth9",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -231,6 +280,7 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
         "x": 5,
@@ -239,7 +289,7 @@
       "mass": 250
     },
     {
-      "name": "Earth3",
+      "name": "Earth10",
       "shaders" : {
         "vertex": "vert_normalMap",
         "fragment": "frag_earth"
@@ -251,29 +301,10 @@
       "normal-texture": "2k_earth_normal_map.tif",
       "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": -4,
         "x": 0,
-        "y": 20
-      },
-      "mass": 250
-    },
-    {
-      "name": "Earth3",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
-      "isDynamic": true,
-      "location": {
-        "z": -4,
-        "x": 1,
         "y": 20
       },
       "mass": 250
