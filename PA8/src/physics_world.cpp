@@ -211,7 +211,7 @@ bool PhysicsWorld::addInvisibleWalls()
     rightSideWallInfo.m_restitution = 0.7f;
 //    ceilingInfo.m_restitution = 1.0f;
 
-    int flags = floorPlane->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
+
     // takes in the body
     floorPlane = new btRigidBody(floorInfo);
     backWallPlane = new btRigidBody(backWallInfo);
@@ -219,6 +219,8 @@ bool PhysicsWorld::addInvisibleWalls()
     leftSidePlane = new btRigidBody(leftSideWallInfo);
     rightSidePlane = new btRigidBody(rightSideWallInfo);
     ceilingPlane= new btRigidBody(ceilingInfo);
+
+    int flags = floorPlane->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
 
     floorPlane->setCollisionFlags(flags);
     backWallPlane->setCollisionFlags(flags);
