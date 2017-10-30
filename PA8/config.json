@@ -10,21 +10,13 @@
     "vertex": "vert_materials",
     "fragment": "frag_materials"
   },
-  "shaders" : {
-    "vertex": "vert_materials",
-    "fragment": "frag_sun"
-  },
-  "texture": "concrete.jpg",
+  "texture": "wood.jpg",
   "sunlight": 1,
-  "surface_plane": "plane.obj",
+  "surface_plane": "Table.obj",
   "game_objects": [
     {
       "name": "Cube",
       "model": "Cube.obj",
-      "shaders" : {
-        "vertex": "vert_materials",
-        "fragment": "frag_materials"
-      },
       "shape": "box",
       "texture": "concrete.jpg",
       "isDynamic": true,
@@ -40,16 +32,9 @@
     },
     {
       "name": "Earth",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -60,16 +45,9 @@
     },
     {
       "name": "Earth",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -80,16 +58,9 @@
     },
     {
       "name": "Earth2",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -100,16 +71,9 @@
     },
     {
       "name": "Earth",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -120,16 +84,9 @@
     },
     {
       "name": "Earth",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -140,16 +97,9 @@
     },
     {
       "name": "Earth2",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -160,16 +110,9 @@
     },
     {
       "name": "Earth",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -180,16 +123,9 @@
     },
     {
       "name": "Earth2",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -200,16 +136,9 @@
     },
     {
       "name": "Earth3",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -220,16 +149,9 @@
     },
     {
       "name": "Earth3",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": 0,
@@ -240,16 +162,9 @@
     },
     {
       "name": "Earth3",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": -4,
@@ -260,16 +175,9 @@
     },
     {
       "name": "Earth3",
-      "shaders" : {
-        "vertex": "vert_normalMap",
-        "fragment": "frag_earth"
-      },
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
-      "alt-texture": "2k_earth_nightmap.jpg",
-      "normal-texture": "2k_earth_normal_map.tif",
-      "specular-texture": "2k_earth_specular_map.tif",
       "isDynamic": true,
       "location": {
         "z": -4,

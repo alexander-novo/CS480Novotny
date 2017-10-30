@@ -35,34 +35,15 @@ class Graphics {
 		// The camera view
 		Camera *camView;
 		std::string ErrorString(GLenum error);
-		
-		//Render the skybox background
-		void renderSkybox();
-		
-		void renderShadowMap();
 
 		Menu& m_menu;
 		
-		glm::mat4 lprojection;
-		glm::mat4 lshadowTrans[6];
-		
 		//How much light the sun should give off
 		float lightPower;
-		
-		GLuint depthBuffer;
-		GLuint renderBuffer;
-		GLuint shadowMap;
 
 		const int& windowWidth;
 		const int& windowHeight;
 		
-		//Skybox render stuff
-		Model* skybox;
-		Shader* skyShader;
-		Texture* skyTexture;
-		
-		Shader* shadowShader;
-
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
 };

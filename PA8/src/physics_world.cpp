@@ -116,7 +116,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     else if(objCtx->shape == 4)
     {   // PLANE(ground)
         btVector3 planeNormal = {0, 1, 0};
-        btScalar planeConstant = 1000;
+        btScalar planeConstant = 0;
         newShape = new btStaticPlaneShape(planeNormal, planeConstant);
     }
     // create shape from mesh

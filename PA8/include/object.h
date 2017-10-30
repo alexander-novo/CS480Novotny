@@ -28,7 +28,6 @@ class Object {
 			Texture* specularMap = nullptr;
 			Shader* shader;
 			
-			bool isLightSource = false;
             int xLoc = 0;
             int yLoc = 0;
             int zLoc = 0;
@@ -48,8 +47,7 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt);
 		//Renders the planet on the screen
-		void Render(float lightPower, GLuint shadowMap) const;
-		void renderShadow(Shader* shadowShader) const;
+		void Render() const;
 
 		//Returns the current model matrix of this planet
 		const glm::mat4& GetModel() const;
@@ -64,12 +62,6 @@ class Object {
 
 		static glm::mat4* viewMatrix;
 		static glm::mat4* projectionMatrix;
-		
-		//The shader that every orbit should use
-		static Shader* orbitShader;
-		
-		//Keeps track of what to shift every planet's position by (to keep what we're looking at at the center)
-		static glm::vec3 const * globalOffset;
 
 		static Menu* menu;
 	

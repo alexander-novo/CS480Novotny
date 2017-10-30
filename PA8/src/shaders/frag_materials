@@ -2,82 +2,13 @@
 
 // Interpolated values from the vertex shaders
 in vec2 uvCoord;
-in vec3 positionW;
-in vec3 normalC;
-in vec3 eyeC;
-in vec3 lightDirC;
+
+uniform sampler2D gSampler;
 
 // Output data
 out vec4 frag_color;
 
-uniform vec3 MaterialDiffuseColor;
-uniform vec3 MaterialAmbientColor;
-uniform vec3 MaterialSpecularColor;
-
-uniform vec3 lightW3;
-
-uniform float lightPower;
-uniform float shininess;
-
-uniform sampler2D gSampler;
-uniform samplerCube gShadowMap;
-
-uniform int usingShadows;
-
 void main(void) {
-    //What color
-    vec3 lightColor = vec3(1.0, 1.0, 1.0);
-
-    // Normal of the computed fragment, in camera space
-    vec3 n = normalize( normalC );
-    // Direction of the light (from the fragment to the light)
-    vec3 l = normalize( lightDirC );
-
-    vec4 MaterialDiffuseTexture2d;
-    MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
-
-    //Start with a basis of the diffuse color. This will later become our texture
-    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d.rgb;
-
-    //How far away we are - light depends on distance
-    vec3 lightToPos = positionW - lightW3;
-    float distance = length(lightToPos);
-
-    float shadowFactor = 1;
-
-    if(usingShadows == 1 ) {
-        float shadowDistance = texture(gShadowMap, lightToPos).r;
-        float depth = (distance - 1.0) / (100.0 - 1.0);
-        float difference = depth - shadowDistance;
-
-        if(difference > 0.0025) {
-            shadowFactor = 0;
-        }
-    }
-
-    // Cosine of the angle between the normal and the light direction
-    // clamped to a minimum of 0
-    // Anything facing directly towards the light will shine the brightest
-    // and anything facing away will be black
-    float cosTheta = clamp( dot( n,l ), 0,1 );
-
-    // Eye vector (towards the camera)
-    vec3 E = normalize(eyeC);
-    // Direction in which the triangle reflects the light
-    vec3 R = reflect(-l,n);
-    // Cosine of the angle between the Eye vector and the Reflect vector,
-    // clamped to 0
-    //  - Looking into the reflection -> 1
-    //  - Looking elsewhere -> < 1
-    float cosAlpha = clamp( dot( E,R ), 0,1 );
-
-    frag_color.rgb =
-        // Ambient : simulates indirect lighting
-        materialAmbientModified +
-        // Diffuse : "color" of the object
-        MaterialDiffuseTexture2d.rgb * lightColor * lightPower * shadowFactor * cosTheta / distance +
-        // Specular : reflective highlight, like a mirror
-        MaterialSpecularColor * lightColor * lightPower * shadowFactor * pow(cosAlpha,shininess) / distance;
-    frag_color.a = MaterialDiffuseTexture2d.a;
+    vec4 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
+    frag_color.rgba = MaterialDiffuseTexture2d.rgba;
 }
-

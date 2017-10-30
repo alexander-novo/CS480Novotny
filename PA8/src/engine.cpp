@@ -50,7 +50,7 @@ bool Engine::Initialize() {
 
 void Engine::Run() {
 	m_running = true;
-	int zoom = 0;
+	m_menu->setZoom(50);
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
@@ -71,14 +71,6 @@ void Engine::Run() {
 
 		// Update menu options and labels
 		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
-		
-		if(m_menu->options.switchedPlanetView) m_graphics->getCamView()->cameraMode = CAMERA_MODE_FOLLOW;
-		else if(zoom < 50)
-		{
-			float step = 0.05f * m_menu->options.zoom;
-			m_menu->setZoom(m_menu->options.zoom + step);
-            zoom++;
-		}
 
 		//Render everything
 		m_graphics->Render();
@@ -230,9 +222,9 @@ void Engine::eventHandler() {
 				
 				//Update our projection matrix in case the aspect ratio is different now
 				m_graphics->getCamView()->GetProjection() = glm::perspective( 45.0f,
-				                                                float(windowWidth)/float(windowHeight),
-				                                                0.001f,
-				                                                FAR_FRUSTRUM);
+				                                                              float(windowWidth)/float(windowHeight),
+				                                                              NEAR_FRUSTRUM,
+				                                                              FAR_FRUSTRUM);
 				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT

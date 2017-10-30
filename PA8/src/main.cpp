@@ -107,7 +107,6 @@ int processConfig(int argc, char **argv, json& config, Engine::Context &ctx) {
         error = loadObjectContext(config, surfaceCtx, surfaceCtx.shader, physWorld);
 		if (error != -1) return error;
 		//origin in a light source
-		surfaceCtx.isLightSource = true;
 		surfaceCtx.isDynamic = false;
 		std::string modelFile = config["surface_plane"];
         PhysicsWorld::Context worldCtx;
