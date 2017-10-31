@@ -203,6 +203,12 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 		ctx.scale = config["radius"];
 	}
 
+    if(config.find("scale") != config.end())
+    {
+        objectPhysics.scale = config["scale"];
+        ctx.scale = config["scale"];
+    }
+
 	if(config.find("model") != config.end())
 	{
 		filename = config["model"];
