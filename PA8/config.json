@@ -10,25 +10,92 @@
     "vertex": "vert_materials",
     "fragment": "frag_materials"
   },
-  "texture": "wood.jpg",
-  "sunlight": 1,
-  "surface_plane": "Table.obj",
+  "sunlight": 50,
   "game_objects": [
+    {
+      "name": "Surface Plane",
+      "model": "Table.obj",
+      "shape": "plane",
+      "isLightSource": true,
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 0
+      },
+      "height": 1,
+      "width": 0,
+      "depth": 0,
+      "mass": 0,
+      "scale": 1
+    },
     {
       "name": "Cube",
       "model": "Cube.obj",
       "shape": "box",
       "texture": "concrete.jpg",
       "isDynamic": true,
-      "location": {
-        "z": -1,
-        "x": -1,
-        "y": 20
-      },
       "height": 1,
       "width": 1,
       "depth": 1,
-      "mass": 1
+      "location": {
+        "z": -1,
+        "x": -1,
+        "y": 5
+      },
+      "mass": 1.5
+    },
+    {
+      "name": "Cube Kinematic",
+      "model": "Cube.obj",
+      "shape": "box",
+      "texture": "2k_sun.jpg",
+      "isDynamic": true,
+      "isKinematic": true,
+      "height": 1,
+      "width": 1,
+      "depth": 1,
+      "location": {
+        "z": -1,
+        "x": -1,
+        "y": 5
+      },
+      "mass": 1.5
+    },
+    {
+      "name": "Cylinder1",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": -10,
+        "x": 10,
+        "y": 1
+      },
+      "mass": 0,
+      "scale": 2
+    },
+    {
+      "name": "Cylinder2",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": 5,
+        "x": 5,
+        "y": 1
+      },
+      "mass": 0,
+      "scale": 4
     },
     {
       "name": "Earth",
@@ -36,6 +103,7 @@
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
       "isDynamic": true,
+      "radius": 0.25,
       "location": {
         "z": 0,
         "x": 0,
@@ -44,17 +112,18 @@
       "mass": 1
     },
     {
-      "name": "Earth",
+      "name": "Earth1",
       "shape": "sphere",
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
       "isDynamic": true,
+      "radius": 0.5,
       "location": {
         "z": 0,
         "x": 0,
         "y": 20
       },
-      "mass": 1
+      "mass": 4
     },
     {
       "name": "Earth2",
@@ -62,77 +131,13 @@
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
       "isDynamic": true,
+      "radius": 0.75,
       "location": {
         "z": 0,
         "x": 0,
         "y": 40
       },
-      "mass": 1
-    },
-    {
-      "name": "Earth",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 20
-      },
-      "mass": 1
-    },
-    {
-      "name": "Earth",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 20
-      },
-      "mass": 1
-    },
-    {
-      "name": "Earth2",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 40
-      },
-      "mass": 1
-    },
-    {
-      "name": "Earth",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 20
-      },
-      "mass": 1
-    },
-    {
-      "name": "Earth2",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 55
-      },
-      "mass": 500
+      "mass": 9
     },
     {
       "name": "Earth3",
@@ -140,51 +145,13 @@
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
       "isDynamic": true,
+      "radius": 1,
       "location": {
         "z": 0,
-        "x": 5,
-        "y": 20
-      },
-      "mass": 250
-    },
-    {
-      "name": "Earth3",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": 0,
-        "x": 5,
-        "y": 20
-      },
-      "mass": 250
-    },
-    {
-      "name": "Earth3",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": -4,
         "x": 0,
         "y": 20
       },
-      "mass": 250
-    },
-    {
-      "name": "Earth3",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "location": {
-        "z": -4,
-        "x": 1,
-        "y": 20
-      },
-      "mass": 250
+      "mass": 16
     }
   ]
 }

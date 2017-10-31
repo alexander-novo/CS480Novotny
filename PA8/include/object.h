@@ -33,6 +33,8 @@ class Object {
             int zLoc = 0;
 			int shape = 0;
 			float mass = 0;
+			
+			float scale = 1.0f;
 
             bool hasPhysics = true;
             btRigidBody * physicsBody;

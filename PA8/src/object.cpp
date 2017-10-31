@@ -49,6 +49,7 @@ void Object::Update(float dt) {
 		float mat[16];
 		transformObject.getOpenGLMatrix(mat);
 		modelMat = glm::make_mat4(mat);
+		modelMat = glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
 	}
 }
 

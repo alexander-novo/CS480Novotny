@@ -50,7 +50,6 @@ FILE(COPY src/shaders DESTINATION .)
 FILE(COPY models DESTINATION .)
 FILE(COPY textures DESTINATION .)
 FILE(COPY config.json DESTINATION .)
-FILE(COPY config_pinball.json DESTINATION .)
 
 # Set sources
 FILE(GLOB_RECURSE SOURCES "src/*.cpp")

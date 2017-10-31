@@ -101,7 +101,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
 
     if(objCtx->shape == 1)
     {   // SPHERE
-        btScalar radius = 1;
+        btScalar radius = objCtx->radius;
         newShape = new btSphereShape (radius);
     }
     else if(objCtx->shape == 2)

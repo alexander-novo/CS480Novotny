@@ -4,7 +4,7 @@ int main(int argc, char **argv) {
 	
 	//If no arguments, use default (basic) config file
 	if (argc == 1) {
-		std::string newArgv = "config_pinball.json";
+		std::string newArgv = "config.json";
 		argv[1] = new char[newArgv.size()+1]; 
 		argv[1][newArgv.size()] = 0; 
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());	
@@ -169,10 +169,6 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 	{
 		objectPhysics.isBounceType = config["isBounceType"];
 	}
-    if(config.find("isLightSource") != config.end())
-    {
-        ctx.isLightSource = config["isLightSource"];
-    }
 
     std::string filename;
 
@@ -199,6 +195,12 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 	} else {
 		ctx.isDynamic = false;
 		objectPhysics.isDynamic = ctx.isDynamic;
+	}
+	
+	if(config.find("radius") != config.end())
+	{
+		objectPhysics.radius = config["radius"];
+		ctx.scale = config["radius"];
 	}
 
 	if(config.find("model") != config.end())
