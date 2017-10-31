@@ -80,11 +80,12 @@
         "y": 1
       },
       "height": 1,
-      "width": 15,
-      "depth": 0.3,
+      "width": 0.3,
+      "depth": 15,
       "mass": 0,
       "scale": 1
     },
+
     {
       "name": "Right Wall",
       "model": "Wall.obj",
@@ -99,11 +100,12 @@
         "y": 1
       },
       "height": 1,
-      "width": 15,
-      "depth": 0.3,
+      "width": 0.3,
+      "depth": 15,
       "mass": 0,
       "scale": 1
     },
+
     {
       "name": "Back Wall",
       "model": "Wall2.obj",
@@ -124,7 +126,7 @@
       "scale": 1
     },
     {
-      "name": "Back Wall",
+      "name": "Front Wall",
       "model": "Wall2.obj",
       "shape": "box",
       "texture": "wood.jpg",
