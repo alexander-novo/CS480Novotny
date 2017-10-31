@@ -286,7 +286,7 @@ void PhysicsWorld::update(float dt)
 //    dynamicsWorld->stepSimulation(dt/1000);
 //    dynamicsWorld->stepSimulation(1/60.0);
     // The time between ticks of checking for collisions in the world.
-    dynamicsWorld->stepSimulation(120, 1);
+    dynamicsWorld->stepSimulation(dt / 1000, 50);
 }
 
 #endif
