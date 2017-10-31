@@ -55,15 +55,92 @@
       "texture": "2k_sun.jpg",
       "isDynamic": true,
       "isKinematic": true,
+      "isPaddle": true,
       "height": 1,
       "width": 1,
       "depth": 1,
       "location": {
         "z": -1,
         "x": -1,
-        "y": 5
+        "y": 1
       },
       "mass": 1.5
+    },
+    {
+      "name": "Left Wall",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": 15,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Right Wall",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": -15,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Back Wall",
+      "model": "Wall2.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 15,
+        "x": 0,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Back Wall",
+      "model": "Wall2.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": -15,
+        "x": 0,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
     },
     {
       "name": "Cylinder1",
@@ -79,7 +156,7 @@
         "y": 1
       },
       "mass": 0,
-      "scale": 2
+      "scale": 1
     },
     {
       "name": "Cylinder2",
@@ -95,7 +172,7 @@
         "y": 1
       },
       "mass": 0,
-      "scale": 4
+      "scale": 2.5
     },
     {
       "name": "Earth",
