@@ -6,7 +6,7 @@
 
 #include "physics_model.h"
 
-PhysicsModel::PhysicsModel() {}
+PhysicsModel::PhysicsModel() : rigidBodyIndex(0) {}
 
 PhysicsModel::~PhysicsModel() {
 	// clean up Bullet's meshes (ha ha ha)
@@ -59,8 +59,8 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 	std::string indexName = std::to_string(phsyics_world_model_index);
 	phsyics_world_model_index++;
 	//Bullet needs this info
-	btVector3 triArray[3];
-	objTriMesh = new btTriangleMesh();
+	//btVector3 triArray[3];
+	//objTriMesh = new btTriangleMesh();
 	//Now our indices
 	for (unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
 		aiFace& face = mesh->mFaces[faceIndex];
@@ -69,9 +69,9 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 			newModel->_indices.push_back(face.mIndices[vertexIndex]);
 			
 			aiVector3D position = mesh->mVertices[face.mIndices[vertexIndex]];
-			triArray[vertexIndex] = btVector3(position.x, position.y, position.z);
+			//triArray[vertexIndex] = btVector3(position.x, position.y, position.z);
 		}
-		objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
+		//objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 	}
 	
 	// create the mesh and add it to the world
@@ -79,7 +79,7 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 	// TODO: Make sure triangle mesh is being used correctly.
 	
 	rigidBodyIndex = physWorld->createObject(indexName, objTriMesh, ctx);
-	int abc = rigidBodyIndex;
+	//int abc = rigidBodyIndex;
 }
 
 int PhysicsModel::getRigidBodyIndex() {
