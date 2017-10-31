@@ -60,7 +60,7 @@ class Engine {
 		GameWorld::ctx *gameWorldCtx;
 		SDL_Event m_event;
 		
-		Graphics *m_graphics;
+		Graphics *m_graphics = nullptr;
 		unsigned int m_DT;
 		long long m_currentTimeMillis;
 		bool m_running;

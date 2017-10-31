@@ -5,8 +5,11 @@ Graphics::Graphics(float lightStrength, Menu& menu, const int& w, const int& h, 
 }
 
 Graphics::~Graphics() {
-	delete camView;
-	camView = NULL;
+	if(camView != nullptr)
+	{
+		delete camView;
+		camView = NULL;
+	}
 }
 
 bool Graphics::Initialize(int width, int height) {

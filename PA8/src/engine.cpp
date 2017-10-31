@@ -15,10 +15,16 @@ Engine::Engine(const Context &ctx) : windowWidth(m_WINDOW_WIDTH), windowHeight(m
 }
 
 Engine::~Engine() {
-	delete m_window;
-	delete m_graphics;
-	m_window = nullptr;
-	m_graphics = nullptr;
+    if(m_window != nullptr)
+    {
+        delete m_window;
+        m_window = nullptr;
+    }
+	if(m_graphics != nullptr)
+    {
+        delete m_graphics;
+        m_graphics = nullptr;
+    }
 }
 
 bool Engine::Initialize() {

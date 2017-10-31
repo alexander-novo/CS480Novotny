@@ -33,7 +33,7 @@ class Graphics {
 	private:
 
 		// The camera view
-		Camera *camView;
+		Camera *camView = nullptr;
 		std::string ErrorString(GLenum error);
 
 		Menu& m_menu;
