@@ -151,8 +151,21 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     }
 
 
+
     // takes in the body
     btRigidBody * body = new btRigidBody(info);
+
+
+    // Attempting to give an object specific degrees of freedom
+    if(objCtx->isPaddle)
+    {
+        btGeneric6DofConstraint* constraint = new btGeneric6DofConstraint(*(loadedBodies[0]),*body , transform, transform, true);
+        constraint->setLinearLowerLimit(btVector3(-10, 0,0));
+        constraint->setLinearUpperLimit(btVector3(10, 0, 0));
+        dynamicsWorld->addConstraint(constraint,false);
+//        setAngularLowerLimit(const btVector3& angularLower)
+//        setAngularUpperLimit(const btVector3& angularUpper)
+    }
 
     // Set the body to a kinematic object if it is one
     if(objCtx->isKinematic)
@@ -182,13 +195,13 @@ bool PhysicsWorld::addInvisibleWalls()
     //floor
     transform[0].setOrigin(btVector3(0,-1,0));
     //backwall
-    transform[1].setOrigin(btVector3(0,0,-40));
+    transform[1].setOrigin(btVector3(0,0,-15));
     //frontwall
-    transform[2].setOrigin(btVector3(0,0,40));
+    transform[2].setOrigin(btVector3(0,0,15));
     //leftside
-    transform[3].setOrigin(btVector3(-20,0,0));
+    transform[3].setOrigin(btVector3(-15,0,0));
     //rightside
-    transform[4].setOrigin(btVector3(20,0,0));
+    transform[4].setOrigin(btVector3(15,0,0));
     //ceiling
     transform[5].setOrigin(btVector3(0,135,0));
 
