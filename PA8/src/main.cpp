@@ -209,6 +209,11 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
         ctx.scale = config["scale"];
     }
 
+    if(config.find("isPaddle") != config.end())
+    {
+        objectPhysics.isPaddle = config["isPaddle"];
+    }
+
 	if(config.find("model") != config.end())
 	{
 		filename = config["model"];
