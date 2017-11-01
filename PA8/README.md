@@ -47,7 +47,7 @@ make
 ## Command Usage
 
 `Tutorial` - Will run using the default configuration of `config.json`.   
-`Tutorial --help` - Pull up the help menu / command usage  
+`Tutorial --help` - Pull up the help menu / command usage
 `Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")
 
 # Extra Credit:
