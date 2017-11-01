@@ -35,5 +35,5 @@ Planets with textures and orbital paths. To run this project ```cd PA6``` then f
 ## PA7: Complete Solar System   
 The grand finale. To run this project ```cd PA7``` then follow the instructions in the README.md.   
 
-## PA8: Bullet
-Some physics based dynamic spheres, static cylinders, four walls, and a cube to bat some spheres around into things. 
+## PA8: Bullet    
+Some physics based dynamic spheres, static cylinders, four walls, and a cube to bat some spheres around into things.    
