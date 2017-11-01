@@ -38,8 +38,8 @@ make
 
 # Controls
 
-`left click` - Drag to rotate camera
-`right click` - Shoot a cube forward, and several spheres in random directions.
+`left click` - Drag to rotate camera   
+`right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out
 
 # Command Line Parameters
