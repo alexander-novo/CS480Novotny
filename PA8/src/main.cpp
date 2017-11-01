@@ -219,6 +219,12 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 		filename = config["model"];
 
 		ctx.model = PhysicsModel::load("models/" + filename, physWorld, &objectPhysics);
+
+        if (ctx.model == nullptr) {
+            std::cout << ctx.name << " Could not load model file " << config["model"] << std::endl;
+            return 1;
+        }
+
 		ctx.physicsBody = (*(physWorld->getLoadedBodies()))[ctx.model->getRigidBodyIndex()];
 	}
 	else if (ctx.name != "Game Surface")
@@ -268,10 +274,6 @@ int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader,
 		ctx.shader = defaultShader;
 	}
 
-	if (ctx.model == nullptr && ctx.name != "Game Surface") {
-		std::cout << ctx.name << " Could not load model file " << config["model"] << std::endl;
-		return 1;
-	}
 
     if(config.find("mass") != config.end())
     {
