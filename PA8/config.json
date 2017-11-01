@@ -208,8 +208,8 @@
       "isDynamic": true,
       "radius": 0.5,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": -5,
+        "x": -13,
         "y": 20
       },
       "mass": 4
@@ -222,8 +222,8 @@
       "isDynamic": true,
       "radius": 0.75,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": 2,
+        "x": -13,
         "y": 40
       },
       "mass": 9
@@ -236,8 +236,8 @@
       "isDynamic": true,
       "radius": 1,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": -3,
+        "x": 3,
         "y": 20
       },
       "mass": 16
