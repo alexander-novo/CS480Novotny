@@ -35,6 +35,8 @@ class Object {
 			float mass = 0;
 			
 			float scale = 1.0f;
+			
+			int id = 0;
 
             bool hasPhysics = true;
             btRigidBody * physicsBody;
@@ -50,6 +52,7 @@ class Object {
 		void Update(float dt);
 		//Renders the planet on the screen
 		void Render() const;
+		void RenderID(Shader* shader) const;
 
 		//Returns the current model matrix of this planet
 		const glm::mat4& GetModel() const;
@@ -74,6 +77,8 @@ class Object {
 		glm::vec3 _position;
 		
 		bool doOffset;
+		
+		static int idCounter;
 };
 
 #endif /* OBJECT_H */

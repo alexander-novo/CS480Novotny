@@ -180,6 +180,13 @@ void Engine::eventHandler() {
 			case SDL_BUTTON_LEFT:
 			{
 				mouseDown = true;
+				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, m_WINDOW_HEIGHT - m_event.button.y);
+				if(picked != nullptr) {
+					glm::vec3 glmImpVector = glm::normalize(picked->position - m_graphics->getCamView()->eyePos);
+					glmImpVector *= 25;
+					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
+					picked->ctx.physicsBody->applyCentralImpulse(impVector);
+				}
 				break;
 			}
 			case SDL_BUTTON_RIGHT:

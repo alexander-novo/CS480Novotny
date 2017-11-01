@@ -27,16 +27,27 @@ class Graphics {
 		
 		//Return pointer to vector of objects
 		vector<Object *> *getObject();
+		
+		Object* getObjectOnScreen(int x, int y);
 
 		Camera * getCamView();
 	
 	private:
+		
+		struct PixelInfo {
+			float r;
+			float g;
+			float b;
+		};
 
 		// The camera view
 		Camera *camView = nullptr;
 		std::string ErrorString(GLenum error);
 
 		Menu& m_menu;
+		
+		//Render pass for mouse picking
+		void renderPick();
 		
 		//How much light the sun should give off
 		float lightPower;
@@ -46,6 +57,12 @@ class Graphics {
 		
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
+		
+		GLuint pickDepthBuffer;
+		GLuint pickBuffer;
+		GLuint pickTexture;
+		
+		Shader* pickShader;
 };
 
 #endif /* GRAPHICS_H */

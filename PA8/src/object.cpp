@@ -4,12 +4,15 @@
 glm::mat4* Object::viewMatrix;
 glm::mat4* Object::projectionMatrix;
 Menu* Object::menu;
+int Object::idCounter = 1;
 
 Object::Object(const Context &a) : ctx(a), originalCtx(a), position(glm::vec3(ctx.xLoc, ctx.yLoc, ctx.zLoc)) {
 	//Default value - just in case anything tries to read it
 	//The planet doesn't actually start here - this will be updated in Update()
 	_position = {a.xLoc, a.yLoc, a.zLoc};
 	modelMat = glm::translate(modelMat, position);
+	ctx.id = idCounter;
+	idCounter++;
 }
 
 Object::~Object() {}
@@ -50,6 +53,8 @@ void Object::Update(float dt) {
 		transformObject.getOpenGLMatrix(mat);
 		modelMat = glm::make_mat4(mat);
 		modelMat = glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
+		
+		_position = glm::vec3(modelMat * glm::vec4(0.0, 0.0, 0.0, 1.0));
 	}
 }
 
@@ -95,4 +100,15 @@ void Object::Render() const {
 	ctx.model->drawModel();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Object::RenderID(Shader* shader) const {
+	//Send our shaders the MVP matrices
+	glm::mat4 MVPMatrix = *projectionMatrix * *viewMatrix * modelMat;
+	shader->uniformMatrix4fv("MVP", 1, GL_FALSE, glm::value_ptr(MVPMatrix));
+	float modifiedID = ctx.id / 255.0f;
+	shader->uniform1fv("id", 1, &modifiedID);
+	
+	//Now draw our planet
+	ctx.model->drawModel();
 }

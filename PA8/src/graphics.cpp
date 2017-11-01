@@ -2,6 +2,8 @@
 
 Graphics::Graphics(float lightStrength, Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc) : windowWidth(w), windowHeight(h), lightPower(lightStrength), m_menu(menu), physWorld(pW), gameWorldCtx(gwc) {
 	camView = new Camera(menu);
+	
+	pickShader = Shader::load("shaders/vert_pick", "shaders/frag_pick");
 }
 
 Graphics::~Graphics() {
@@ -43,6 +45,22 @@ bool Graphics::Initialize(int width, int height) {
         gameWorldCtx->worldObjects[i]->Init_GL();
     }
 	
+	pickShader->Initialize();
+	
+	glGenFramebuffers(1, &pickBuffer);
+	glGenRenderbuffers(1, &pickDepthBuffer);
+	glGenTextures(1, &pickTexture);
+	
+	glBindTexture(GL_TEXTURE_2D, pickTexture);
+	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
+	
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
+	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -63,6 +81,31 @@ void Graphics::Update(unsigned int dt) {
 	camView->calculateCamera();
 }
 
+Object* Graphics::getObjectOnScreen(int x, int y) {
+	renderPick();
+	
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, pickBuffer);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	PixelInfo pixel;
+	glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	
+	int id = pixel.r * 255;
+	
+	Object* re = nullptr;
+	for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
+	{
+		if(gameWorldCtx->worldObjects[i]->ctx.id == id) {
+			re = gameWorldCtx->worldObjects[i];
+			break;
+		}
+	}
+	
+	return re;
+	
+}
+
 void Graphics::Render() {
 	//Switch to rendering on the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -81,6 +124,23 @@ void Graphics::Render() {
 	if (error != GL_NO_ERROR) {
 		std::string val = ErrorString(error);
 		std::cout << "Error initializing OpenGL! " << error << ", " << val << std::endl;
+	}
+}
+
+void Graphics::renderPick() {
+	pickShader->Enable();
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
+	for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
+	{
+		gameWorldCtx->worldObjects[i]->RenderID(pickShader);
 	}
 }
 
