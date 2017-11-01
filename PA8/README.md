@@ -1,4 +1,4 @@
-# PA8: Bullet 
+# PA8: Bullet
 
 # Group members
 Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
@@ -48,4 +48,7 @@ make
 
 `Tutorial` - Will run using the default configuration of `config.json`.   
 `Tutorial --help` - Pull up the help menu / command usage  
-`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")     
+`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")
+
+# Extra Credit:
+Triangle meshes are loading - example is the stationary paddle near the bottom right.
