@@ -53,6 +53,8 @@ PhysicsWorld::~PhysicsWorld()
         delete collisionShape;
     }
 
+    // TODO: Destroy models also -> switch to vector instead of map
+
     // Remove World
     delete broadphase;
     delete collisionConfiguration;
@@ -177,6 +179,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     //body->setGravity( btVector3(0,-4, 0));
     // add the object's body to the physics world
     int bodyIndex = addBody(body);
+
     // TODO: add check for if it exists
     loadedPhysicsObjects[objectName] = newShape;
     return bodyIndex;
