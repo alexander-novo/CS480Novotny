@@ -38,7 +38,7 @@ make
 
 # Controls
 
-`left click` - Drag to rotate camera   
+`left click` - Drag to rotate camera, click object to shoot object forward  
 `right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out
 

@@ -183,7 +183,7 @@ void Engine::eventHandler() {
 				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, m_WINDOW_HEIGHT - m_event.button.y);
 				if(picked != nullptr) {
 					glm::vec3 glmImpVector = glm::normalize(picked->position - m_graphics->getCamView()->eyePos);
-					glmImpVector *= 25;
+					glmImpVector *= 10 * picked->ctx.mass;
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 					picked->ctx.physicsBody->applyCentralImpulse(impVector);
 				}
@@ -191,8 +191,6 @@ void Engine::eventHandler() {
 			}
 			case SDL_BUTTON_RIGHT:
 			{
-
-
 				unsigned seed = GetCurrentTimeMillis();
 				std::default_random_engine generator(seed);
 				std::uniform_int_distribution<int> distribution(-50,50);
