@@ -26,7 +26,9 @@ class PhysicsWorld {
 			float heightY = 0;
 			float widthX = 0;
 			float lengthZ = 0;
-			
+            float scale = 1.0f;
+
+            bool isPaddle = false;
 			bool hasPhysics = true;
 			btRigidBody* physicsBody;
 		};

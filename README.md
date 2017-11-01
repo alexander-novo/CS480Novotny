@@ -32,5 +32,8 @@ Nothing too new. Same models being loaded by Assimp this time. To run this proje
 ## PA6: Assimp Texture Loader
 Planets with textures and orbital paths. To run this project ```cd PA6``` then follow the instructions in the README.md.
 
-## PA7: Complete Solar System
-The grand finale. To run this project ```cd PA7``` then follow the instructions in the README.md.
+## PA7: Complete Solar System   
+The grand finale. To run this project ```cd PA7``` then follow the instructions in the README.md.   
+
+## PA8: Bullet    
+Some physics based dynamic spheres, static cylinders, four walls, and a cube to bat some spheres around into things.    

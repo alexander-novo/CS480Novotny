@@ -1,4 +1,4 @@
-# PA8: Bullet 
+# PA8: Bullet
 
 # Group members
 Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
@@ -38,13 +38,8 @@ make
 
 # Controls
 
-`w,a,s,d` - Detach camera from planet and move it around  
-`shift` - Move camera down  
-`spacebar` - Move camera up  
-`left/right` - Rotate camera
-
-`left click` - Drag to rotate camera
-`right click` - Shoot several dynamic objects in random directions.
+`left click` - Drag to rotate camera   
+`right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out
 
 # Command Line Parameters
@@ -53,4 +48,7 @@ make
 
 `Tutorial` - Will run using the default configuration of `config.json`.   
 `Tutorial --help` - Pull up the help menu / command usage  
-`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")     
+`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")
+
+# Extra Credit:
+Triangle meshes are loading - example is the stationary paddle near the bottom right.

@@ -36,34 +36,123 @@
       "name": "Cube",
       "model": "Cube.obj",
       "shape": "box",
-      "texture": "concrete.jpg",
-      "isDynamic": true,
-      "height": 1,
-      "width": 1,
-      "depth": 1,
-      "location": {
-        "z": -1,
-        "x": -1,
-        "y": 5
-      },
-      "mass": 1.5
-    },
-    {
-      "name": "Cube Kinematic",
-      "model": "Cube.obj",
-      "shape": "box",
       "texture": "2k_sun.jpg",
       "isDynamic": true,
-      "isKinematic": true,
       "height": 1,
       "width": 1,
       "depth": 1,
       "location": {
-        "z": -1,
-        "x": -1,
-        "y": 5
+        "z": -14,
+        "x": -14,
+        "y": 1
       },
-      "mass": 1.5
+      "mass": 50
+    },
+    {
+      "name": "Paddle 1",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": false,
+      "isKinematic": false,
+      "location": {
+        "z": -12,
+        "x": -8,
+        "y": 0
+      },
+      "mass": 0
+    },
+    {
+      "name": "Earth",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 0.25,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 20
+      },
+      "mass": 1
+    },
+    {
+      "name": "Left Wall",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": 15,
+        "y": 1
+      },
+      "height": 1,
+      "width": 0.3,
+      "depth": 15,
+      "mass": 0,
+      "scale": 1
+    },
+
+    {
+      "name": "Right Wall",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": -15,
+        "y": 1
+      },
+      "height": 1,
+      "width": 0.3,
+      "depth": 15,
+      "mass": 0,
+      "scale": 1
+    },
+
+    {
+      "name": "Back Wall",
+      "model": "Wall2.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 15,
+        "x": 0,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Front Wall",
+      "model": "Wall2.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": -15,
+        "x": 0,
+        "y": 1
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
     },
     {
       "name": "Cylinder1",
@@ -79,7 +168,7 @@
         "y": 1
       },
       "mass": 0,
-      "scale": 2
+      "scale": 1
     },
     {
       "name": "Cylinder2",
@@ -95,7 +184,7 @@
         "y": 1
       },
       "mass": 0,
-      "scale": 4
+      "scale": 2.5
     },
     {
       "name": "Earth",
@@ -119,8 +208,8 @@
       "isDynamic": true,
       "radius": 0.5,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": -5,
+        "x": -13,
         "y": 20
       },
       "mass": 4
@@ -133,8 +222,8 @@
       "isDynamic": true,
       "radius": 0.75,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": 2,
+        "x": -13,
         "y": 40
       },
       "mass": 9
@@ -147,8 +236,8 @@
       "isDynamic": true,
       "radius": 1,
       "location": {
-        "z": 0,
-        "x": 0,
+        "z": -3,
+        "x": 3,
         "y": 20
       },
       "mass": 16
