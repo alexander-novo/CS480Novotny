@@ -36,35 +36,45 @@
       "name": "Cube",
       "model": "Cube.obj",
       "shape": "box",
-      "texture": "concrete.jpg",
-      "isDynamic": true,
-      "height": 1,
-      "width": 1,
-      "depth": 1,
-      "location": {
-        "z": -1,
-        "x": -1,
-        "y": 5
-      },
-      "mass": 1.5
-    },
-    {
-      "name": "Cube Kinematic",
-      "model": "Cube.obj",
-      "shape": "box",
       "texture": "2k_sun.jpg",
       "isDynamic": true,
-      "isKinematic": true,
-      "isPaddle": true,
       "height": 1,
       "width": 1,
       "depth": 1,
       "location": {
-        "z": -1,
-        "x": -1,
+        "z": -14,
+        "x": -14,
         "y": 1
       },
-      "mass": 1.5
+      "mass": 50
+    },
+    {
+      "name": "Paddle 1",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": false,
+      "isKinematic": false,
+      "location": {
+        "z": -12,
+        "x": -8,
+        "y": 0
+      },
+      "mass": 0
+    },
+    {
+      "name": "Earth",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 0.25,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 20
+      },
+      "mass": 1
     },
     {
       "name": "Left Wall",
