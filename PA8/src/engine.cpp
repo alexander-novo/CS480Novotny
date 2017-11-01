@@ -189,6 +189,8 @@ void Engine::eventHandler() {
 				unsigned seed = GetCurrentTimeMillis();
 				std::default_random_engine generator(seed);
 				std::uniform_int_distribution<int> distribution(-50,50);
+                btVector3 pushIt(0,0,2500);
+                gameWorldCtx->worldObjects[1]->ctx.physicsBody->applyCentralImpulse(pushIt);
 				for(int i = 1; i < gameWorldCtx->worldObjects.size(); i++)
 				{
 					btVector3 shootIt(distribution(generator),0,distribution(generator));
