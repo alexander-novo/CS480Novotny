@@ -1,7 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(ctx.width), windowHeight(ctx.height), mouseDown(false) {}
+Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(_ctx.width), windowHeight(_ctx.height), mouseDown(false) {}
 
 Engine::~Engine() {
     if(m_window != nullptr)
