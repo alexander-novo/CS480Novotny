@@ -70,14 +70,14 @@
       "shape": "mesh",
       "model": "Paddle.obj",
       "texture": "concrete.jpg",
-      "isDynamic": false,
+      "isDynamic": true,
       "isKinematic": false,
       "location": {
         "z": -12,
         "x": -8,
         "y": 0
       },
-      "mass": 0
+      "mass": 3
     },
     {
       "name": "Earth",

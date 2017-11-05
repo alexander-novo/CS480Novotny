@@ -87,7 +87,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     xPos = objCtx->xLoc;
     yPos = objCtx->yLoc;
     zPos = objCtx->zLoc;
-    if(objCtx->isDynamic = false)
+    if(objCtx->isDynamic == false)
     {
         mass = 0;
         inertia = {0,0,0};
@@ -125,10 +125,14 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
         btScalar planeConstant = 0;
         newShape = new btStaticPlaneShape(planeNormal, planeConstant);
     }
-    // create shape from mesh
-    else
+        // create shape from mesh
+    else if (!(objCtx->isDynamic))
     {
         newShape = new btBvhTriangleMeshShape(objTriMesh, true);
+    }
+    else
+    {
+        newShape = new btConvexTriangleMeshShape(objTriMesh, true);
     }
 
     // inertia vector

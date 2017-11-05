@@ -151,9 +151,6 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	if (config.find("depth") != config.end()) {
 		objectPhysics.lengthZ = config["depth"];
 	}
-	if (config.find("isDynamic") != config.end()) {
-		objectPhysics.isDynamic = config["isDynamic"];
-	}
 	if (config.find("isKinematic") != config.end()) {
 		objectPhysics.isKinematic = config["isKinematic"];
 	}
