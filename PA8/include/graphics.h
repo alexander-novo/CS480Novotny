@@ -11,10 +11,23 @@
 #include "camera.h"
 #include "gameworldctx.h"
 
+#define LIGHT_POINT 1
+#define LIGHT_SPOT  2
+
 class Graphics {
 	public:
-		Graphics(float lightPower, Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc);
+		struct LightContext {
+			int type;           //Point or spot light
+			glm::vec3 position; //Where in the world the light is
+			glm::vec3 pointing; //Where the light is pointing, if spot light
+			float strength;     //How bright
+			float angle;        //How wide of a cone - for spot lights
+		};
+		
+		Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc);
 		~Graphics();
+		
+		void addLight(const LightContext& light);
 		
 		//Initialise OpenGL
 		bool Initialize(int width, int height);
@@ -48,15 +61,17 @@ class Graphics {
 		
 		//Render pass for mouse picking
 		void renderPick();
-		
-		//How much light the sun should give off
-		float lightPower;
 
 		const int& windowWidth;
 		const int& windowHeight;
 		
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
+		
+		vector<float> spotLightPositions;
+		vector<float> spotLightDirections;
+		vector<float> spotLightAngles;
+		vector<float> spotLightStrengths;
 		
 		GLuint pickDepthBuffer;
 		GLuint pickBuffer;

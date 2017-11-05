@@ -9,16 +9,15 @@ uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform mat4 modelViewMatrix;
 
-uniform vec3 lightW3;
+uniform vec3 spotLightPositions[NUM_SPOT_LIGHTS];
 
 out vec3 positionW;
 out vec3 normalC;
 out vec3 eyeC;
-out vec3 lightDirC;
+out vec3 spotlightDirC[NUM_SPOT_LIGHTS];
 out vec2 uvCoord;
 
 void main(void) {
-    vec4 lightW = vec4(lightW3, 1.0);
     vec4 v = vec4(positionM, 1.0);
     gl_Position = (projectionMatrix * modelViewMatrix) * v;
 
@@ -28,11 +27,14 @@ void main(void) {
     eyeC = vec3(0,0,0) - positionC;
 
     // Vector that goes from the vertex to the light, in camera space. M is ommited because it's identity.
-    vec3 lightPosC = (viewMatrix * lightW).xyz;
-    lightDirC = lightPosC + eyeC;
+    vec3 lightPosC;
+    for(int i = 0; i < spotLightPositions.length(); i++) {
+        lightPosC = (viewMatrix * vec4(spotLightPositions[i], 1.0)).xyz;
+        spotlightDirC[i] = lightPosC + eyeC;
+    }
 
     // Normal of the the vertex, in camera space
-    normalC = (modelViewMatrix * vec4(normalM,0)).xyz;
+    normalC = (modelViewMatrix * vec4(normalM, 0.0)).xyz;
 
     uvCoord = uv;
 }

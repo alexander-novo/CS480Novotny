@@ -47,7 +47,7 @@ class Object {
 		~Object();
 		
 		//Initialises the planet's model and textures for OpenGL
-		void Init_GL();
+		void Init_GL(std::unordered_map<std::string, std::string> const * dictionary = nullptr);
 		//Updates the physics for the planet
 		void Update(float dt);
 		//Renders the planet on the screen

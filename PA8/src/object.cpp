@@ -17,9 +17,9 @@ Object::Object(const Context &a) : ctx(a), originalCtx(a), position(glm::vec3(ct
 
 Object::~Object() {}
 
-void Object::Init_GL() {
+void Object::Init_GL(std::unordered_map<std::string, std::string> const * dictionary) {
 	//Initialise shaders
-	ctx.shader->Initialize();
+	ctx.shader->Initialize(dictionary);
 	
 	//Initialise models
 	if(ctx.model != nullptr)
@@ -63,8 +63,6 @@ const glm::mat4& Object::GetModel() const {
 }
 
 void Object::Render() const {
-	ctx.shader->Enable();
-
 	//Send our shaders the MVP matrices
 	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
 	ctx.shader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));

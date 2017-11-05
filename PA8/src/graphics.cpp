@@ -1,16 +1,39 @@
 #include "graphics.h"
 
-Graphics::Graphics(float lightStrength, Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc) : windowWidth(w), windowHeight(h), lightPower(lightStrength), m_menu(menu), physWorld(pW), gameWorldCtx(gwc) {
+Graphics::Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld* pW, GameWorld::ctx* gwc) : windowWidth(w),
+                                                                                                    windowHeight(h),
+                                                                                                    m_menu(menu),
+                                                                                                    physWorld(pW),
+                                                                                                    gameWorldCtx(gwc) {
 	camView = new Camera(menu);
 	
 	pickShader = Shader::load("shaders/vert_pick", "shaders/frag_pick");
 }
 
 Graphics::~Graphics() {
-	if(camView != nullptr)
-	{
+	if (camView != nullptr) {
 		delete camView;
 		camView = NULL;
+	}
+}
+
+void Graphics::addLight(const LightContext& light) {
+	if (light.type == LIGHT_SPOT) {
+		spotLightPositions.push_back(light.position.x);
+		spotLightPositions.push_back(light.position.y);
+		spotLightPositions.push_back(light.position.z);
+		
+		spotLightAngles.push_back(cos(light.angle));
+		
+		glm::vec3 normalLightPoint = glm::normalize(light.pointing);
+		
+		spotLightDirections.push_back(normalLightPoint.x);
+		spotLightDirections.push_back(normalLightPoint.y);
+		spotLightDirections.push_back(normalLightPoint.z);
+		
+		spotLightStrengths.push_back(light.strength);
+	} else if (light.type == LIGHT_POINT) {
+		//TODO do this
 	}
 }
 
@@ -39,11 +62,13 @@ bool Graphics::Initialize(int width, int height) {
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-
-    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
-    {
-        gameWorldCtx->worldObjects[i]->Init_GL();
-    }
+	
+	std::unordered_map<std::string, std::string> dictionary;
+	dictionary["NUM_SPOT_LIGHTS"] = std::to_string(spotLightStrengths.size());
+	
+	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		gameWorldCtx->worldObjects[i]->Init_GL(&dictionary);
+	}
 	
 	pickShader->Initialize();
 	
@@ -69,13 +94,12 @@ bool Graphics::Initialize(int width, int height) {
 }
 
 void Graphics::Update(unsigned int dt) {
-	glm::vec3 offsetChange = {0,0,0};
+	glm::vec3 offsetChange = {0, 0, 0};
 	
 	// Update the object
-    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
-    {
-        gameWorldCtx->worldObjects[i]->Update(dt);
-    }
+	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		gameWorldCtx->worldObjects[i]->Update(dt);
+	}
 	
 	//Calculate where our camera should be and update the View matrix
 	camView->calculateCamera();
@@ -94,9 +118,8 @@ Object* Graphics::getObjectOnScreen(int x, int y) {
 	int id = pixel.r * 255;
 	
 	Object* re = nullptr;
-	for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
-	{
-		if(gameWorldCtx->worldObjects[i]->ctx.id == id) {
+	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		if (gameWorldCtx->worldObjects[i]->ctx.id == id) {
 			re = gameWorldCtx->worldObjects[i];
 			break;
 		}
@@ -113,12 +136,22 @@ void Graphics::Render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	//Render planets
-    // Update the object
-    for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
-    {
-        gameWorldCtx->worldObjects[i]->Render();
-    }
-
+	// Update the object
+	Shader* shader = nullptr;
+	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		if(shader != gameWorldCtx->worldObjects[i]->ctx.shader) {
+			shader = gameWorldCtx->worldObjects[i]->ctx.shader;
+			shader->Enable();
+			
+			shader->uniform3fv("spotLightPositions", spotLightStrengths.size(), &spotLightPositions[0]);
+			shader->uniform3fv("spotLightDirections", spotLightStrengths.size(), &spotLightDirections[0]);
+			shader->uniform1fv("spotLightStrengths", spotLightStrengths.size(), &spotLightStrengths[0]);
+			shader->uniform1fv("spotLightAngles", spotLightStrengths.size(), &spotLightAngles[0]);
+		}
+		
+		gameWorldCtx->worldObjects[i]->Render();
+	}
+	
 	// Get any errors from OpenGL
 	auto error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -138,8 +171,7 @@ void Graphics::renderPick() {
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
-	for(int i = 0; i<gameWorldCtx->worldObjects.size(); i++)
-	{
+	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
 		gameWorldCtx->worldObjects[i]->RenderID(pickShader);
 	}
 }
@@ -160,11 +192,10 @@ std::string Graphics::ErrorString(GLenum error) {
 	}
 }
 
-vector <Object *> *Graphics::getObject() {
+vector<Object*>* Graphics::getObject() {
 	return &gameWorldCtx->worldObjects;
 }
 
-Camera *Graphics::getCamView()
-{
+Camera* Graphics::getCamView() {
 	return camView;
 }

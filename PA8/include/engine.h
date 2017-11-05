@@ -23,9 +23,10 @@ class Engine {
 			int height = ENGINE_HEIGHT_DEFAULT;
 			bool fullscreen = ENGINE_FULLSCREEN_DEFAULT;
 			
-			float lightStrength = 1.0f;
 			PhysicsWorld *physWorld;
 			GameWorld::ctx *gameWorldCtx;
+			
+			std::vector<Graphics::LightContext>* lights = nullptr;
 		};
 		
 		Engine(const Context &ctx);
@@ -47,17 +48,13 @@ class Engine {
 		//Read-only
 		const int& windowWidth;
 		const int& windowHeight;
+		
+		const Context& ctx;
 	
 	private:
-		// Window related variables
+		
+		Context _ctx;
 		Window *m_window;
-		string m_WINDOW_NAME;
-		int m_WINDOW_WIDTH;
-		int m_WINDOW_HEIGHT;
-		bool m_FULLSCREEN;
-		float m_light;
-		PhysicsWorld *physWorld;
-		GameWorld::ctx *gameWorldCtx;
 		SDL_Event m_event;
 		
 		Graphics *m_graphics = nullptr;

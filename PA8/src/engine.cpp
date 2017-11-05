@@ -1,18 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &ctx) : windowWidth(m_WINDOW_WIDTH), windowHeight(m_WINDOW_HEIGHT) {
-	m_WINDOW_NAME = ctx.name;
-	m_WINDOW_WIDTH = ctx.width;
-	m_WINDOW_HEIGHT = ctx.height;
-	m_FULLSCREEN = ctx.fullscreen;
-	
-	m_light = ctx.lightStrength;
-	physWorld = ctx.physWorld;
-	gameWorldCtx = ctx.gameWorldCtx;
-	
-	mouseDown = false;
-}
+Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(ctx.width), windowHeight(ctx.height), mouseDown(false) {}
 
 Engine::~Engine() {
     if(m_window != nullptr)
@@ -30,7 +19,7 @@ Engine::~Engine() {
 bool Engine::Initialize() {
 	// Start a window
 	m_window = new Window();
-	if (!m_window->Initialize(m_WINDOW_NAME, &m_WINDOW_WIDTH, &m_WINDOW_HEIGHT)) {
+	if (!m_window->Initialize(_ctx.name, &_ctx.width, &_ctx.height)) {
 		printf("The window failed to initialize.\n");
 		return false;
 	}
@@ -39,8 +28,16 @@ bool Engine::Initialize() {
 	m_menu = new Menu(*m_window);
 	
 	// Start the graphics
-	m_graphics = new Graphics(m_light, *m_menu, m_WINDOW_WIDTH, m_WINDOW_HEIGHT, physWorld, gameWorldCtx);
-	if (!m_graphics->Initialize(m_WINDOW_WIDTH, m_WINDOW_HEIGHT)) {
+	m_graphics = new Graphics(*m_menu, _ctx.width, _ctx.height, _ctx.physWorld, _ctx.gameWorldCtx);
+	if(_ctx.lights != nullptr){
+		for(auto& i : *_ctx.lights) {
+			m_graphics->addLight(i);
+		}
+		delete _ctx.lights;
+		_ctx.lights = nullptr;
+	}
+	
+	if (!m_graphics->Initialize(_ctx.width, _ctx.height)) {
 		printf("The graphics failed to initialize.\n");
 		return false;
 	}
@@ -73,15 +70,15 @@ void Engine::Run() {
 
 		// Update planet positions
 		m_graphics->Update(m_DT);
-        physWorld->update(m_DT);
+		_ctx.physWorld->update(m_DT);
 
 		// Update menu options and labels
-		m_menu->update(m_DT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT);
+		m_menu->update(m_DT, _ctx.width, _ctx.height);
 
 		//Render everything
 		m_graphics->Render();
 		m_menu->render();
-        physWorld->renderPlane();
+		_ctx.physWorld->renderPlane();
 		
 		// Swap to the Window
 		m_window->Swap();
@@ -180,7 +177,7 @@ void Engine::eventHandler() {
 			case SDL_BUTTON_LEFT:
 			{
 				mouseDown = true;
-				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, m_WINDOW_HEIGHT - m_event.button.y);
+				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, _ctx.height - m_event.button.y);
 				if(picked != nullptr) {
 					glm::vec3 glmImpVector = glm::normalize(picked->position - m_graphics->getCamView()->eyePos);
 					glmImpVector *= 10 * picked->ctx.mass;
@@ -195,11 +192,11 @@ void Engine::eventHandler() {
 				std::default_random_engine generator(seed);
 				std::uniform_int_distribution<int> distribution(-50,50);
                 btVector3 pushIt(0,0,2500);
-                gameWorldCtx->worldObjects[1]->ctx.physicsBody->applyCentralImpulse(pushIt);
-				for(int i = 1; i < gameWorldCtx->worldObjects.size(); i++)
+                _ctx.gameWorldCtx->worldObjects[1]->ctx.physicsBody->applyCentralImpulse(pushIt);
+				for(int i = 1; i < _ctx.gameWorldCtx->worldObjects.size(); i++)
 				{
 					btVector3 shootIt(distribution(generator),0,distribution(generator));
-					gameWorldCtx->worldObjects[i]->ctx.physicsBody->applyCentralImpulse(shootIt);
+					_ctx.gameWorldCtx->worldObjects[i]->ctx.physicsBody->applyCentralImpulse(shootIt);
 				}
 			}
 		}
@@ -211,7 +208,7 @@ void Engine::eventHandler() {
 		}
 	}
 	else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
-		float scale = 360.0f / m_WINDOW_WIDTH;
+		float scale = 360.0f / _ctx.width;
 		
 		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * scale);
 	}
@@ -230,8 +227,8 @@ void Engine::eventHandler() {
 	else if(m_event.type == SDL_WINDOWEVENT) {
 		switch(m_event.window.event) {
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				m_WINDOW_WIDTH = m_event.window.data1;
-				m_WINDOW_HEIGHT = m_event.window.data2;
+				_ctx.width = m_event.window.data1;
+				_ctx.height = m_event.window.data2;
 				
 				//Update our projection matrix in case the aspect ratio is different now
 				m_graphics->getCamView()->GetProjection() = glm::perspective( 45.0f,

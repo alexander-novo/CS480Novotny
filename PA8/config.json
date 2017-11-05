@@ -11,6 +11,23 @@
     "fragment": "frag_materials"
   },
   "sunlight": 50,
+  "lights": [
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 25,
+        "z": 0
+      },
+      "pointingAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angle": 10,
+      "strength": 700
+    }
+  ],
   "game_objects": [
     {
       "name": "Surface Plane",

@@ -17,7 +17,7 @@ Shader::~Shader() {
 	}
 }
 
-bool Shader::Initialize() {
+bool Shader::Initialize(std::unordered_map<std::string, std::string> const * dictionary) {
 	if(!initialised) {
 		m_shaderProg = glCreateProgram();
 		
@@ -26,9 +26,9 @@ bool Shader::Initialize() {
 			return false;
 		}
 		
-		if (!AddShader(GL_VERTEX_SHADER, vertexShader)) return false;
-		if (!AddShader(GL_FRAGMENT_SHADER, fragmentShader)) return false;
-		if (geometryShader != "" && !AddShader(GL_GEOMETRY_SHADER, geometryShader)) return false;
+		if (!AddShader(GL_VERTEX_SHADER, vertexShader, dictionary)) return false;
+		if (!AddShader(GL_FRAGMENT_SHADER, fragmentShader, dictionary)) return false;
+		if (geometryShader != "" && !AddShader(GL_GEOMETRY_SHADER, geometryShader, dictionary)) return false;
 		
 		initialised = true;
 		
@@ -39,7 +39,7 @@ bool Shader::Initialize() {
 }
 
 // Use this method to add shaders to the program. When finished - call finalize()
-bool Shader::AddShader(GLenum ShaderType, const std::string &s) {
+bool Shader::AddShader(GLenum ShaderType, const std::string &s, std::unordered_map<std::string, std::string> const * dictionary) {
 	GLuint ShaderObj = glCreateShader(ShaderType);
 	
 	if (ShaderObj == 0) {
@@ -50,9 +50,20 @@ bool Shader::AddShader(GLenum ShaderType, const std::string &s) {
 	// Save the shader object - will be deleted in the destructor
 	m_shaderObjList.push_back(ShaderObj);
 	
+	std::string shader = s;
+	
+	if(dictionary != nullptr) {
+		size_t pos;
+		for(const auto& i : *dictionary) {
+			while((pos = shader.find(i.first)) != std::string::npos) {
+				shader.replace(pos, i.first.size(), i.second);
+			}
+		}
+	}
+	
 	const GLchar *p[1];
-	p[0] = s.c_str();
-	GLint Lengths[1] = {(GLint) s.size()};
+	p[0] = shader.c_str();
+	GLint Lengths[1] = {(GLint) shader.size()};
 	
 	glShaderSource(ShaderObj, 1, p, Lengths);
 	

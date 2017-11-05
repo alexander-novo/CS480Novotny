@@ -15,7 +15,7 @@
 class Shader {
 	public:
 		//Initialise Shader in OpenGL - call this after creating OpenGL context but before using shader
-		bool Initialize();
+		bool Initialize(std::unordered_map<std::string, std::string> const * dictionary = nullptr);
 		//Start using the shader for any render calls
 		void Enable();
 		//Get uniform location from shader
@@ -35,7 +35,7 @@ class Shader {
 		
 		~Shader();
 		
-		bool AddShader(GLenum ShaderType, const std::string &shader);
+		bool AddShader(GLenum ShaderType, const std::string &shader, std::unordered_map<std::string, std::string> const * dictionary = nullptr);
 		bool Finalize();
 		
 		bool initialised;
