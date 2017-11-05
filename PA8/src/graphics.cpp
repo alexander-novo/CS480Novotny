@@ -79,8 +79,8 @@ bool Graphics::Initialize(int width, int height) {
 	glBindTexture(GL_TEXTURE_2D, pickTexture);
 	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
-	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
 	
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
@@ -115,7 +115,7 @@ Object* Graphics::getObjectOnScreen(int x, int y) {
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	
-	int id = pixel.r * 255;
+	int id = pixel.r;
 	
 	Object* re = nullptr;
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {

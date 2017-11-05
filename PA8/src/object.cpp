@@ -104,7 +104,7 @@ void Object::RenderID(Shader* shader) const {
 	//Send our shaders the MVP matrices
 	glm::mat4 MVPMatrix = *projectionMatrix * *viewMatrix * modelMat;
 	shader->uniformMatrix4fv("MVP", 1, GL_FALSE, glm::value_ptr(MVPMatrix));
-	float modifiedID = ctx.id / 255.0f;
+	float modifiedID = ctx.id;
 	shader->uniform1fv("id", 1, &modifiedID);
 	
 	//Now draw our planet
