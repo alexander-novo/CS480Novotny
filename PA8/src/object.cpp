@@ -6,7 +6,7 @@ glm::mat4* Object::projectionMatrix;
 Menu* Object::menu;
 int Object::idCounter = 1;
 
-Object::Object(const Context &a) : ctx(a), originalCtx(a), position(glm::vec3(ctx.xLoc, ctx.yLoc, ctx.zLoc)) {
+Object::Object(const Context &a) : ctx(a), originalCtx(a), position(_position) {
 	//Default value - just in case anything tries to read it
 	//The planet doesn't actually start here - this will be updated in Update()
 	_position = {a.xLoc, a.yLoc, a.zLoc};

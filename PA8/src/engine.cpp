@@ -179,8 +179,6 @@ void Engine::eventHandler() {
 				mouseDown = true;
 				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, _ctx.height - m_event.button.y);
 				if(picked != nullptr) {
-					std::cout << picked->position.x << "," << picked->position.y << ","<< picked->position.z << " - "
-					          << m_graphics->getCamView()->eyePos.x << "," << m_graphics->getCamView()->eyePos.y << ","<< m_graphics->getCamView()->eyePos.z << std::endl;
 					glm::vec3 glmImpVector = glm::normalize(picked->position - m_graphics->getCamView()->eyePos);
 					glmImpVector *= 10 * picked->ctx.mass;
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
