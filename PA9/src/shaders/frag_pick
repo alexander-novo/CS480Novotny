@@ -1,0 +1,10 @@
+#version 330 core
+
+uniform float id;
+
+// Output data
+out vec3 frag_color;
+
+void main(void) {
+    frag_color.rgb = vec3(id, id, id);
+}
