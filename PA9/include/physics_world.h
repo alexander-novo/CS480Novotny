@@ -26,6 +26,9 @@ class PhysicsWorld {
 			float heightY = 0;
 			float widthX = 0;
 			float lengthZ = 0;
+			float scaleX = 1;
+			float scaleY = 1;
+			float scaleZ = 1;
             float scale = 1.0f;
 
             bool isPaddle = false;

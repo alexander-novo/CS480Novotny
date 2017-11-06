@@ -75,7 +75,7 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 				newModel->_indices.push_back(face.mIndices[vertexIndex]);
 
 				aiVector3D position = mesh->mVertices[face.mIndices[vertexIndex]];
-				triArray[vertexIndex] = btVector3(position.x, position.y, position.z);
+				triArray[vertexIndex] = btVector3(position.x*ctx->scaleX, position.y*ctx->scaleY, position.z*ctx->scaleZ);
 			}
 			objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 		}

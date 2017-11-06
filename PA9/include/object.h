@@ -31,6 +31,9 @@ class Object {
             int xLoc = 0;
             int yLoc = 0;
             int zLoc = 0;
+			float scaleX = 1;
+			float scaleY = 1;
+			float scaleZ = 1;
 			int shape = 0;
 			float mass = 0;
 			

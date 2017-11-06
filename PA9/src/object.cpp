@@ -52,7 +52,15 @@ void Object::Update(float dt) {
 		float mat[16];
 		transformObject.getOpenGLMatrix(mat);
 		modelMat = glm::make_mat4(mat);
-		modelMat = glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
+		if(ctx.shape != 1)
+		{
+			modelMat = glm::scale(modelMat, glm::vec3(ctx.scaleX, ctx.scaleY, ctx.scaleZ));
+		}
+		else
+		{
+			modelMat = glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
+		}
+
 		
 		_position = glm::vec3(modelMat * glm::vec4(0.0, 0.0, 0.0, 1.0));
 	}
