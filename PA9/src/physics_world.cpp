@@ -142,14 +142,6 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// takes in the body
 	btRigidBody* body = new btRigidBody(info);
 	
-	
-	// Attempting to give an object specific degrees of freedom
-	if (objCtx->isPaddle) {
-		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.5, 0, 0), btVector3(0.0, 1.0, 0.0));
-		
-		dynamicsWorld->addConstraint(constraint);
-	}
-	
 	// Set the body to a kinematic object if it is one
 	if (objCtx->isKinematic) {
 		flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
@@ -159,6 +151,13 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
 	int bodyIndex = addBody(body);
+	
+	// Attempting to give an object specific degrees of freedom
+	if (objCtx->isPaddle) {
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.5, 0, 0), btVector3(0.0, 1.0, 0.0));
+		
+		dynamicsWorld->addConstraint(constraint);
+	}
 	
 	// TODO: add check for if it exists
 	loadedPhysicsObjects[objectName] = newShape;

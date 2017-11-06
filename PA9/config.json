@@ -102,15 +102,11 @@
       "texture": "concrete.jpg",
       "isDynamic": true,
       "isKinematic": false,
+      "isPaddle": true,
       "location": {
         "z": -12,
         "x": -8,
         "y": 0
-      },
-      "scaleXYZ": {
-        "z": 2,
-        "x": 3,
-        "y": 1
       },
       "mass": 5
     },
