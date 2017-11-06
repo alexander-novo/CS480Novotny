@@ -19,7 +19,7 @@ class Graphics {
 		struct LightContext {
 			int type;           //Point or spot light
 			glm::vec3 position; //Where in the world the light is
-			glm::vec3 pointing; //Where the light is pointing, if spot light
+			glm::vec3 const * pointing; //Where the light is pointing, if spot light
 			float strength;     //How bright
 			float angle;        //How wide of a cone - for spot lights
 		};
@@ -68,10 +68,11 @@ class Graphics {
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
 		
-		vector<float> spotLightPositions;
+		vector<LightContext> spotLights;
+		/*vector<float> spotLightPositions;
 		vector<float> spotLightDirections;
 		vector<float> spotLightAngles;
-		vector<float> spotLightStrengths;
+		vector<float> spotLightStrengths;*/
 		
 		GLuint pickDepthBuffer;
 		GLuint pickBuffer;

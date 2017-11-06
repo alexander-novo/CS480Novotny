@@ -108,7 +108,7 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 		vector<Graphics::LightContext>* lights = new vector<Graphics::LightContext>();
 		Graphics::LightContext lightCtx;
 		for(auto& i : config["lights"]) {
-			error = loadLightContext(i, lightCtx);
+			error = loadLightContext(i, lightCtx, gameCtx->worldObjects);
 			if(error != -1) return error;
 			lights->push_back(lightCtx);
 		}
@@ -263,7 +263,7 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	return -1;
 }
 
-int loadLightContext(json &config, Graphics::LightContext &ctx) {
+int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vector<Object*>& objects) {
 	if(config["type"] == "spot") {
 		ctx.type = LIGHT_SPOT;
 	} else if(config["type"] == "point"){
@@ -278,11 +278,22 @@ int loadLightContext(json &config, Graphics::LightContext &ctx) {
 	ctx.position.z = config["location"]["z"];
 	
 	if(ctx.type == LIGHT_SPOT) {
-		ctx.pointing.x = config["pointingAt"]["x"];
-		ctx.pointing.y = config["pointingAt"]["y"];
-		ctx.pointing.z = config["pointingAt"]["z"];
-		
-		ctx.pointing = ctx.pointing - ctx.position;
+		if(config["pointingAt"].is_string()) {
+			std::string name = config["pointingAt"];
+			for(const auto& i : objects) {
+				if(i->ctx.name == name) {
+					ctx.pointing = &i->position;
+					break;
+				}
+			}
+		} else {
+			glm::vec3* newPoint = new glm::vec3;
+			newPoint->x = config["pointingAt"]["x"];
+			newPoint->y = config["pointingAt"]["y"];
+			newPoint->z = config["pointingAt"]["z"];
+			
+			ctx.pointing = newPoint;
+		}
 		
 		ctx.angle = double(config["angle"]) * M_PI / 180;
 	}

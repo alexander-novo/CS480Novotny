@@ -24,7 +24,18 @@
         "y": 0,
         "z": 0
       },
-      "angle": 10,
+      "angle": 30,
+      "strength": 600
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "pointingAt": "Bad Sphere",
+      "angle": 2,
       "strength": 700
     }
   ],

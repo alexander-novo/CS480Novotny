@@ -19,6 +19,6 @@ GameWorld::ctx *gameCtx = new GameWorld::ctx;
 int processConfig(int argc, char **argv, json& config, Engine::Context &ctx);
 //Load an object's data
 int loadObjectContext(json &config, Object::Context &ctx, Shader* defaultShader, PhysicsWorld *physWorld);
-int loadLightContext(json &config, Graphics::LightContext &ctx);
+int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vector<Object*>& objects);
 //Display help menu
 void helpMenu();

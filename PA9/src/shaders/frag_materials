@@ -58,7 +58,7 @@ void main(void) {
 
         if(cosPhi < spotLightAngles[i]) {
             //Blend the edges
-            difference = 1 - (spotLightAngles[i] - cosPhi) * 2 / spotLightAngles[i];
+            difference = 1 - (spotLightAngles[i] - cosPhi) * 2 / (1 - spotLightAngles[i]);
             if(difference < 0)
                 continue;
         } else {

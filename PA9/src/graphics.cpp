@@ -19,7 +19,8 @@ Graphics::~Graphics() {
 
 void Graphics::addLight(const LightContext& light) {
 	if (light.type == LIGHT_SPOT) {
-		spotLightPositions.push_back(light.position.x);
+		spotLights.push_back(light);
+		/*spotLightPositions.push_back(light.position.x);
 		spotLightPositions.push_back(light.position.y);
 		spotLightPositions.push_back(light.position.z);
 		
@@ -31,7 +32,7 @@ void Graphics::addLight(const LightContext& light) {
 		spotLightDirections.push_back(normalLightPoint.y);
 		spotLightDirections.push_back(normalLightPoint.z);
 		
-		spotLightStrengths.push_back(light.strength);
+		spotLightStrengths.push_back(light.strength);*/
 	} else if (light.type == LIGHT_POINT) {
 		//TODO do this
 	}
@@ -64,7 +65,7 @@ bool Graphics::Initialize(int width, int height) {
 	glBindVertexArray(vao);
 	
 	std::unordered_map<std::string, std::string> dictionary;
-	dictionary["NUM_SPOT_LIGHTS"] = std::to_string(spotLightStrengths.size());
+	dictionary["NUM_SPOT_LIGHTS"] = std::to_string(spotLights.size());
 	
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
 		gameWorldCtx->worldObjects[i]->Init_GL(&dictionary);
@@ -134,6 +135,29 @@ void Graphics::Render() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	vector<float> spotLightPositions(spotLights.size() * 3);
+	vector<float> spotLightDirections(spotLights.size() * 3);
+	vector<float> spotLightAngles(spotLights.size());
+	vector<float> spotLightStrengths(spotLights.size());
+	
+	for(unsigned i = 0; i < spotLights.size(); i++) {
+		spotLightPositions[i * 3 + 0] = spotLights[i].position.x;
+		spotLightPositions[i * 3 + 1] = spotLights[i].position.y;
+		spotLightPositions[i * 3 + 2] = spotLights[i].position.z;
+		
+		glm::vec3 normalLightPoint = glm::normalize(*spotLights[i].pointing - spotLights[i].position);
+		
+		//std::cout << "Spotlight at " << spotLights[i].position.x << "," << spotLights[i].position.y << "," << spotLights[i].position.z << std::endl
+		 //         << "Pointing at  " << spotLights[i].pointing->x << "," << spotLights[i].pointing->y << "," << spotLights[i].pointing->z <<std::endl;
+		
+		spotLightDirections[i * 3 + 0] = normalLightPoint.x;
+		spotLightDirections[i * 3 + 1] = normalLightPoint.y;
+		spotLightDirections[i * 3 + 2] = normalLightPoint.z;
+		
+		spotLightAngles[i] = cos(spotLights[i].angle);
+		spotLightStrengths[i] = spotLights[i].strength;
+	}
 	
 	//Render planets
 	// Update the object
