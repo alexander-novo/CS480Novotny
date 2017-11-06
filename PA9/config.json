@@ -63,6 +63,11 @@
         "x": -14,
         "y": 1
       },
+      "scaleXYZ": {
+        "z": 2,
+        "x": 0.5,
+        "y": 1
+      },
       "mass": 50
     },
     {
@@ -71,7 +76,7 @@
       "model": "BadSphere.obj",
       "texture": "2k_earth_daymap.jpg",
       "isDynamic": true,
-      "radius": 0.25,
+      "radius": 2,
       "location": {
         "z": 0,
         "x": 0,
@@ -91,7 +96,12 @@
         "x": -8,
         "y": 0
       },
-      "mass": 3
+      "scaleXYZ": {
+        "z": 2,
+        "x": 3,
+        "y": 1
+      },
+      "mass": 5
     },
     {
       "name": "Earth",
@@ -198,6 +208,11 @@
         "x": 10,
         "y": 1
       },
+      "scaleXYZ": {
+        "z": 1,
+        "x": 3,
+        "y": 1
+      },
       "mass": 0,
       "scale": 1
     },
@@ -213,6 +228,11 @@
         "z": 5,
         "x": 5,
         "y": 1
+      },
+      "scaleXYZ": {
+        "z": 3,
+        "x": 1,
+        "y": 3
       },
       "mass": 0,
       "scale": 2.5

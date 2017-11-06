@@ -108,12 +108,12 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh *objTriMes
     }
     else if(objCtx->shape == 2)
     {   // BOX - half-extends are the half the height/width/depth of the box (from a point p out)
-        btVector3 boxHalfExtents = {objCtx->widthX*objCtx->scale, objCtx->heightY*objCtx->scale, objCtx->lengthZ*objCtx->scale};
+        btVector3 boxHalfExtents = {objCtx->widthX*objCtx->scaleX, objCtx->heightY*objCtx->scaleY, objCtx->lengthZ*objCtx->scaleZ};
         newShape = new btBoxShape(boxHalfExtents);
     }
     else if(objCtx->shape == 3)
     {   // CYLINDER
-        btVector3 boxHalfExtents = {1*objCtx->scale, 1*objCtx->scale, 1*objCtx->scale};
+        btVector3 boxHalfExtents = {1*objCtx->scaleX, 1*objCtx->scaleY, 1*objCtx->scaleZ};
         newShape = new btCylinderShape(boxHalfExtents);
     }
     else if(objCtx->shape == 4)

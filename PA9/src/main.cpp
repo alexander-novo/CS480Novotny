@@ -169,6 +169,16 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.yLoc = ctx.yLoc;
 		objectPhysics.zLoc = ctx.zLoc;
 	}
+
+	// Scaling in directions for Non-Spheres
+	if (config.find("scaleXYZ") != config.end()) {
+		ctx.scaleX = config["scaleXYZ"]["z"];
+		ctx.scaleY = config["scaleXYZ"]["x"];
+		ctx.scaleZ = config["scaleXYZ"]["y"];
+		objectPhysics.scaleX = ctx.scaleX;
+		objectPhysics.scaleY = ctx.scaleY;
+		objectPhysics.scaleZ = ctx.scaleZ;
+	}
 	
 	if (config.find("mass") != config.end()) {
 		ctx.mass = config["mass"];
@@ -186,9 +196,10 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	
 	if (config.find("radius") != config.end()) {
 		objectPhysics.radius = config["radius"];
-		ctx.scale = config["radius"];
+		ctx.scale = objectPhysics.radius;
 	}
-	
+
+	// Scaling for spheres
 	if (config.find("scale") != config.end()) {
 		objectPhysics.scale = config["scale"];
 		ctx.scale = config["scale"];
