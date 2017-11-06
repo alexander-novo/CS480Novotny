@@ -66,6 +66,20 @@
       "mass": 50
     },
     {
+      "name": "Bad Sphere",
+      "shape": "sphere",
+      "model": "BadSphere.obj",
+      "texture": "2k_earth_daymap.jpg",
+      "isDynamic": true,
+      "radius": 0.25,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 14
+      },
+      "mass": 1
+    },
+    {
       "name": "Paddle 1",
       "shape": "mesh",
       "model": "Paddle.obj",

@@ -60,19 +60,37 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 	phsyics_world_model_index++;
 	//Bullet needs this info
 	btVector3 triArray[3];
-	objTriMesh = new btTriangleMesh();
-	//Now our indices
-	for (unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
-		aiFace& face = mesh->mFaces[faceIndex];
-		
-		for (unsigned vertexIndex = 0; vertexIndex < 3; vertexIndex++) {
-			newModel->_indices.push_back(face.mIndices[vertexIndex]);
-			
-			aiVector3D position = mesh->mVertices[face.mIndices[vertexIndex]];
-			triArray[vertexIndex] = btVector3(position.x, position.y, position.z);
+
+
+	// Shapes are: (1 - Sphere, 2 - Box, 3 - Cylinder, 4 - Plane) : After are meshes (Static/Dynamics)
+	// If not a default shape, load indices for triangle mesh
+	if(ctx->shape > 4 || ctx->shape <= 0)
+	{
+		objTriMesh = new btTriangleMesh();
+		//Now our indices
+		for (unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
+			aiFace& face = mesh->mFaces[faceIndex];
+
+			for (unsigned vertexIndex = 0; vertexIndex < 3; vertexIndex++) {
+				newModel->_indices.push_back(face.mIndices[vertexIndex]);
+
+				aiVector3D position = mesh->mVertices[face.mIndices[vertexIndex]];
+				triArray[vertexIndex] = btVector3(position.x, position.y, position.z);
+			}
+			objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 		}
-		objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 	}
+	else
+	{
+		for (unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
+			aiFace& face = mesh->mFaces[faceIndex];
+
+			for (unsigned vertexIndex = 0; vertexIndex < 3; vertexIndex++) {
+				newModel->_indices.push_back(face.mIndices[vertexIndex]);
+			}
+		}
+	}
+
 	
 	// create the mesh and add it to the world
 	// btCollisionShape *triMeshShape = new btBvhTriangleMeshShape(objTriMesh, true);

@@ -97,8 +97,8 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 		Shader* defaultShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 		
 		//Load the gameworld's objects
-		Object::Context objCtx;
 		for (auto& i : config["game_objects"]) {
+			Object::Context objCtx;
 			error = loadObjectContext(i, objCtx, defaultShader, physWorld);
 			if (error != -1) return error;
 			Object* newObject = new Object(objCtx);
