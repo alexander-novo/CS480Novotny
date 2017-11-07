@@ -299,9 +299,15 @@ int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vecto
 	ctx.position.y = config["location"]["y"];
 	ctx.position.z = config["location"]["z"];
 	
-	ctx.color.x = double(config["color"]["r"]) / 255.0;
-	ctx.color.y = double(config["color"]["g"]) / 255.0;
-	ctx.color.z = double(config["color"]["b"]) / 255.0;
+	if(config["color"].is_string()) {
+		if(config["color"] == "rainbow") {
+			ctx.isRainbow = true;
+		}
+	} else {
+		ctx.color.x = double(config["color"]["r"]) / 255.0;
+		ctx.color.y = double(config["color"]["g"]) / 255.0;
+		ctx.color.z = double(config["color"]["b"]) / 255.0;
+	}
 	
 	if(ctx.type == LIGHT_SPOT) {
 		if(config["pointingAt"].is_string()) {

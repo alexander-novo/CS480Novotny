@@ -21,6 +21,8 @@ class Graphics {
 			glm::vec3 position;         //Where in the world the light is
 			glm::vec3 const * pointing; //Where the light is pointing, if spot light
 			glm::vec3 color;            //What color the light is
+			bool isRainbow = false;     //Whether the color should change over time
+			unsigned timer = 0;         //Timer for color over time
 			float strength;             //How bright
 			float angle;                //How wide of a cone - for spot lights
 		};

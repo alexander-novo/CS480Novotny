@@ -106,12 +106,77 @@ void Graphics::updateScreenSize(int width, int height) {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
 }
 
+glm::vec3 hsv2rgb(glm::vec3 in)
+{
+	float hh, p, q, t, ff;
+	long i;
+	glm::vec3 out;
+	
+	if(in.r <= 0.0) {
+		out.r = in.b;
+		out.g = in.b;
+		out.b = in.b;
+		return out;
+	}
+	hh = in.r;
+	if(hh >= 360.0) hh = 0.0;
+	hh /= 60.0;
+	i = (long)hh;
+	ff = hh - i;
+	p = in.b * (1.0 - in.g);
+	q = in.b * (1.0 - (in.g * ff));
+	t = in.b * (1.0 - (in.g * (1.0 - ff)));
+	
+	switch(i) {
+		case 0:
+			out.r = in.b;
+			out.g = t;
+			out.b = p;
+			break;
+		case 1:
+			out.r = q;
+			out.g = in.b;
+			out.b = p;
+			break;
+		case 2:
+			out.r = p;
+			out.g = in.b;
+			out.b = t;
+			break;
+		
+		case 3:
+			out.r = p;
+			out.g = q;
+			out.b = in.b;
+			break;
+		case 4:
+			out.r = t;
+			out.g = p;
+			out.b = in.b;
+			break;
+		case 5:
+		default:
+			out.r = in.b;
+			out.g = p;
+			out.b = q;
+			break;
+	}
+	return out;
+}
+
 void Graphics::Update(unsigned int dt) {
 	glm::vec3 offsetChange = {0, 0, 0};
 	
 	// Update the object
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
 		gameWorldCtx->worldObjects[i]->Update(dt);
+	}
+	
+	for(auto& i : spotLights) {
+		if(i.isRainbow) {
+			i.timer += dt / 25;
+			i.color = hsv2rgb(glm::vec3(i.timer, 1.0, 1.0));
+		}
 	}
 	
 	//Calculate where our camera should be and update the View matrix
