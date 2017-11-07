@@ -144,22 +144,25 @@ void Graphics::Render() {
 	
 	vector<float> spotLightPositions(spotLights.size() * 3);
 	vector<float> spotLightDirections(spotLights.size() * 3);
+	vector<float> spotLightColors(spotLights.size() * 3);
 	vector<float> spotLightAngles(spotLights.size());
 	vector<float> spotLightStrengths(spotLights.size());
 	
+	glm::vec3 normalLightPoint;
 	for(unsigned i = 0; i < spotLights.size(); i++) {
 		spotLightPositions[i * 3 + 0] = spotLights[i].position.x;
 		spotLightPositions[i * 3 + 1] = spotLights[i].position.y;
 		spotLightPositions[i * 3 + 2] = spotLights[i].position.z;
 		
-		glm::vec3 normalLightPoint = glm::normalize(*spotLights[i].pointing - spotLights[i].position);
-		
-		//std::cout << "Spotlight at " << spotLights[i].position.x << "," << spotLights[i].position.y << "," << spotLights[i].position.z << std::endl
-		 //         << "Pointing at  " << spotLights[i].pointing->x << "," << spotLights[i].pointing->y << "," << spotLights[i].pointing->z <<std::endl;
+		normalLightPoint = glm::normalize(*spotLights[i].pointing - spotLights[i].position);
 		
 		spotLightDirections[i * 3 + 0] = normalLightPoint.x;
 		spotLightDirections[i * 3 + 1] = normalLightPoint.y;
 		spotLightDirections[i * 3 + 2] = normalLightPoint.z;
+		
+		spotLightColors[i * 3 + 0] = spotLights[i].color.x;
+		spotLightColors[i * 3 + 1] = spotLights[i].color.y;
+		spotLightColors[i * 3 + 2] = spotLights[i].color.z;
 		
 		spotLightAngles[i] = cos(spotLights[i].angle);
 		spotLightStrengths[i] = spotLights[i].strength;
@@ -175,6 +178,7 @@ void Graphics::Render() {
 			
 			shader->uniform3fv("spotLightPositions", spotLightStrengths.size(), &spotLightPositions[0]);
 			shader->uniform3fv("spotLightDirections", spotLightStrengths.size(), &spotLightDirections[0]);
+			shader->uniform3fv("spotLightColors", spotLightStrengths.size(), &spotLightColors[0]);
 			shader->uniform1fv("spotLightStrengths", spotLightStrengths.size(), &spotLightStrengths[0]);
 			shader->uniform1fv("spotLightAngles", spotLightStrengths.size(), &spotLightAngles[0]);
 		}

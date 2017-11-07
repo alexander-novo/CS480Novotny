@@ -16,6 +16,7 @@ uniform sampler2D gSampler;
 
 uniform vec3 spotLightPositions[NUM_SPOT_LIGHTS];
 uniform vec3 spotLightDirections[NUM_SPOT_LIGHTS];
+uniform vec3 spotLightColors[NUM_SPOT_LIGHTS];
 uniform float spotLightStrengths[NUM_SPOT_LIGHTS];
 uniform float spotLightAngles[NUM_SPOT_LIGHTS];
 
@@ -23,10 +24,6 @@ uniform float spotLightAngles[NUM_SPOT_LIGHTS];
 out vec4 frag_color;
 
 void main(void) {
-    //Color of the light
-    //For now, all white, but make this something we can change later
-    vec3 lightColor = vec3(1.0, 1.0, 1.0);
-
     vec4 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
     vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d.rgb;
 
@@ -70,8 +67,8 @@ void main(void) {
         cosTheta = max(dot(n, l), 0);
         cosAlpha = max(dot(e, r), 0);
 
-        diffuseLight += MaterialDiffuseTexture2d.rgb * lightColor * spotLightStrengths[i] * cosTheta * difference / distance / distance;
-        specularLight += MaterialSpecularColor * lightColor * spotLightStrengths[i] * pow(cosAlpha, shininess) * difference / distance / distance;
+        diffuseLight += MaterialDiffuseTexture2d.rgb * spotLightColors[i] * spotLightStrengths[i] * cosTheta * difference / distance / distance;
+        specularLight += MaterialSpecularColor * spotLightColors[i] * spotLightStrengths[i] * pow(cosAlpha, shininess) * difference / distance / distance;
     }
 
     frag_color.rgb = materialAmbientModified + diffuseLight + specularLight;

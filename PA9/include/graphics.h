@@ -17,11 +17,12 @@
 class Graphics {
 	public:
 		struct LightContext {
-			int type;           //Point or spot light
-			glm::vec3 position; //Where in the world the light is
+			int type;                   //Point or spot light
+			glm::vec3 position;         //Where in the world the light is
 			glm::vec3 const * pointing; //Where the light is pointing, if spot light
-			float strength;     //How bright
-			float angle;        //How wide of a cone - for spot lights
+			glm::vec3 color;            //What color the light is
+			float strength;             //How bright
+			float angle;                //How wide of a cone - for spot lights
 		};
 		
 		Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc);
