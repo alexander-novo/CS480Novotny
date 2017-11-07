@@ -81,7 +81,7 @@ bool Graphics::Initialize(int width, int height) {
 	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
 	
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
@@ -106,17 +106,17 @@ void Graphics::Update(unsigned int dt) {
 	camView->calculateCamera();
 }
 
-Object* Graphics::getObjectOnScreen(int x, int y) {
+Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
 	renderPick();
 	
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, pickBuffer);
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 	PixelInfo pixel;
-	glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, &pixel);
+	glReadPixels(x, y, 1, 1, GL_RGBA, GL_FLOAT, &pixel);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	
-	int id = pixel.r;
+	int id = pixel.a;
 	
 	Object* re = nullptr;
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
@@ -124,6 +124,12 @@ Object* Graphics::getObjectOnScreen(int x, int y) {
 			re = gameWorldCtx->worldObjects[i];
 			break;
 		}
+	}
+	
+	if(location != nullptr) {
+		location->x = pixel.r;
+		location->y = pixel.g;
+		location->z = pixel.b;
 	}
 	
 	return re;

@@ -41,7 +41,7 @@ class Graphics {
 		//Return pointer to vector of objects
 		vector<Object *> *getObject();
 		
-		Object* getObjectOnScreen(int x, int y);
+		Object* getObjectOnScreen(int x, int y, glm::vec3* location = nullptr);
 
 		Camera * getCamView();
 	
@@ -51,6 +51,7 @@ class Graphics {
 			float r;
 			float g;
 			float b;
+			float a;
 		};
 
 		// The camera view

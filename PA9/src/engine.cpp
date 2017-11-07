@@ -177,12 +177,17 @@ void Engine::eventHandler() {
 			case SDL_BUTTON_LEFT:
 			{
 				mouseDown = true;
-				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, _ctx.height - m_event.button.y);
+				glm::vec3 pickedPosition;
+				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, _ctx.height - m_event.button.y, &pickedPosition);
 				if(picked != nullptr) {
-					glm::vec3 glmImpVector = glm::normalize(picked->position - m_graphics->getCamView()->eyePos);
+					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
+					glmImpVector.y = 0;
+					glmImpVector = glm::normalize(glmImpVector);
 					glmImpVector *= 10 * picked->ctx.mass;
+					
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
-					picked->ctx.physicsBody->applyCentralImpulse(impVector);
+					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
+					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
 				}
 				break;
 			}
