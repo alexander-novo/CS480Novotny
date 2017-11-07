@@ -27,6 +27,7 @@ class Object {
 			Texture* normalMap = nullptr;
 			Texture* specularMap = nullptr;
 			Shader* shader;
+			Shader* altShader;
 			
             int xLoc = 0;
             int yLoc = 0;

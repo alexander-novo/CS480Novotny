@@ -247,6 +247,19 @@ void Engine::eventHandler() {
 				break;
 		}
 	}
+	
+		//For single-press keyboard events
+		//For long-hold keyboard events, see keyboard()
+	else if(m_event.type == SDL_KEYDOWN) {
+		switch(m_event.key.keysym.sym) {
+			//Switch shaders
+			case SDLK_r:
+				for(const auto& i : _ctx.gameWorldCtx->worldObjects) {
+					std::swap(i->ctx.shader, i->ctx.altShader);
+				}
+				break;
+		}
+	}
 }
 
 unsigned int Engine::getDT() {

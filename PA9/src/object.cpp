@@ -20,6 +20,7 @@ Object::~Object() {}
 void Object::Init_GL(std::unordered_map<std::string, std::string> const * dictionary) {
 	//Initialise shaders
 	ctx.shader->Initialize(dictionary);
+	ctx.altShader->Initialize(dictionary);
 	
 	//Initialise models
 	if(ctx.model != nullptr)

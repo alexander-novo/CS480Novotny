@@ -10,6 +10,10 @@
     "vertex": "vert_materials",
     "fragment": "frag_materials"
   },
+  "default_alt_shaders": {
+    "vertex": "vert_materials_vert",
+    "fragment": "frag_materials_vert"
+  },
   "sunlight": 50,
   "lights": [
     {

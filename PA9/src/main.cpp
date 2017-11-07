@@ -96,10 +96,14 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 		std::string fragLocation = config["default_shaders"]["fragment"];
 		Shader* defaultShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 		
+		vertexLocation = config["default_alt_shaders"]["vertex"];
+		fragLocation = config["default_alt_shaders"]["fragment"];
+		Shader* defaultAltShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
+		
 		//Load the gameworld's objects
 		for (auto& i : config["game_objects"]) {
 			Object::Context objCtx;
-			error = loadObjectContext(i, objCtx, defaultShader, physWorld);
+			error = loadObjectContext(i, objCtx, defaultShader, defaultAltShader, physWorld);
 			if (error != -1) return error;
 			Object* newObject = new Object(objCtx);
 			gameCtx->worldObjects.push_back(newObject);
@@ -120,7 +124,7 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 	return -1;
 }
 
-int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader, PhysicsWorld* physWorld) {
+int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader, Shader* defaultAltShader, PhysicsWorld* physWorld) {
 	
 	PhysicsWorld::Context objectPhysics;
 	if (config.find("name") != config.end()) {
@@ -266,6 +270,13 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		ctx.shader = defaultShader;
 	}
 	
+	if (config.find("alt_shaders") != config.end()) {
+		std::string vertexLocation = config["alt_shaders"]["vertex"];
+		std::string fragLocation = config["alt_shaders"]["fragment"];
+		ctx.altShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
+	} else {
+		ctx.altShader = defaultAltShader;
+	}
 	
 	if (config.find("mass") != config.end()) {
 		ctx.mass = config["mass"];

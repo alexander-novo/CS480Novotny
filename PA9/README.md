@@ -1,4 +1,4 @@
-# PA8: Bullet
+# PA9: Lighting
 
 # Group members
 Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
@@ -40,7 +40,8 @@ make
 
 `left click` - Drag to rotate camera, click object to shoot object forward  
 `right click` - Shoot a cube forward, and several spheres in random directions.   
-`Scroll wheel` - Zoom in and out
+`Scroll wheel` - Zoom in and out  
+`R` - Switch between per-vertex / per-fragment lighting
 
 # Command Line Parameters
 
