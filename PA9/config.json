@@ -14,8 +14,19 @@
     "vertex": "vert_materials_vert",
     "fragment": "frag_materials_vert"
   },
-  "sunlight": 50,
   "lights": [
+    {
+      "type": "spot",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": "rainbow",
+      "pointingAt": "Bad Sphere",
+      "angle": 2,
+      "strength": 700
+    },
     {
       "type": "spot",
       "location": {
@@ -35,18 +46,6 @@
       },
       "angle": 30,
       "strength": 600
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 15,
-        "y": 15,
-        "z": 15
-      },
-      "color": "rainbow",
-      "pointingAt": "Bad Sphere",
-      "angle": 2,
-      "strength": 700
     }
   ],
   "game_objects": [

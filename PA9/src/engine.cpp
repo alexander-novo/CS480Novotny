@@ -162,6 +162,23 @@ void Engine::Keyboard(unsigned dt) {
 			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
 		}
 	}
+	//Width of spotlight
+	if(keyState[SDL_SCANCODE_UP]) {
+		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle < M_PI / 2) {
+			m_graphics->spotLights[0].angle += M_PI / 180;
+			if(m_graphics->spotLights[0].angle > M_PI / 2) {
+				m_graphics->spotLights[0].angle = M_PI / 2;
+			}
+		}
+	}
+	if(keyState[SDL_SCANCODE_DOWN]) {
+		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle > 0) {
+			m_graphics->spotLights[0].angle -= M_PI / 180;
+			if(m_graphics->spotLights[0].angle < 0) {
+				m_graphics->spotLights[0].angle = 0;
+			}
+		}
+	}
 }
 
 void Engine::eventHandler() {

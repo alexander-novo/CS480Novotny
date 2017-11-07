@@ -304,6 +304,8 @@ int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vecto
 			ctx.isRainbow = true;
 		}
 	} else {
+		ctx.isRainbow = false;
+		
 		ctx.color.x = double(config["color"]["r"]) / 255.0;
 		ctx.color.y = double(config["color"]["g"]) / 255.0;
 		ctx.color.z = double(config["color"]["b"]) / 255.0;

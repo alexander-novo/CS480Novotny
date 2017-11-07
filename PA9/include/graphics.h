@@ -49,6 +49,10 @@ class Graphics {
 		void updateScreenSize(int width, int height);
 
 		Camera * getCamView();
+		
+		//DO NOT MODIFY AFTER Initialize() HAS BEEN CALLED
+		//Feel free to modify the LightContext objects, though
+		vector<LightContext> spotLights;
 	
 	private:
 		
@@ -74,7 +78,6 @@ class Graphics {
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
 		
-		vector<LightContext> spotLights;
 		/*vector<float> spotLightPositions;
 		vector<float> spotLightDirections;
 		vector<float> spotLightAngles;

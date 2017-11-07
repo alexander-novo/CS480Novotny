@@ -20,19 +20,6 @@ Graphics::~Graphics() {
 void Graphics::addLight(const LightContext& light) {
 	if (light.type == LIGHT_SPOT) {
 		spotLights.push_back(light);
-		/*spotLightPositions.push_back(light.position.x);
-		spotLightPositions.push_back(light.position.y);
-		spotLightPositions.push_back(light.position.z);
-		
-		spotLightAngles.push_back(cos(light.angle));
-		
-		glm::vec3 normalLightPoint = glm::normalize(light.pointing);
-		
-		spotLightDirections.push_back(normalLightPoint.x);
-		spotLightDirections.push_back(normalLightPoint.y);
-		spotLightDirections.push_back(normalLightPoint.z);
-		
-		spotLightStrengths.push_back(light.strength);*/
 	} else if (light.type == LIGHT_POINT) {
 		//TODO do this
 	}
@@ -80,7 +67,7 @@ bool Graphics::Initialize(int width, int height) {
 	glBindTexture(GL_TEXTURE_2D, pickTexture);
 	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
-
+	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
 	
@@ -106,28 +93,27 @@ void Graphics::updateScreenSize(int width, int height) {
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
 }
 
-glm::vec3 hsv2rgb(glm::vec3 in)
-{
+glm::vec3 hsv2rgb(glm::vec3 in) {
 	float hh, p, q, t, ff;
 	long i;
 	glm::vec3 out;
 	
-	if(in.r <= 0.0) {
+	if (in.r <= 0.0) {
 		out.r = in.b;
 		out.g = in.b;
 		out.b = in.b;
 		return out;
 	}
 	hh = in.r;
-	if(hh >= 360.0) hh = 0.0;
+	if (hh >= 360.0) hh = 0.0;
 	hh /= 60.0;
-	i = (long)hh;
+	i = (long) hh;
 	ff = hh - i;
 	p = in.b * (1.0 - in.g);
 	q = in.b * (1.0 - (in.g * ff));
 	t = in.b * (1.0 - (in.g * (1.0 - ff)));
 	
-	switch(i) {
+	switch (i) {
 		case 0:
 			out.r = in.b;
 			out.g = t;
@@ -172,8 +158,8 @@ void Graphics::Update(unsigned int dt) {
 		gameWorldCtx->worldObjects[i]->Update(dt);
 	}
 	
-	for(auto& i : spotLights) {
-		if(i.isRainbow) {
+	for (auto& i : spotLights) {
+		if (i.isRainbow) {
 			i.timer += dt / 25;
 			i.color = hsv2rgb(glm::vec3(i.timer, 1.0, 1.0));
 		}
@@ -203,7 +189,7 @@ Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
 		}
 	}
 	
-	if(location != nullptr) {
+	if (location != nullptr) {
 		location->x = pixel.r;
 		location->y = pixel.g;
 		location->z = pixel.b;
@@ -226,7 +212,7 @@ void Graphics::Render() {
 	vector<float> spotLightStrengths(spotLights.size());
 	
 	glm::vec3 normalLightPoint;
-	for(unsigned i = 0; i < spotLights.size(); i++) {
+	for (unsigned i = 0; i < spotLights.size(); i++) {
 		spotLightPositions[i * 3 + 0] = spotLights[i].position.x;
 		spotLightPositions[i * 3 + 1] = spotLights[i].position.y;
 		spotLightPositions[i * 3 + 2] = spotLights[i].position.z;
@@ -249,7 +235,7 @@ void Graphics::Render() {
 	// Update the object
 	Shader* shader = nullptr;
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
-		if(shader != gameWorldCtx->worldObjects[i]->ctx.shader) {
+		if (shader != gameWorldCtx->worldObjects[i]->ctx.shader) {
 			shader = gameWorldCtx->worldObjects[i]->ctx.shader;
 			shader->Enable();
 			
