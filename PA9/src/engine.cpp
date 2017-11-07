@@ -241,6 +241,8 @@ void Engine::eventHandler() {
 				                                                              NEAR_FRUSTRUM,
 				                                                              FAR_FRUSTRUM);
 				
+				m_graphics->updateScreenSize(windowWidth, windowHeight);
+				
 				//Tell OpenGL how large our window is now
 				//SUPER IMPORTANT
 				glViewport(0, 0, windowWidth, windowHeight);

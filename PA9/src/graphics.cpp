@@ -94,6 +94,18 @@ bool Graphics::Initialize(int width, int height) {
 	return true;
 }
 
+void Graphics::updateScreenSize(int width, int height) {
+	glBindTexture(GL_TEXTURE_2D, pickTexture);
+	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
+	
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
+}
+
 void Graphics::Update(unsigned int dt) {
 	glm::vec3 offsetChange = {0, 0, 0};
 	

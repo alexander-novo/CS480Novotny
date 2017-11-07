@@ -43,6 +43,8 @@ class Graphics {
 		vector<Object *> *getObject();
 		
 		Object* getObjectOnScreen(int x, int y, glm::vec3* location = nullptr);
+		
+		void updateScreenSize(int width, int height);
 
 		Camera * getCamView();
 	
