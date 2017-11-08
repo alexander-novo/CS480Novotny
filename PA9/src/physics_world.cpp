@@ -33,7 +33,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
+	dynamicsWorld->setGravity(btVector3(0, -9.81f, -9.81f));
 	
 	addInvisibleWalls();
 }
@@ -156,6 +156,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	if (objCtx->isPaddle) {
 		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.10, 0, 0), btVector3(0.0, 1.0, 0.0));
 		constraint->setLimit(-M_PI/2.5, M_PI/4);
+		constraint->enableAngularMotor(true, 5,9);
 		
 		dynamicsWorld->addConstraint(constraint);
 	}

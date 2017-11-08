@@ -17,6 +17,7 @@ class Object {
 		//The characteristics of a particular planet that can be changed at any time
 		struct Context {
             bool isDynamic;
+			bool isPaddle = false;
 			std::string name = "Object";
 			std::string vertexShader;
 			std::string fragmentShader;

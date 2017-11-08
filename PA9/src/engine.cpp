@@ -204,6 +204,10 @@ void Engine::eventHandler() {
 					
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
+					if(picked->ctx.isPaddle)
+					{
+						impVector *= 8;
+					}
 					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
 				}
 				break;

@@ -211,6 +211,7 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	
 	if (config.find("isPaddle") != config.end()) {
 		objectPhysics.isPaddle = config["isPaddle"];
+		ctx.isPaddle = objectPhysics.isPaddle;
 	}
 	
 	if (config.find("model") != config.end()) {
