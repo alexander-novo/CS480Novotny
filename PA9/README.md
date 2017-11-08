@@ -41,7 +41,8 @@ make
 `left click` - Drag to rotate camera, click object to shoot object forward  
 `right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out  
-`R` - Switch between per-vertex / per-fragment lighting
+`R` - Switch between per-vertex / per-fragment lighting  
+`up/down arrows` - Widen/narrow spotlight
 
 # Command Line Parameters
 
