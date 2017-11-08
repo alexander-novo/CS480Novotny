@@ -154,8 +154,13 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
+		// Parameters: Body with hinge, point of pivot on object, axis of pivot
 		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.10, 0, 0), btVector3(0.0, 1.0, 0.0));
+
+		// Sets angle limits
 		constraint->setLimit(-M_PI/2.5, M_PI/4);
+
+		// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
 		constraint->enableAngularMotor(true, 5,9);
 		
 		dynamicsWorld->addConstraint(constraint);
@@ -185,7 +190,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	//rightside
 	transform[4].setOrigin(btVector3(15, 0, 0));
 	//ceiling
-	transform[5].setOrigin(btVector3(0, 135, 0));
+	transform[5].setOrigin(btVector3(0, 15, 0));
 	
 	// plane looking up (btVector3), distance from origin = 0
 	// btVector3 tells which direction the plane is facing (xyz openGL co-ords)
@@ -276,7 +281,6 @@ void PhysicsWorld::update(float dt) {
 	// The time between ticks of checking for collisions in the world.
 //    dynamicsWorld->stepSimulation(dt/1000);
 //    dynamicsWorld->stepSimulation(1/60.0);
-	// The time between ticks of checking for collisions in the world.
 	dynamicsWorld->stepSimulation(dt / 1000, 50);
 }
 
