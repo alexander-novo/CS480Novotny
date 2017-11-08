@@ -113,11 +113,11 @@
       "isKinematic": false,
       "isPaddle": true,
       "location": {
-        "z": -12,
+        "z": -11,
         "x": -8,
         "y": 1.0
       },
-      "mass": 5
+      "mass": 10
     },
     {
       "name": "Earth",

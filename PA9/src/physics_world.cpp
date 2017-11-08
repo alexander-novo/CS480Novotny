@@ -155,6 +155,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
 		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.10, 0, 0), btVector3(0.0, 1.0, 0.0));
+		constraint->setLimit(-M_PI/2.5, M_PI/4);
 		
 		dynamicsWorld->addConstraint(constraint);
 	}
