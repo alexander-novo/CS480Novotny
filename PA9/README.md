@@ -1,8 +1,8 @@
 # PA9: Lighting
 
 # Group members
-Made with [Matt Johnson](https://github.com/antilectual/cs480Johnson)
-Made with [Alex Novotny](https://github.com/alexander-novo/cs480Novotny)
+[Matt Johnson](https://github.com/antilectual/cs480Johnson)   
+[Alex Novotny](https://github.com/alexander-novo/cs480Novotny)
 
 # Dependencies, Building, and Running
 
@@ -49,8 +49,6 @@ make
 ## Command Usage
 
 `Tutorial` - Will run using the default configuration of `config.json`.   
-`Tutorial --help` - Pull up the help menu / command usage
-`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")
+`Tutorial --help` - Pull up the help menu / command usage   
+`Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")   
 
-# Extra Credit:
-Triangle meshes are loading - example is the stationary paddle near the bottom right.
