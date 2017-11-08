@@ -13,6 +13,7 @@
 class PhysicsWorld {
 	public:
 		struct Context {
+			float rotation = 0.0f;
 			float mass = 0;
 			float inertia = 0;
 			int shape = 0;

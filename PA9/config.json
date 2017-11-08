@@ -114,9 +114,25 @@
       "isPaddle": true,
       "location": {
         "z": -11,
-        "x": -8,
+        "x": -5,
         "y": 1.0
       },
+      "mass": 10
+    },
+    {
+      "name": "Paddle 2",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isPaddle": true,
+      "location": {
+        "z": -11,
+        "x": 5,
+        "y": 1.0
+      },
+      "rotation": 3.141592,
       "mass": 10
     },
     {

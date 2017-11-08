@@ -183,7 +183,11 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.scaleY = ctx.scaleY;
 		objectPhysics.scaleZ = ctx.scaleZ;
 	}
-	
+
+	if (config.find("rotation") != config.end()) {
+		objectPhysics.rotation = config["rotation"];
+	}
+
 	if (config.find("mass") != config.end()) {
 		ctx.mass = config["mass"];
 		objectPhysics.mass = ctx.mass;

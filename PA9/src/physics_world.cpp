@@ -91,6 +91,14 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btVector3(xPos, yPos, zPos));
+	if(objCtx->rotation != 0)
+	{
+		// Rotate about axis (using vec3) by an angle.
+		btQuaternion transformRotation;
+		transformRotation.setRotation(btVector3(0.0,1.0,0.0),objCtx->rotation);
+		transform.setRotation(transformRotation);
+	}
+	// Rotate about axis (using vec3) by an angle.
 	
 	btCollisionShape* newShape;
 	
@@ -158,10 +166,20 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.10, 0, 0), btVector3(0.0, 1.0, 0.0));
 
 		// Sets angle limits
-		constraint->setLimit(-M_PI/2.5, M_PI/4);
+		// If the paddle isn't set to be a right paddle (by rotation of 180 degrees) set as left paddle.
+		// TODO: Fix glitchy paddle stuff
+		if(objCtx->rotation >= M_PI/2 && objCtx->rotation <= 3*M_PI/2)
+		{
+			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
+			constraint->enableAngularMotor(true, 5,-9);
+			constraint->setLimit(-M_PI/4+objCtx->rotation, M_PI/2.5+objCtx->rotation);
+		}
+		else
+		{
+			constraint->enableAngularMotor(true, 5,9);
+			constraint->setLimit(-M_PI/2.5+objCtx->rotation, M_PI/4+objCtx->rotation);
+		}
 
-		// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
-		constraint->enableAngularMotor(true, 5,9);
 		
 		dynamicsWorld->addConstraint(constraint);
 	}
