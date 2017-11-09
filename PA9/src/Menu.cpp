@@ -17,7 +17,7 @@ void Menu::render() {
 
 void Menu::setZoom(float zoom) {
 	if (zoom < 0.1) zoom = 0.1;
-	else if (zoom > 10.0) zoom = 10.0;
+	else if (zoom > 50.0) zoom = 50.0;
 	
 	_options.zoom = zoom;
 }

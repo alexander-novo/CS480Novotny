@@ -206,15 +206,15 @@ bool PhysicsWorld::addInvisibleWalls() {
 	//floor
 	transform[0].setOrigin(btVector3(0, -1, 0));
 	//backwall
-	transform[1].setOrigin(btVector3(0, 0, -15));
+	transform[1].setOrigin(btVector3(0, 0, -20));
 	//frontwall
-	transform[2].setOrigin(btVector3(0, 0, 15));
+	transform[2].setOrigin(btVector3(0, 0, 150));
 	//leftside
-	transform[3].setOrigin(btVector3(-15, 0, 0));
+	transform[3].setOrigin(btVector3(-55, 0, 0));
 	//rightside
-	transform[4].setOrigin(btVector3(15, 0, 0));
+	transform[4].setOrigin(btVector3(50, 0, 0));
 	//ceiling
-	transform[5].setOrigin(btVector3(0, 15, 0));
+	transform[5].setOrigin(btVector3(0, 6, 0));
 	
 	// plane looking up (btVector3), distance from origin = 0
 	// btVector3 tells which direction the plane is facing (xyz openGL co-ords)
@@ -273,11 +273,11 @@ bool PhysicsWorld::addInvisibleWalls() {
 	rightSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	ceilingPlane->setActivationState(DISABLE_DEACTIVATION);
 	
-	addBody(floorPlane);
+//	addBody(floorPlane);
 	addBody(backWallPlane);
-	addBody(frontWallPlane);
-	addBody(leftSidePlane);
-	addBody(rightSidePlane);
+//	addBody(frontWallPlane);
+//	addBody(leftSidePlane);
+//	addBody(rightSidePlane);
 	addBody(ceilingPlane);
 	return true;
 }
