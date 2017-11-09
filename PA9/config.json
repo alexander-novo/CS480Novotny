@@ -44,24 +44,29 @@
         "g": 255,
         "b": 255
       },
-      "angle": 30,
+      "angle": 70,
       "strength": 600
     }
   ],
   "game_objects": [
     {
       "name": "Surface Plane",
-      "model": "Table.obj",
-      "shape": "plane",
+      "model": "HandTable.obj",
+      "shape": "mesh",
       "isLightSource": true,
       "texture": "wood.jpg",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": false,
       "location": {
-        "z": 0,
+        "z": -20,
         "x": 0,
         "y": 0
+      },
+      "rotation":{
+        "x": 0,
+        "y": 1.570796327,
+        "z": 0
       },
       "height": 1,
       "width": 0,
@@ -91,6 +96,56 @@
       "mass": 50
     },
     {
+      "name": "Paddle 1",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isPaddle": true,
+      "location": {
+        "z": -11,
+        "x": -15,
+        "y": 2.75
+      },
+      "scaleXYZ": {
+        "z": 1.5,
+        "x": 2,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": 1.570796327,
+        "z": 0
+      },
+      "mass": 30
+    },
+    {
+      "name": "Paddle 2",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isPaddle": true,
+      "location": {
+        "z": -11,
+        "x": 15,
+        "y": 2.75
+      },
+      "scaleXYZ": {
+        "z": 1.5,
+        "x": 2,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -1.570796327,
+        "z": 0
+      },
+      "mass": 30
+    },
+    {
       "name": "Bad Sphere",
       "shape": "sphere",
       "model": "BadSphere.obj",
@@ -100,24 +155,9 @@
       "location": {
         "z": 0,
         "x": 0,
-        "y": 14
+        "y": 12
       },
       "mass": 1
-    },
-    {
-      "name": "Paddle 1",
-      "shape": "mesh",
-      "model": "Paddle.obj",
-      "texture": "concrete.jpg",
-      "isDynamic": true,
-      "isKinematic": false,
-      "isPaddle": true,
-      "location": {
-        "z": -12,
-        "x": -8,
-        "y": 0
-      },
-      "mass": 5
     },
     {
       "name": "Earth",
@@ -129,30 +169,10 @@
       "location": {
         "z": 0,
         "x": 0,
-        "y": 20
+        "y": 5
       },
       "mass": 1
     },
-    {
-      "name": "Left Wall",
-      "model": "Wall.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 0,
-        "x": 15,
-        "y": 1
-      },
-      "height": 1,
-      "width": 0.3,
-      "depth": 15,
-      "mass": 0,
-      "scale": 1
-    },
-
     {
       "name": "Right Wall",
       "model": "Wall.obj",
@@ -162,48 +182,19 @@
       "isKinematic": true,
       "isBounceType": false,
       "location": {
-        "z": 0,
-        "x": -15,
-        "y": 1
+        "z": -5.5,
+        "x": -44,
+        "y": 2.5
       },
-      "height": 1,
-      "width": 0.3,
-      "depth": 15,
-      "mass": 0,
-      "scale": 1
-    },
-
-    {
-      "name": "Back Wall",
-      "model": "Wall2.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 15,
-        "x": 0,
-        "y": 1
+      "scaleXYZ": {
+        "z": 1,
+        "x": 2.5,
+        "y": 2
       },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0,
-      "scale": 1
-    },
-    {
-      "name": "Front Wall",
-      "model": "Wall2.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": -15,
+      "rotation":{
         "x": 0,
-        "y": 1
+        "y": -1.570796327,
+        "z": 0
       },
       "height": 1,
       "width": 15,
@@ -220,7 +211,7 @@
       "isKinematic": true,
       "isBounceType": true,
       "location": {
-        "z": -10,
+        "z": 10,
         "x": 10,
         "y": 1
       },
@@ -241,7 +232,7 @@
       "isKinematic": true,
       "isBounceType": true,
       "location": {
-        "z": 5,
+        "z": 20,
         "x": 5,
         "y": 1
       },
@@ -259,13 +250,13 @@
       "model": "Planet.obj",
       "texture": "2k_earth_daymap2.jpg",
       "isDynamic": true,
-      "radius": 0.25,
+      "radius": 1.25,
       "location": {
         "z": 0,
-        "x": 0,
-        "y": 20
+        "x": -48,
+        "y": 2
       },
-      "mass": 1
+      "mass": 5
     },
     {
       "name": "Earth1",
@@ -277,7 +268,7 @@
       "location": {
         "z": -5,
         "x": -13,
-        "y": 20
+        "y": 2
       },
       "mass": 4
     },
@@ -291,7 +282,7 @@
       "location": {
         "z": 2,
         "x": -13,
-        "y": 40
+        "y": 3
       },
       "mass": 9
     },
@@ -305,7 +296,7 @@
       "location": {
         "z": -3,
         "x": 3,
-        "y": 20
+        "y": 2
       },
       "mass": 16
     }

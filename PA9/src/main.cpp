@@ -183,7 +183,14 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.scaleY = ctx.scaleY;
 		objectPhysics.scaleZ = ctx.scaleZ;
 	}
-	
+
+	// Scaling in directions for Non-Spheres
+	if (config.find("rotation") != config.end()) {
+		objectPhysics.rotationX = config["rotation"]["x"];
+		objectPhysics.rotationY = config["rotation"]["y"];
+		objectPhysics.rotationZ = config["rotation"]["z"];
+	}
+
 	if (config.find("mass") != config.end()) {
 		ctx.mass = config["mass"];
 		objectPhysics.mass = ctx.mass;
@@ -211,6 +218,7 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	
 	if (config.find("isPaddle") != config.end()) {
 		objectPhysics.isPaddle = config["isPaddle"];
+		ctx.isPaddle = objectPhysics.isPaddle;
 	}
 	
 	if (config.find("model") != config.end()) {

@@ -33,7 +33,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));
+	dynamicsWorld->setGravity(btVector3(0, -9.81f, -9.81f));
 	
 	addInvisibleWalls();
 }
@@ -91,6 +91,20 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btVector3(xPos, yPos, zPos));
+	if(objCtx->rotationX != 0 || objCtx->rotationY != 0 || objCtx->rotationZ != 0)
+	{
+		btQuaternion transformRotationX;
+		btQuaternion transformRotationY;
+		btQuaternion transformRotationZ;
+		// Rotate about axis (using vec3) by an angle.
+		transformRotationY.setRotation(btVector3(0.0,1.0,0.0),objCtx->rotationY);
+		transformRotationX.setRotation(btVector3(1.0,0.0,0.0),objCtx->rotationX);
+		transformRotationZ.setRotation(btVector3(0.0,0.0,1.0),objCtx->rotationZ);
+		transform.setRotation(transformRotationX*transformRotationY*transformRotationZ);
+	}
+
+
+	// Rotate about axis (using vec3) by an angle.
 	
 	btCollisionShape* newShape;
 	
@@ -154,7 +168,24 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
-		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.5, 0, 0), btVector3(0.0, 1.0, 0.0));
+		// Parameters: Body with hinge, point of pivot on object, axis of pivot
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(0, 0, 0), btVector3(0.0, 1.0, 0.0));
+
+		// Sets angle limits
+		// If the paddle isn't set to be a right paddle (by rotation of 180 degrees) set as left paddle.
+		// TODO: Fix glitchy paddle stuff
+		if(objCtx->rotationY >= M_PI/2 && objCtx->rotationY <= 3*M_PI/2)
+		{
+			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
+			constraint->enableAngularMotor(true, 5, 8);
+			constraint->setLimit(-M_PI/2.5+objCtx->rotationY, M_PI/4+objCtx->rotationY);
+		}
+		else
+		{
+			constraint->enableAngularMotor(true, -5, 8);
+			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
+		}
+
 		
 		dynamicsWorld->addConstraint(constraint);
 	}
@@ -175,15 +206,15 @@ bool PhysicsWorld::addInvisibleWalls() {
 	//floor
 	transform[0].setOrigin(btVector3(0, -1, 0));
 	//backwall
-	transform[1].setOrigin(btVector3(0, 0, -15));
+	transform[1].setOrigin(btVector3(0, 0, -20));
 	//frontwall
-	transform[2].setOrigin(btVector3(0, 0, 15));
+	transform[2].setOrigin(btVector3(0, 0, 150));
 	//leftside
-	transform[3].setOrigin(btVector3(-15, 0, 0));
+	transform[3].setOrigin(btVector3(-55, 0, 0));
 	//rightside
-	transform[4].setOrigin(btVector3(15, 0, 0));
+	transform[4].setOrigin(btVector3(50, 0, 0));
 	//ceiling
-	transform[5].setOrigin(btVector3(0, 135, 0));
+	transform[5].setOrigin(btVector3(0, 6, 0));
 	
 	// plane looking up (btVector3), distance from origin = 0
 	// btVector3 tells which direction the plane is facing (xyz openGL co-ords)
@@ -242,11 +273,11 @@ bool PhysicsWorld::addInvisibleWalls() {
 	rightSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	ceilingPlane->setActivationState(DISABLE_DEACTIVATION);
 	
-	addBody(floorPlane);
+//	addBody(floorPlane);
 	addBody(backWallPlane);
-	addBody(frontWallPlane);
-	addBody(leftSidePlane);
-	addBody(rightSidePlane);
+//	addBody(frontWallPlane);
+//	addBody(leftSidePlane);
+//	addBody(rightSidePlane);
 	addBody(ceilingPlane);
 	return true;
 }
@@ -274,8 +305,7 @@ void PhysicsWorld::update(float dt) {
 	// The time between ticks of checking for collisions in the world.
 //    dynamicsWorld->stepSimulation(dt/1000);
 //    dynamicsWorld->stepSimulation(1/60.0);
-	// The time between ticks of checking for collisions in the world.
-	dynamicsWorld->stepSimulation(dt / 1000, 50);
+	dynamicsWorld->stepSimulation(dt / 1000, 25);
 }
 
 #endif
