@@ -169,7 +169,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
 		// Parameters: Body with hinge, point of pivot on object, axis of pivot
-		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-0.95, 0, 0), btVector3(0.0, 1.0, 0.0));
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(0, 0, 0), btVector3(0.0, 1.0, 0.0));
 
 		// Sets angle limits
 		// If the paddle isn't set to be a right paddle (by rotation of 180 degrees) set as left paddle.
@@ -177,13 +177,13 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		if(objCtx->rotationY >= M_PI/2 && objCtx->rotationY <= 3*M_PI/2)
 		{
 			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
-			constraint->enableAngularMotor(true, -5, 1);
-			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
+			constraint->enableAngularMotor(true, 5, 8);
+			constraint->setLimit(-M_PI/2.5+objCtx->rotationY, M_PI/4+objCtx->rotationY);
 		}
 		else
 		{
-			constraint->enableAngularMotor(true, 5, 1);
-			constraint->setLimit(-M_PI/2.5+objCtx->rotationY, M_PI/4+objCtx->rotationY);
+			constraint->enableAngularMotor(true, -5, 8);
+			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
 		}
 
 		
