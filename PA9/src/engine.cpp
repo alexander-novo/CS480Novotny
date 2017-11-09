@@ -54,6 +54,7 @@ bool Engine::Initialize() {
 void Engine::Run() {
 	m_running = true;
 	m_menu->setZoom(50);
+	
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
@@ -70,10 +71,17 @@ void Engine::Run() {
 
 		// Update planet positions
 		m_graphics->Update(m_DT);
-		_ctx.physWorld->update(m_DT);
+		if(!m_menu->options.paused) _ctx.physWorld->update(m_DT);
 
 		// Update menu options and labels
 		m_menu->update(m_DT, _ctx.width, _ctx.height);
+		
+		if(m_menu->options.shouldClose) m_running = false;
+		if(m_menu->options.shouldSwapShaders) {
+			for(const auto& i : _ctx.gameWorldCtx->worldObjects) {
+				std::swap(i->ctx.shader, i->ctx.altShader);
+			}
+		}
 
 		//Render everything
 		m_graphics->Render();
@@ -273,9 +281,10 @@ void Engine::eventHandler() {
 		switch(m_event.key.keysym.sym) {
 			//Switch shaders
 			case SDLK_r:
-				for(const auto& i : _ctx.gameWorldCtx->worldObjects) {
-					std::swap(i->ctx.shader, i->ctx.altShader);
-				}
+				m_menu->swapShaderType();
+				break;
+			case SDLK_o:
+				m_menu->toggleOptionsMenu();
 				break;
 		}
 	}

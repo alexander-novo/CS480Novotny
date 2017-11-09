@@ -9,6 +9,54 @@ void Menu::update(int dt, float width, float height) {
 	
 	ImGui_ImplSdlGL3_NewFrame(window.getSDL_Window());
 	ImGuiIO& io = ImGui::GetIO();
+	
+	//ImGui::ShowTestWindow();
+	
+	if(ImGui::BeginMainMenuBar()) {
+		if(ImGui::BeginMenu("File")) {
+			if(ImGui::MenuItem("Options", "o")) _options.showOptionsMenu = true;
+			ImGui::Separator();
+			if(ImGui::MenuItem("Quit", "esc"))  _options.shouldClose = true;
+			ImGui::EndMenu();
+		}
+		
+		ImGui::EndMainMenuBar();
+	}
+	if(_options.showOptionsMenu) {
+		ImGui::SetNextWindowSize(ImVec2(600,680), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Options", &_options.showOptionsMenu, ImGuiWindowFlags_NoCollapse)) {
+			
+			if(ImGui::CollapsingHeader("Game Options")) {
+			
+			}
+			
+			if(ImGui::CollapsingHeader("Graphics Options")) {
+				ImGui::Text("Shader Type");
+				ImGui::Indent(MENU_OPTIONS_INDENT);
+				ImGui::RadioButton("Vertex Lighting", &_options.shaderType, MENU_SHADER_VERTEX); ImGui::SameLine();
+				ImGui::RadioButton("Fragment Lighting", &_options.shaderType, MENU_SHADER_FRAGMENT);
+				
+				ImGui::Unindent(MENU_OPTIONS_INDENT);
+				ImGui::Text("Shadows");
+				ImGui::Indent(MENU_OPTIONS_INDENT);
+				ImGui::RadioButton("Off", &_options.shadowSize, MENU_SHADOWS_NONE); ImGui::SameLine();
+				ImGui::RadioButton("Low", &_options.shadowSize, MENU_SHADOWS_LOW); ImGui::SameLine();
+				ImGui::RadioButton("Medium", &_options.shadowSize, MENU_SHADOWS_MED); ImGui::SameLine();
+				ImGui::RadioButton("High", &_options.shadowSize, MENU_SHADOWS_HIGH);
+			}
+			
+			ImGui::End();
+		}
+		
+		//Pause / unpause, depending on whether we closed the window this frame
+		_options.paused = _options.showOptionsMenu;
+	}
+	if(_options.shaderType != prevShaderType) {
+		prevShaderType = _options.shaderType;
+		_options.shouldSwapShaders = true;
+	} else {
+		_options.shouldSwapShaders = false;
+	}
 }
 
 void Menu::render() {
@@ -27,4 +75,19 @@ void Menu::setRotation(float rotation) {
 	while (rotation > 360) rotation -= 360.0f;
 	
 	_options.rotation = rotation;
+}
+
+void Menu::toggleOptionsMenu() {
+	_options.showOptionsMenu = !_options.showOptionsMenu;
+	if(!_options.showOptionsMenu) {
+		_options.paused = false;
+	}
+}
+
+void Menu::swapShaderType() {
+	if(_options.shaderType == MENU_SHADER_VERTEX) {
+		_options.shaderType = MENU_SHADER_FRAGMENT;
+	} else {
+		_options.shaderType = MENU_SHADER_VERTEX;
+	}
 }
