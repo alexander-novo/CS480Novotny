@@ -91,13 +91,19 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btVector3(xPos, yPos, zPos));
-	if(objCtx->rotation != 0)
+	if(objCtx->rotationX != 0 || objCtx->rotationY != 0 || objCtx->rotationZ != 0)
 	{
+		btQuaternion transformRotationX;
+		btQuaternion transformRotationY;
+		btQuaternion transformRotationZ;
 		// Rotate about axis (using vec3) by an angle.
-		btQuaternion transformRotation;
-		transformRotation.setRotation(btVector3(0.0,1.0,0.0),objCtx->rotation);
-		transform.setRotation(transformRotation);
+		transformRotationY.setRotation(btVector3(0.0,1.0,0.0),objCtx->rotationY);
+		transformRotationX.setRotation(btVector3(1.0,0.0,0.0),objCtx->rotationX);
+		transformRotationZ.setRotation(btVector3(0.0,0.0,1.0),objCtx->rotationZ);
+		transform.setRotation(transformRotationX*transformRotationY*transformRotationZ);
 	}
+
+
 	// Rotate about axis (using vec3) by an angle.
 	
 	btCollisionShape* newShape;
@@ -163,21 +169,21 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
 		// Parameters: Body with hinge, point of pivot on object, axis of pivot
-		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-1.10, 0, 0), btVector3(0.0, 1.0, 0.0));
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(-0.95, 0, 0), btVector3(0.0, 1.0, 0.0));
 
 		// Sets angle limits
 		// If the paddle isn't set to be a right paddle (by rotation of 180 degrees) set as left paddle.
 		// TODO: Fix glitchy paddle stuff
-		if(objCtx->rotation >= M_PI/2 && objCtx->rotation <= 3*M_PI/2)
+		if(objCtx->rotationY >= M_PI/2 && objCtx->rotationY <= 3*M_PI/2)
 		{
 			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
-			constraint->enableAngularMotor(true, 5,-9);
-			constraint->setLimit(-M_PI/4+objCtx->rotation, M_PI/2.5+objCtx->rotation);
+			constraint->enableAngularMotor(true, -5, 1);
+			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
 		}
 		else
 		{
-			constraint->enableAngularMotor(true, 5,9);
-			constraint->setLimit(-M_PI/2.5+objCtx->rotation, M_PI/4+objCtx->rotation);
+			constraint->enableAngularMotor(true, 5, 1);
+			constraint->setLimit(-M_PI/2.5+objCtx->rotationY, M_PI/4+objCtx->rotationY);
 		}
 
 		

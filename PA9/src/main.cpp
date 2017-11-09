@@ -184,8 +184,11 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.scaleZ = ctx.scaleZ;
 	}
 
+	// Scaling in directions for Non-Spheres
 	if (config.find("rotation") != config.end()) {
-		objectPhysics.rotation = config["rotation"];
+		objectPhysics.rotationX = config["rotation"]["x"];
+		objectPhysics.rotationY = config["rotation"]["y"];
+		objectPhysics.rotationZ = config["rotation"]["z"];
 	}
 
 	if (config.find("mass") != config.end()) {
