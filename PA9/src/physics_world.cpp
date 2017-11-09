@@ -177,12 +177,12 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		if(objCtx->rotationY >= M_PI/2 && objCtx->rotationY <= 3*M_PI/2)
 		{
 			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
-			constraint->enableAngularMotor(true, 5, 8);
+			constraint->enableAngularMotor(true, 5, objCtx->mass );
 			constraint->setLimit(-M_PI/2.5+objCtx->rotationY, M_PI/4+objCtx->rotationY);
 		}
 		else
 		{
-			constraint->enableAngularMotor(true, -5, 8);
+			constraint->enableAngularMotor(true, -5, objCtx->mass);
 			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
 		}
 
