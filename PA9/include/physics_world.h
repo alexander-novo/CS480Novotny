@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <functional>
 #include "graphics_headers.h"
-
 
 class PhysicsWorld {
 	public:
@@ -52,13 +52,14 @@ class PhysicsWorld {
 		void renderPlane();
 		
 		void update(float dt);
-		
+
 		std::vector<btRigidBody*>* getLoadedBodies();
+		std::vector<int> ballIndexes;
+
 	
 	
 	private:
 		bool addInvisibleWalls();
-		
 		btRigidBody* floorPlane;
 		btRigidBody* backWallPlane;
 		btRigidBody* frontWallPlane;

@@ -29,6 +29,57 @@
     },
     {
       "type": "spot",
+      "name": "Bumper Spotlight Red",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "name": "Bumper Spotlight Blue",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 255
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "name": "Bumper Spotlight White",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
       "location": {
         "x": 0,
         "y": 25,
@@ -46,6 +97,26 @@
       },
       "angle": 70,
       "strength": 600
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 100,
+        "z": 0
+      },
+      "pointingAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "angle": 70,
+      "strength": 6000
     }
   ],
   "game_objects": [
@@ -160,6 +231,20 @@
       "mass": 1
     },
     {
+      "name": "Ball 1",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": -15,
+        "x": 23,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
       "name": "Earth",
       "shape": "sphere",
       "model": "Planet.obj",
@@ -243,6 +328,50 @@
       },
       "mass": 0,
       "scale": 2.5
+    },
+    {
+      "name": "Big Bumper",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": -15,
+        "x": 40,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 12,
+        "x": 6,
+        "y": 12
+      },
+      "mass": 0,
+      "scale": 2.5
+    },
+
+    {
+      "name": "Bumper",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": -15,
+        "x": 20,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2.5,
+        "x": 6,
+        "y": 2.5
+      },
+      "mass": 0,
+      "scale": 1
     },
     {
       "name": "Earth",

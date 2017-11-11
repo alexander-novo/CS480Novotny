@@ -3,6 +3,8 @@
 
 #include "physics_world.h"
 
+static void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
+
 PhysicsWorld::PhysicsWorld() {
 	// ====================== <Initialization> ===================
 	
@@ -34,7 +36,9 @@ PhysicsWorld::PhysicsWorld() {
 	
 	// Earth Gravity in the Y direction
 	dynamicsWorld->setGravity(btVector3(0, -9.81f, -9.81f));
-	
+
+	dynamicsWorld->setInternalTickCallback(myTickCallback, static_cast<void *> (this) );
+
 	addInvisibleWalls();
 }
 
@@ -150,8 +154,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	} else if (objCtx->shape = 1) {
 		info.m_restitution = .5f;
 	}
-	
-	
+
+
 	
 	// takes in the body
 	btRigidBody* body = new btRigidBody(info);
@@ -161,10 +165,29 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
 		body->setCollisionFlags(flags);
 	}
+
+	if (objCtx->shape == 1)   // SPHERE (aka a pinball ball)
+	{
+		// CCD motion based clamping (# meters per sim frame)
+		body->setCcdMotionThreshold(.00001);
+		// For Spheres use this (< sphere radius):
+		body->setCcdSweptSphereRadius(objCtx->radius / 1.6f);
+	}
+
+	// add friction to object (.5-.8 for steel)
+	// used to reduce the amount of continuous spinning of the ball while on table
+	body->setFriction(.5f);
 	
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
 	int bodyIndex = addBody(body);
+
+	// Assuming all spheres are balls - add to list of balls in field
+	// Used to find which objects to clamp the velocity on
+	if (objCtx->shape == 1)   // SPHERE
+	{
+		ballIndexes.push_back(bodyIndex);
+	}
 	
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isPaddle) {
@@ -173,7 +196,6 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 
 		// Sets angle limits
 		// If the paddle isn't set to be a right paddle (by rotation of 180 degrees) set as left paddle.
-		// TODO: Fix glitchy paddle stuff
 		if(objCtx->rotationY >= M_PI/2 && objCtx->rotationY <= 3*M_PI/2)
 		{
 			// Adds a motor (like a spring on the hinge) - enabled? velocity scale, impulse scale
@@ -241,12 +263,12 @@ bool PhysicsWorld::addInvisibleWalls() {
 	btRigidBody::btRigidBodyConstructionInfo ceilingInfo(0, motionceiling, ceiling);
 	
 	// Gives walls a bit of allowance for bounce
-//    floorInfo.m_restitution = 0.0f;
+    floorInfo.m_restitution = 0.1f;
 	backWallInfo.m_restitution = 0.7f;
 	frontWallInfo.m_restitution = 0.7f;
 	leftSideWallInfo.m_restitution = 0.7f;
 	rightSideWallInfo.m_restitution = 0.7f;
-//    ceilingInfo.m_restitution = 1.0f;
+    ceilingInfo.m_restitution = .5f;
 	
 	
 	// takes in the body
@@ -272,6 +294,9 @@ bool PhysicsWorld::addInvisibleWalls() {
 	leftSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	rightSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	ceilingPlane->setActivationState(DISABLE_DEACTIVATION);
+
+	// add friction to floor (.2 for wood/metal)
+	floorPlane->setFriction(0.15f);
 	
 //	addBody(floorPlane);
 	addBody(backWallPlane);
@@ -306,6 +331,23 @@ void PhysicsWorld::update(float dt) {
 //    dynamicsWorld->stepSimulation(dt/1000);
 //    dynamicsWorld->stepSimulation(1/60.0);
 	dynamicsWorld->stepSimulation(dt / 1000, 25);
+}
+
+// On each physics tick, clamp the ball velocities
+static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
+{
+	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
+	int mMaxSpeed = 100;
+	for(int i = 0; i<tempWorld->ballIndexes.size(); i++)
+	{
+		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->getLinearVelocity();
+		btScalar speed = velocity.length();
+		if(speed > mMaxSpeed)
+		{
+			velocity *= mMaxSpeed/speed;
+			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->setLinearVelocity(velocity);
+		}
+	}
 }
 
 #endif
