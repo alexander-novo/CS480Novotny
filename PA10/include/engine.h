@@ -25,6 +25,9 @@ class Engine {
 			
 			PhysicsWorld *physWorld;
 			GameWorld::ctx *gameWorldCtx;
+			int leftPaddleIndex = -1;
+			int rightPaddleIndex = -1;
+			int plungerIndex = -1;
 			
 			std::vector<Graphics::LightContext>* lights = nullptr;
 		};

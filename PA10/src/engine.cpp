@@ -151,23 +151,32 @@ void Engine::Keyboard(unsigned dt) {
 	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
-		float step = 0.05f * dt;
-		m_menu->setRotation(m_menu->options.rotation + step);
-		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
-			step *= M_PI / -180;
-			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
-			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
-			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
+		if(ctx.leftPaddleIndex >= 0)
+		{
+			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->getInvMass());
+			btVector3 directionVector(-1,0,1);
+			directionVector *= directionScalar;
+			btVector3 locationVector(.3,0,-4.5);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No left paddle defined" << std::endl;
 		}
+
 	}
 	if(keyState[SDL_SCANCODE_RIGHT]) {
-		float step = 0.05f * dt;
-		m_menu->setRotation(m_menu->options.rotation - step);
-		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
-			step *= M_PI / 180;
-			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
-			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
-			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
+		if(ctx.rightPaddleIndex >= 0)
+		{
+			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->getInvMass());
+			btVector3 directionVector(1,0,1);
+			directionVector *= directionScalar;
+			btVector3 locationVector(.3,0,-4.5);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No right paddle defined" << std::endl;
 		}
 	}
 	//Width of spotlight

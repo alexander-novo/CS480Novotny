@@ -107,6 +107,18 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 			if (error != -1) return error;
 			Object* newObject = new Object(objCtx);
 			gameCtx->worldObjects.push_back(newObject);
+			if(objCtx.leftPaddleIndex != -1)
+			{
+				ctx.leftPaddleIndex = objCtx.leftPaddleIndex;
+			}
+			if(objCtx.rightPaddleIndex != -1)
+			{
+				ctx.rightPaddleIndex = objCtx.rightPaddleIndex;
+			}
+			if(objCtx.plungerIndex != -1)
+			{
+				ctx.plungerIndex = objCtx.plungerIndex;
+			}
 		}
 		
 		vector<Graphics::LightContext>* lights = new vector<Graphics::LightContext>();
@@ -235,6 +247,19 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	} else if (ctx.name != "Game Surface") {
 		std::cout << config["name"] << "Object has no model " << std::endl;
 		return 1;
+	}
+
+	if(ctx.name == "Left Paddle")
+	{
+		ctx.leftPaddleIndex = ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Right Paddle")
+	{
+		ctx.rightPaddleIndex = ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Plunger")
+	{
+		ctx.plungerIndex= ctx.model->getRigidBodyIndex();
 	}
 	
 	//Check if the object has a texture

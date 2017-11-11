@@ -45,6 +45,10 @@ class Object {
 
             bool hasPhysics = true;
             btRigidBody * physicsBody;
+
+			int leftPaddleIndex = -1;
+			int rightPaddleIndex = -1;
+			int plungerIndex = -1;
 		};
 		
 		Object(const Context &ctx);
