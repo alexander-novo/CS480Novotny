@@ -1,0 +1,433 @@
+{
+  "window": {
+    "fullscreen": false,
+    "adjustable": false,
+    "height": 750,
+    "width": 1500,
+    "name": "Pinball Machine"
+  },
+  "default_shaders": {
+    "vertex": "vert_materials",
+    "fragment": "frag_materials"
+  },
+  "default_alt_shaders": {
+    "vertex": "vert_materials_vert",
+    "fragment": "frag_materials_vert"
+  },
+  "lights": [
+    {
+      "type": "spot",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": "rainbow",
+      "pointingAt": "Bad Sphere",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "name": "Bumper Spotlight Red",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "name": "Bumper Spotlight Blue",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 255
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "name": "Bumper Spotlight White",
+      "location": {
+        "x": 15,
+        "y": 15,
+        "z": 15
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "pointingAt": "Bumper",
+      "angle": 2,
+      "strength": 700
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 25,
+        "z": 0
+      },
+      "pointingAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "angle": 70,
+      "strength": 600
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 100,
+        "z": 0
+      },
+      "pointingAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "angle": 70,
+      "strength": 6000
+    }
+  ],
+  "game_objects": [
+    {
+      "name": "Surface Plane",
+      "model": "HandTable.obj",
+      "shape": "mesh",
+      "isLightSource": true,
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": -20,
+        "x": 0,
+        "y": 0
+      },
+      "rotation":{
+        "x": 0,
+        "y": 1.570796327,
+        "z": 0
+      },
+      "height": 1,
+      "width": 0,
+      "depth": 0,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Cube",
+      "model": "Cube.obj",
+      "shape": "box",
+      "texture": "2k_sun.jpg",
+      "isDynamic": true,
+      "height": 1,
+      "width": 1,
+      "depth": 1,
+      "location": {
+        "z": -14,
+        "x": -14,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2,
+        "x": 0.5,
+        "y": 1
+      },
+      "mass": 50
+    },
+    {
+      "name": "Paddle 1",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isPaddle": true,
+      "location": {
+        "z": -11,
+        "x": -15,
+        "y": 2.75
+      },
+      "scaleXYZ": {
+        "z": 1.5,
+        "x": 2,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": 1.570796327,
+        "z": 0
+      },
+      "mass": 30
+    },
+    {
+      "name": "Paddle 2",
+      "shape": "mesh",
+      "model": "Paddle.obj",
+      "texture": "concrete.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isPaddle": true,
+      "location": {
+        "z": -11,
+        "x": 15,
+        "y": 2.75
+      },
+      "scaleXYZ": {
+        "z": 1.5,
+        "x": 2,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -1.570796327,
+        "z": 0
+      },
+      "mass": 30
+    },
+    {
+      "name": "Bad Sphere",
+      "shape": "sphere",
+      "model": "BadSphere.obj",
+      "texture": "2k_earth_daymap.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 12
+      },
+      "mass": 1
+    },
+    {
+      "name": "Ball 1",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": -15,
+        "x": 23,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Earth",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 0.25,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": 5
+      },
+      "mass": 1
+    },
+    {
+      "name": "Right Wall",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": -5.5,
+        "x": -44,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 1,
+        "x": 2.5,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -1.570796327,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Cylinder1",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": 10,
+        "x": 10,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 1,
+        "x": 3,
+        "y": 1
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Cylinder2",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": 20,
+        "x": 5,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 3,
+        "x": 1,
+        "y": 3
+      },
+      "mass": 0,
+      "scale": 2.5
+    },
+    {
+      "name": "Big Bumper",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": -15,
+        "x": 40,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 12,
+        "x": 6,
+        "y": 12
+      },
+      "mass": 0,
+      "scale": 2.5
+    },
+
+    {
+      "name": "Bumper",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_jupiter.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": -15,
+        "x": 20,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2.5,
+        "x": 6,
+        "y": 2.5
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Earth",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 1.25,
+      "location": {
+        "z": 0,
+        "x": -48,
+        "y": 2
+      },
+      "mass": 5
+    },
+    {
+      "name": "Earth1",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 0.5,
+      "location": {
+        "z": -5,
+        "x": -13,
+        "y": 2
+      },
+      "mass": 4
+    },
+    {
+      "name": "Earth2",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 0.75,
+      "location": {
+        "z": 2,
+        "x": -13,
+        "y": 3
+      },
+      "mass": 9
+    },
+    {
+      "name": "Earth3",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 1,
+      "location": {
+        "z": -3,
+        "x": 3,
+        "y": 2
+      },
+      "mass": 16
+    }
+  ]
+}

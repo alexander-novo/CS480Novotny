@@ -1,0 +1,77 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec3 positionW;
+in vec3 normalC;
+in vec3 eyeC;
+in vec3 spotlightDirC[NUM_SPOT_LIGHTS];
+in vec2 uvCoord;
+
+uniform vec3 MaterialDiffuseColor;
+uniform vec3 MaterialAmbientColor;
+uniform vec3 MaterialSpecularColor;
+uniform float shininess;
+
+uniform sampler2D gSampler;
+
+uniform vec3 spotLightPositions[NUM_SPOT_LIGHTS];
+uniform vec3 spotLightDirections[NUM_SPOT_LIGHTS];
+uniform vec3 spotLightColors[NUM_SPOT_LIGHTS];
+uniform float spotLightStrengths[NUM_SPOT_LIGHTS];
+uniform float spotLightAngles[NUM_SPOT_LIGHTS];
+
+// Output data
+out vec4 frag_color;
+
+void main(void) {
+    vec4 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
+    vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d.rgb;
+
+    //All of these are in camera/eye space
+    vec3 n = normalize(normalC); //Normal vector to surface at fragment location
+    vec3 l;                      //Vector from fragment to light
+    vec3 e = normalize(eyeC);    //Vector from fragment to camera
+    vec3 r;                      //Perfect reflection vector
+
+    vec3 lightToPosW; //Vector from light to the fragment in world space
+
+    float distance; //Distance from fragment to light
+
+    float cosTheta; //Angle between normal vector and light direction, for diffuse purposes
+    float cosAlpha; //Angle between eye vector and reflection vector, for specular purposes
+    float cosPhi;   //Angle between light direction and spot light direction, to see if the spotlight is pointing here
+
+    vec3 diffuseLight = vec3(0.0, 0.0, 0.0);
+    vec3 specularLight = vec3(0.0, 0.0, 0.0);
+
+    float difference; //Difference between the spot light vector and the light vector, for purposes of blending
+
+    for(int i = 0; i < spotlightDirC.length(); i++) {
+        l = normalize(spotlightDirC[i]);
+        r = reflect(-l, n);
+
+        lightToPosW = positionW - spotLightPositions[i];
+        cosPhi = dot(normalize(lightToPosW), spotLightDirections[i]);
+
+        if(cosPhi < spotLightAngles[i]) {
+            //Blend the edges
+            difference = 1 - (spotLightAngles[i] - cosPhi) * 2 / (1 - spotLightAngles[i]);
+            if(difference < 0)
+                continue;
+        } else {
+            difference = 1.0;
+        }
+
+        distance = length(lightToPosW);
+
+        cosTheta = max(dot(n, l), 0);
+        cosAlpha = max(dot(e, r), 0);
+
+        diffuseLight += MaterialDiffuseTexture2d.rgb * spotLightColors[i] * spotLightStrengths[i] * cosTheta * difference / distance / distance;
+        specularLight += MaterialSpecularColor * spotLightColors[i] * spotLightStrengths[i] * pow(cosAlpha, shininess) * difference / distance / distance;
+    }
+
+    frag_color.rgb = materialAmbientModified + diffuseLight + specularLight;
+    frag_color.a   = MaterialDiffuseTexture2d.a;
+
+}
