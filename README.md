@@ -41,5 +41,5 @@ Some physics based dynamic spheres, static cylinders, four walls, and a cube to 
 ## PA9: Lighting    
 Spotlights that follow a ball.  
 
-## PA9: Pinball    
-Full Pinball game with a ball launcher, paddles, bumpers and scoring on a table.
+## PA10: Pinball    
+Full Pinball game with a ball launcher, paddles, bumpers and scoring on a table.   
