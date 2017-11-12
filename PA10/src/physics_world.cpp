@@ -430,7 +430,9 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 				btTransform ballTransform;
 				ballTransform.setIdentity();
 				ballTransform.setOrigin(btVector3(-48,2,0));
-				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setCenterOfMassTransform(ballTransform);
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setWorldTransform(ballTransform);
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(btVector3(0,0,0));
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setAngularVelocity(btVector3(0,0,0));
 				ballCount--;
 			}
 		}
