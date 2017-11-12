@@ -119,6 +119,10 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 			{
 				ctx.plungerIndex = objCtx.plungerIndex;
 			}
+			if(objCtx.doorIndex != -1)
+			{
+				ctx.doorIndex = objCtx.doorIndex;
+			}
 		}
 		
 		vector<Graphics::LightContext>* lights = new vector<Graphics::LightContext>();
@@ -243,6 +247,10 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		ctx.isPlunger = objectPhysics.isPlunger;
 	}
 
+	if (config.find("isOneWay") != config.end()) {
+		objectPhysics.isOneWay = config["isOneWay"];
+	}
+
 	if (config.find("model") != config.end()) {
 		filename = config["model"];
 		
@@ -270,6 +278,10 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	if(ctx.name == "Plunger")
 	{
 		ctx.plungerIndex= ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Launch Guard")
+	{
+		ctx.doorIndex = ctx.model->getRigidBodyIndex();
 	}
 	
 	//Check if the object has a texture

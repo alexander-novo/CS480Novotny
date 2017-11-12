@@ -50,6 +50,7 @@ class Object {
 			int leftPaddleIndex = -1;
 			int rightPaddleIndex = -1;
 			int plungerIndex = -1;
+			int doorIndex = -1;
 		};
 		
 		Object(const Context &ctx);

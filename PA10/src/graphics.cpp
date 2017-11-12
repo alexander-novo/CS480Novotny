@@ -59,7 +59,9 @@ bool Graphics::Initialize(int width, int height) {
 	}
 	
 	pickShader->Initialize();
-	
+	char str[256];
+	int p2Score = 1;
+	sprintf( str, "Player 1:  %d", p2Score);
 	glGenFramebuffers(1, &pickBuffer);
 	glGenRenderbuffers(1, &pickDepthBuffer);
 	glGenTextures(1, &pickTexture);

@@ -45,6 +45,7 @@ class PhysicsWorld {
 
             bool isPaddle = false;
 			bool isPlunger = false;
+			bool isOneWay = false;
 			bool hasPhysics = true;
 			btRigidBody* physicsBody;
 		};

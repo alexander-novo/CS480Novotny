@@ -179,6 +179,20 @@ void Engine::Keyboard(unsigned dt) {
 			std::cout << "No right paddle defined" << std::endl;
 		}
 	}
+	if(keyState[SDL_SCANCODE_PERIOD]) {
+		if(ctx.doorIndex >= 0)
+		{
+			float directionScalar = 50 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->getInvMass());
+			btVector3 directionVector(1,0,0);
+			directionVector *= directionScalar;
+			btVector3 locationVector(0,-2,0);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No right paddle defined" << std::endl;
+		}
+	}
 
 	//Width of spotlight
 	if( keyState[SDL_SCANCODE_UP]) {
@@ -311,7 +325,7 @@ void Engine::eventHandler(unsigned dt) {
 				}
 				else
 				{
-					plungerTimer += dt;
+					plungerTimer += dt*2;
 				}
 				break;
 			}

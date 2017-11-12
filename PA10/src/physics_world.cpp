@@ -242,7 +242,18 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
 		}
 
-		
+		dynamicsWorld->addConstraint(constraint);
+	}
+
+	// Attempting to give an object specific degrees of freedom
+	if (objCtx->isOneWay) {
+		// Parameters: Body with hinge, point of pivot on object, axis of pivot
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(0, 3, 0), btVector3(1.0, 0.0, 0.0));
+
+		// Sets angle limits
+		constraint->enableAngularMotor(true, -5, objCtx->mass);
+		constraint->setLimit(-M_PI/2, M_PI/22);
+
 		dynamicsWorld->addConstraint(constraint);
 	}
 
@@ -397,6 +408,7 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
+	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
 	for(int i = 0; i<tempWorld->ballIndexes.size(); i++)
@@ -409,6 +421,30 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->setLinearVelocity(velocity);
 		}
 	}
+
+	// This section is to detect collisions
+	// probably won't be used
+//	int numManifolds = world->getDispatcher()->getNumManifolds();
+//	for (int i = 0; i < numManifolds; i++)
+//	{
+//		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+//		const btCollisionObject* obA = contactManifold->getBody0();
+//		const btCollisionObject* obB = contactManifold->getBody1();
+//
+//		int numContacts = contactManifold->getNumContacts();
+//		for (int j = 0; j < numContacts; j++)
+//		{
+//			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+//			if (pt.getDistance() < 0.f)
+//			{
+//				const btVector3& ptA = pt.getPositionWorldOnA();
+//				const btVector3& ptB = pt.getPositionWorldOnB();
+//				const btVector3& normalOnB = pt.m_normalWorldOnB;
+//
+//				// todo: do stuff here
+//			}
+//		}
+//	}
 }
 
 #endif
