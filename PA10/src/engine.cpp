@@ -60,7 +60,7 @@ void Engine::Run() {
 		m_DT = getDT();
 		
 		while (SDL_PollEvent(&m_event) != 0) {
-			eventHandler();
+			eventHandler(m_DT);
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
 		// Check the keyboard input
@@ -179,8 +179,9 @@ void Engine::Keyboard(unsigned dt) {
 			std::cout << "No right paddle defined" << std::endl;
 		}
 	}
+
 	//Width of spotlight
-	if(keyState[SDL_SCANCODE_UP]) {
+	if( keyState[SDL_SCANCODE_UP]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle < M_PI / 2) {
 			m_graphics->spotLights[0].angle += M_PI / 180;
 			if(m_graphics->spotLights[0].angle > M_PI / 2) {
@@ -198,7 +199,10 @@ void Engine::Keyboard(unsigned dt) {
 	}
 }
 
-void Engine::eventHandler() {
+void Engine::eventHandler(unsigned dt) {
+
+
+	static float plungerTimer = 0.0f;
 	//Quit program
 	if (m_event.type == SDL_QUIT
 	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -287,7 +291,6 @@ void Engine::eventHandler() {
 				break;
 		}
 	}
-	
 		//For single-press keyboard events
 		//For long-hold keyboard events, see keyboard()
 	else if(m_event.type == SDL_KEYDOWN) {
@@ -299,6 +302,41 @@ void Engine::eventHandler() {
 			case SDLK_o:
 				m_menu->toggleOptionsMenu();
 				break;
+			case SDLK_SPACE:
+			{
+				// Prevent too much plunger power
+				if(plungerTimer > 4000)
+				{
+					plungerTimer = 4000;
+				}
+				else
+				{
+					plungerTimer += dt;
+				}
+				break;
+			}
+		}
+	}
+	else if(m_event.type == SDL_KEYUP)
+	{
+		switch(m_event.key.keysym.sym)
+		{
+			case SDLK_SPACE:
+			{
+				if(ctx.plungerIndex >= 0)
+				{
+					float directionScalar = (plungerTimer/5) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
+					btVector3 directionVector(0,0,1);
+					directionVector *= directionScalar;
+					//Apply Impulse in (Direction, @ location on body)
+					(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+				} else
+				{
+					std::cout << "No plunger defined" << std::endl;
+				}
+				plungerTimer = 0.0f;
+			}
+
 		}
 	}
 }

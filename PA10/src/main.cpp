@@ -157,6 +157,11 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		}
 		objectPhysics.shape = ctx.shape;
 	}
+	else
+	{
+		ctx.shape = 0;
+		objectPhysics.shape = 0;
+	}
 	
 	if (config.find("height") != config.end()) {
 		objectPhysics.heightY = config["height"];
@@ -232,7 +237,12 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.isPaddle = config["isPaddle"];
 		ctx.isPaddle = objectPhysics.isPaddle;
 	}
-	
+
+	if (config.find("isPlunger") != config.end()) {
+		objectPhysics.isPlunger = config["isPlunger"];
+		ctx.isPlunger = objectPhysics.isPlunger;
+	}
+
 	if (config.find("model") != config.end()) {
 		filename = config["model"];
 		

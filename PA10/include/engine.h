@@ -72,7 +72,7 @@ class Engine {
 		//Handle keyboard controls
 		void Keyboard(unsigned dt);
 		//Handle other events (mouse, etc.)
-		void eventHandler();
+		void eventHandler(unsigned dt);
 };
 
 #endif // ENGINE_H

@@ -10,6 +10,15 @@
 #include <functional>
 #include "graphics_headers.h"
 
+#define BIT(x) (1<<(x))
+enum collisiontypes {
+	COL_NOTHING = 0, //<Collide with nothing
+	COL_PLUNGER = 1, //<collide with plunger
+	COL_BALL = 2, //<Collide with balls
+	COL_PLATE = 4, //<Collide with walls
+	COL_EVERYTHING_ELSE = 8 //<Collide with everything
+};
+
 class PhysicsWorld {
 	public:
 		struct Context {
@@ -35,6 +44,7 @@ class PhysicsWorld {
             float scale = 1.0f;
 
             bool isPaddle = false;
+			bool isPlunger = false;
 			bool hasPhysics = true;
 			btRigidBody* physicsBody;
 		};
@@ -66,6 +76,7 @@ class PhysicsWorld {
 		btRigidBody* leftSidePlane;
 		btRigidBody* rightSidePlane;
 		btRigidBody* ceilingPlane;
+		btRigidBody* plungerPlatePlane;
 		btBroadphaseInterface* broadphase;
 		btDefaultCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;

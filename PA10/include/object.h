@@ -18,6 +18,7 @@ class Object {
 		struct Context {
             bool isDynamic;
 			bool isPaddle = false;
+			bool isPlunger = false;
 			std::string name = "Object";
 			std::string vertexShader;
 			std::string fragmentShader;
