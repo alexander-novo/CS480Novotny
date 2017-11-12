@@ -65,7 +65,8 @@ class PhysicsWorld {
 		void update(float dt);
 
 		std::vector<btRigidBody*>* getLoadedBodies();
-		std::vector<int> ballIndexes;
+		std::vector<int> ballIndices;
+		int plungerIndex;
 
 	
 	

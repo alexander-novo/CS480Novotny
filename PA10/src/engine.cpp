@@ -53,7 +53,7 @@ bool Engine::Initialize() {
 
 void Engine::Run() {
 	m_running = true;
-	m_menu->setZoom(50);
+	m_menu->setZoom(30);
 	
 	while (m_running) {
 		// Update the DT

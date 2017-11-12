@@ -35,7 +35,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -9.81f, -9.81f));
+	dynamicsWorld->setGravity(btVector3(0, -9.81f, -11.81f));
 
 	dynamicsWorld->setInternalTickCallback(myTickCallback, static_cast<void *> (this) );
 
@@ -216,11 +216,11 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Used to find which objects to clamp the velocity on
 	if (objCtx->shape == 1)   // SPHERE
 	{
-		ballIndexes.push_back(bodyIndex);
+		ballIndices.push_back(bodyIndex);
 	}
 	if (objCtx->isPlunger) // DO this check on the plunger too
 	{
-		ballIndexes.push_back(bodyIndex);
+		plungerIndex = bodyIndex;
 	}
 	
 	// Attempting to give an object specific degrees of freedom
@@ -247,12 +247,13 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 
 	// Attempting to give an object specific degrees of freedom
 	if (objCtx->isOneWay) {
+		//todo:fix hinge leaning up
 		// Parameters: Body with hinge, point of pivot on object, axis of pivot
 		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(0, 3, 0), btVector3(1.0, 0.0, 0.0));
 
 		// Sets angle limits
-		constraint->enableAngularMotor(true, -5, objCtx->mass);
-		constraint->setLimit(-M_PI/2, M_PI/22);
+		constraint->enableAngularMotor(true, -5, objCtx->mass*2);
+		constraint->setLimit(-M_PI/2, M_PI/2);
 
 		dynamicsWorld->addConstraint(constraint);
 	}
@@ -408,22 +409,43 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
+	static int ballCount = 3;
 	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
-	for(int i = 0; i<tempWorld->ballIndexes.size(); i++)
+	for(int i = 0; i<tempWorld->ballIndices.size(); i++)
 	{
-		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->getLinearVelocity();
+		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getLinearVelocity();
 		btScalar speed = velocity.length();
 		if(speed > mMaxSpeed)
 		{
 			velocity *= mMaxSpeed/speed;
-			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->setLinearVelocity(velocity);
+			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(velocity);
+		}
+		if((*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getCenterOfMassPosition().z() < -15)
+		{
+			std::cout << "BALL LOST" << std::endl;
+			if(ballCount > 0)
+			{
+				btTransform ballTransform;
+				ballTransform.setIdentity();
+				ballTransform.setOrigin(btVector3(-48,2,0));
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setCenterOfMassTransform(ballTransform);
+				ballCount--;
+			}
 		}
 	}
 
+	btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->plungerIndex]->getLinearVelocity();
+	btScalar speed = velocity.length();
+	if(speed > mMaxSpeed)
+	{
+		velocity *= mMaxSpeed/speed;
+		(*(tempWorld->getLoadedBodies()))[tempWorld->plungerIndex]->setLinearVelocity(velocity);
+	}
+
 	// This section is to detect collisions
-	// probably won't be used
+	// (for bumper interactions/scoring)
 //	int numManifolds = world->getDispatcher()->getNumManifolds();
 //	for (int i = 0; i < numManifolds; i++)
 //	{

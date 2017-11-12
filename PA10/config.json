@@ -348,12 +348,12 @@
       "isBounceType": false,
       "isOneWay": true,
       "location": {
-        "z": 20,
-        "x": -47,
+        "z": 19,
+        "x": -45.5,
         "y": 3
       },
       "scaleXYZ": {
-        "z": 0.1,
+        "z": 0.2,
         "x": 3,
         "y": 2
       },
@@ -376,7 +376,7 @@
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": 0,
+        "z": 40,
         "x": 0,
         "y": 12
       },
@@ -390,7 +390,7 @@
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": -15,
+        "z": 40,
         "x": 23,
         "y": 3
       },
