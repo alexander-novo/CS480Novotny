@@ -10,7 +10,7 @@ void Menu::update(int dt, float width, float height) {
 	ImGui_ImplSdlGL3_NewFrame(window.getSDL_Window());
 	ImGuiIO& io = ImGui::GetIO();
 	
-	ImGui::ShowTestWindow();
+	//ImGui::ShowTestWindow();
 	
 	_options.changedShadowSize = false;
 	int tempShadowSize = _options.shadowSize;
