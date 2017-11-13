@@ -10,7 +10,7 @@ void Menu::update(int dt, float width, float height) {
 	ImGui_ImplSdlGL3_NewFrame(window.getSDL_Window());
 	ImGuiIO& io = ImGui::GetIO();
 	
-	//ImGui::ShowTestWindow();
+	ImGui::ShowTestWindow();
 	
 	_options.changedShadowSize = false;
 	int tempShadowSize = _options.shadowSize;
@@ -30,7 +30,7 @@ void Menu::update(int dt, float width, float height) {
 		if (ImGui::Begin("Options", &_options.showOptionsMenu, ImGuiWindowFlags_NoCollapse)) {
 			
 			if(ImGui::CollapsingHeader("Game Options")) {
-			
+				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
 			}
 			
 			if(ImGui::CollapsingHeader("Graphics Options")) {

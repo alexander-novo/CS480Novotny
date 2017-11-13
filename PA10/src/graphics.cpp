@@ -269,6 +269,8 @@ void Graphics::Render() {
 			shader->uniform1fv("spotLightStrengths", spotLightStrengths.size(), &spotLightStrengths[0]);
 			shader->uniform1fv("spotLightAngles", spotLightStrengths.size(), &spotLightAngles[0]);
 			
+			shader->uniform3fv("AmbientLight", 1, &m_menu.options.ambientColor.r);
+			
 			shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(camView->GetView()));
 			shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(camView->GetProjection()));
 			

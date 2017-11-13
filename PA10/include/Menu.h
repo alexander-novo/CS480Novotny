@@ -33,6 +33,8 @@ class Menu {
 			bool shouldSwapShaders = false; //Whether the engine should swap shaders this frame
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with
+			
+			glm::vec3 ambientColor = glm::vec3(0.05, 0.05, 0.05);
 		};
 		
 		Menu(Window& window);

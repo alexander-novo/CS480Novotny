@@ -13,6 +13,8 @@ uniform vec3 MaterialAmbientColor;
 uniform vec3 MaterialSpecularColor;
 uniform float shininess;
 
+uniform vec3 AmbientLight;
+
 uniform sampler2D gSampler;
 //uniform sampler2DArrayShadow spotlightShadowSampler;
 uniform sampler2DArrayShadow spotlightShadowSampler;
@@ -115,6 +117,6 @@ void main(void) {
         specularLight += MaterialSpecularColor * spotLightColors[i] * spotLightStrengths[i] * pow(cosAlpha, shininess) * difference * visibility / distance / distance;
     }
 
-    frag_color.rgb = materialAmbientModified + diffuseLight + specularLight;
+    frag_color.rgb = AmbientLight + materialAmbientModified + diffuseLight + specularLight;
     frag_color.a   = MaterialDiffuseTexture2d.a;
 }
