@@ -42,7 +42,8 @@ make
 `right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out  
 `R` - Switch between per-vertex / per-fragment lighting  
-`up/down arrows` - Widen/narrow spotlight
+`up/down arrows` - Widen/narrow spotlight   
+`Spacebar` - Press to launch ball. Hold to increase power.     
 
 # Command Line Parameters
 

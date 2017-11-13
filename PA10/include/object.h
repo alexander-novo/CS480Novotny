@@ -18,6 +18,7 @@ class Object {
 		struct Context {
             bool isDynamic;
 			bool isPaddle = false;
+			bool isPlunger = false;
 			std::string name = "Object";
 			std::string vertexShader;
 			std::string fragmentShader;
@@ -45,6 +46,11 @@ class Object {
 
             bool hasPhysics = true;
             btRigidBody * physicsBody;
+
+			int leftPaddleIndex = -1;
+			int rightPaddleIndex = -1;
+			int plungerIndex = -1;
+			int doorIndex = -1;
 		};
 		
 		Object(const Context &ctx);

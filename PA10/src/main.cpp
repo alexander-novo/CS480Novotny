@@ -107,6 +107,22 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 			if (error != -1) return error;
 			Object* newObject = new Object(objCtx);
 			gameCtx->worldObjects.push_back(newObject);
+			if(objCtx.leftPaddleIndex != -1)
+			{
+				ctx.leftPaddleIndex = objCtx.leftPaddleIndex;
+			}
+			if(objCtx.rightPaddleIndex != -1)
+			{
+				ctx.rightPaddleIndex = objCtx.rightPaddleIndex;
+			}
+			if(objCtx.plungerIndex != -1)
+			{
+				ctx.plungerIndex = objCtx.plungerIndex;
+			}
+			if(objCtx.doorIndex != -1)
+			{
+				ctx.doorIndex = objCtx.doorIndex;
+			}
 		}
 		
 		vector<Graphics::LightContext>* lights = new vector<Graphics::LightContext>();
@@ -144,6 +160,11 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 			ctx.shape = 0;
 		}
 		objectPhysics.shape = ctx.shape;
+	}
+	else
+	{
+		ctx.shape = 0;
+		objectPhysics.shape = 0;
 	}
 	
 	if (config.find("height") != config.end()) {
@@ -220,7 +241,16 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		objectPhysics.isPaddle = config["isPaddle"];
 		ctx.isPaddle = objectPhysics.isPaddle;
 	}
-	
+
+	if (config.find("isPlunger") != config.end()) {
+		objectPhysics.isPlunger = config["isPlunger"];
+		ctx.isPlunger = objectPhysics.isPlunger;
+	}
+
+	if (config.find("isOneWay") != config.end()) {
+		objectPhysics.isOneWay = config["isOneWay"];
+	}
+
 	if (config.find("model") != config.end()) {
 		filename = config["model"];
 		
@@ -235,6 +265,23 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	} else if (ctx.name != "Game Surface") {
 		std::cout << config["name"] << "Object has no model " << std::endl;
 		return 1;
+	}
+
+	if(ctx.name == "Left Paddle")
+	{
+		ctx.leftPaddleIndex = ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Right Paddle")
+	{
+		ctx.rightPaddleIndex = ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Plunger")
+	{
+		ctx.plungerIndex= ctx.model->getRigidBodyIndex();
+	}
+	if(ctx.name == "Launch Guard")
+	{
+		ctx.doorIndex = ctx.model->getRigidBodyIndex();
 	}
 	
 	//Check if the object has a texture

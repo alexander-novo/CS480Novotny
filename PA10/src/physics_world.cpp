@@ -35,7 +35,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -9.81f, -9.81f));
+	dynamicsWorld->setGravity(btVector3(0, -9.81f, -11.81f));
 
 	dynamicsWorld->setInternalTickCallback(myTickCallback, static_cast<void *> (this) );
 
@@ -72,7 +72,8 @@ PhysicsWorld::~PhysicsWorld() {
 
 
 int PhysicsWorld::addBody(btRigidBody* bodyToAdd) {
-	dynamicsWorld->addRigidBody(bodyToAdd);
+	int everythingElseCollidesWith = COL_BALL | COL_PLUNGER | COL_EVERYTHING_ELSE;
+	dynamicsWorld->addRigidBody(bodyToAdd, COL_EVERYTHING_ELSE, everythingElseCollidesWith);
 	loadedBodies.push_back(bodyToAdd);
 	return (int) loadedBodies.size() - 1;
 }
@@ -111,7 +112,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Rotate about axis (using vec3) by an angle.
 	
 	btCollisionShape* newShape;
-	
+
 	if (objCtx->shape == 1) {   // SPHERE
 		btScalar radius = objCtx->radius;
 		newShape = new btSphereShape(radius * objCtx->scale);
@@ -151,8 +152,13 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	
 	if (objCtx->isBounceType) {
 		info.m_restitution = 7.0f;
-	} else if (objCtx->shape = 1) {
-		info.m_restitution = .5f;
+	} else if (objCtx->shape == 1) {
+		info.m_restitution = 0.5f;
+	} else if (objCtx->isPlunger)	{
+		info.m_restitution = 1.0f;
+	}
+	else	{
+		info.m_restitution = 0.7f;
 	}
 
 
@@ -173,6 +179,10 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		// For Spheres use this (< sphere radius):
 		body->setCcdSweptSphereRadius(objCtx->radius / 1.6f);
 	}
+	else if(objCtx->isPlunger)
+	{
+		body->setCcdMotionThreshold(.00001);
+	}
 
 	// add friction to object (.5-.8 for steel)
 	// used to reduce the amount of continuous spinning of the ball while on table
@@ -180,13 +190,37 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
-	int bodyIndex = addBody(body);
+	// Balls collide with plunger and invisible wall. Plunger only collides with the ball
+	int bodyIndex;
+
+	if(objCtx->shape == 1)
+	{
+		int ballCollidesWith = COL_PLUNGER | COL_EVERYTHING_ELSE | COL_PLATE | COL_BALL;
+		dynamicsWorld->addRigidBody(body, COL_BALL, ballCollidesWith);
+		loadedBodies.push_back(body);
+		bodyIndex = loadedBodies.size() - 1;
+	}
+	else if(objCtx->isPlunger)
+	{
+		int plungerCollidesWith = COL_BALL | COL_EVERYTHING_ELSE;
+		dynamicsWorld->addRigidBody(body,COL_PLUNGER, plungerCollidesWith);
+		loadedBodies.push_back(body);
+		bodyIndex = loadedBodies.size() - 1;
+	}
+	else
+	{
+		bodyIndex = addBody(body);
+	}
 
 	// Assuming all spheres are balls - add to list of balls in field
 	// Used to find which objects to clamp the velocity on
 	if (objCtx->shape == 1)   // SPHERE
 	{
-		ballIndexes.push_back(bodyIndex);
+		ballIndices.push_back(bodyIndex);
+	}
+	if (objCtx->isPlunger) // DO this check on the plunger too
+	{
+		plungerIndex = bodyIndex;
 	}
 	
 	// Attempting to give an object specific degrees of freedom
@@ -208,7 +242,31 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 			constraint->setLimit(-M_PI/4+objCtx->rotationY, M_PI/2.5+objCtx->rotationY);
 		}
 
-		
+		dynamicsWorld->addConstraint(constraint);
+	}
+
+	// Attempting to give an object specific degrees of freedom
+	if (objCtx->isOneWay) {
+		//todo:fix hinge leaning up
+		// Parameters: Body with hinge, point of pivot on object, axis of pivot
+		btHingeConstraint* constraint = new btHingeConstraint(*body, btVector3(0, 3, 0), btVector3(1.0, 0.0, 0.0));
+
+		// Sets angle limits
+		constraint->enableAngularMotor(true, -5, objCtx->mass*2);
+		constraint->setLimit(-M_PI/2, M_PI/2);
+
+		dynamicsWorld->addConstraint(constraint);
+	}
+
+	// Constraints to plunger to keep it in position
+	if (objCtx->isPlunger) {
+		btTransform plungerTransform;
+
+		body->getMotionState()->getWorldTransform(plungerTransform);
+		plungerTransform.operator*(btVector3(0,0,0));
+		btSliderConstraint *constraint = new btSliderConstraint(*body, plungerTransform, false);
+		body->setLinearFactor(btVector3(0,0,.3));
+		body->setAngularFactor(btVector3(0,0,0));
 		dynamicsWorld->addConstraint(constraint);
 	}
 	
@@ -219,12 +277,12 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 
 bool PhysicsWorld::addInvisibleWalls() {
 	//Set location/orientation of bullet object
-	btTransform transform[6];
+	btTransform transform[7];
 	// orientation/position to 0,0,0
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		transform[i].setIdentity();
 	}
-	
+
 	//floor
 	transform[0].setOrigin(btVector3(0, -1, 0));
 	//backwall
@@ -237,6 +295,8 @@ bool PhysicsWorld::addInvisibleWalls() {
 	transform[4].setOrigin(btVector3(50, 0, 0));
 	//ceiling
 	transform[5].setOrigin(btVector3(0, 6, 0));
+	//plunger plate
+	transform[6].setOrigin(btVector3(-48, 3, -8.5));
 	
 	// plane looking up (btVector3), distance from origin = 0
 	// btVector3 tells which direction the plane is facing (xyz openGL co-ords)
@@ -246,6 +306,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	btStaticPlaneShape* leftSideWall = new btStaticPlaneShape(btVector3(1, 0.0, 0.0), 0);
 	btStaticPlaneShape* rightSideWall = new btStaticPlaneShape(btVector3(-1, 0.0, 0.0), 0);
 	btStaticPlaneShape* ceiling = new btStaticPlaneShape(btVector3(0.0, -1, 0.0), 0);
+	btBoxShape* plungerPlate = new btBoxShape(btVector3(2.5, 3, .0001));
 	
 	btMotionState* motionFloor = new btDefaultMotionState(transform[0]);
 	btMotionState* motionbackWall = new btDefaultMotionState(transform[1]);
@@ -253,6 +314,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	btMotionState* motionleftSideWall = new btDefaultMotionState(transform[3]);
 	btMotionState* motionrightSideWall = new btDefaultMotionState(transform[4]);
 	btMotionState* motionceiling = new btDefaultMotionState(transform[5]);
+	btMotionState* motionplungerplate = new btDefaultMotionState(transform[6]);
 	
 	// (mass [0 = static], motionstate, collisionshape, inertia)
 	btRigidBody::btRigidBodyConstructionInfo floorInfo(0, motionFloor, floor);
@@ -261,7 +323,8 @@ bool PhysicsWorld::addInvisibleWalls() {
 	btRigidBody::btRigidBodyConstructionInfo leftSideWallInfo(0, motionleftSideWall, leftSideWall);
 	btRigidBody::btRigidBodyConstructionInfo rightSideWallInfo(0, motionrightSideWall, rightSideWall);
 	btRigidBody::btRigidBodyConstructionInfo ceilingInfo(0, motionceiling, ceiling);
-	
+	btRigidBody::btRigidBodyConstructionInfo plungerPlateInfo(0, motionplungerplate, plungerPlate);
+
 	// Gives walls a bit of allowance for bounce
     floorInfo.m_restitution = 0.1f;
 	backWallInfo.m_restitution = 0.7f;
@@ -269,6 +332,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	leftSideWallInfo.m_restitution = 0.7f;
 	rightSideWallInfo.m_restitution = 0.7f;
     ceilingInfo.m_restitution = .5f;
+	plungerPlateInfo.m_restitution = 0.5f;
 	
 	
 	// takes in the body
@@ -278,6 +342,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	leftSidePlane = new btRigidBody(leftSideWallInfo);
 	rightSidePlane = new btRigidBody(rightSideWallInfo);
 	ceilingPlane = new btRigidBody(ceilingInfo);
+	plungerPlatePlane = new btRigidBody(plungerPlateInfo);
 	
 	int flags = floorPlane->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
 	
@@ -287,6 +352,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	leftSidePlane->setCollisionFlags(flags);
 	rightSidePlane->setCollisionFlags(flags);
 	ceilingPlane->setCollisionFlags(flags);
+	plungerPlatePlane->setCollisionFlags(flags);
 	
 	floorPlane->setActivationState(DISABLE_DEACTIVATION);
 	backWallPlane->setActivationState(DISABLE_DEACTIVATION);
@@ -294,6 +360,7 @@ bool PhysicsWorld::addInvisibleWalls() {
 	leftSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	rightSidePlane->setActivationState(DISABLE_DEACTIVATION);
 	ceilingPlane->setActivationState(DISABLE_DEACTIVATION);
+	plungerPlatePlane->setActivationState(DISABLE_DEACTIVATION);
 
 	// add friction to floor (.2 for wood/metal)
 	floorPlane->setFriction(0.15f);
@@ -304,6 +371,12 @@ bool PhysicsWorld::addInvisibleWalls() {
 //	addBody(leftSidePlane);
 //	addBody(rightSidePlane);
 	addBody(ceilingPlane);
+
+	// plate only collides with the ball, not the plunger
+	int plateCollidesWith = COL_BALL | COL_EVERYTHING_ELSE;
+	dynamicsWorld->addRigidBody(plungerPlatePlane, COL_PLATE, plateCollidesWith);
+	loadedBodies.push_back(plungerPlatePlane);
+
 	return true;
 }
 
@@ -336,18 +409,66 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
+	static int ballCount = 3;
+	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
-	int mMaxSpeed = 100;
-	for(int i = 0; i<tempWorld->ballIndexes.size(); i++)
+	int mMaxSpeed = 200;
+	for(int i = 0; i<tempWorld->ballIndices.size(); i++)
 	{
-		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->getLinearVelocity();
+		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getLinearVelocity();
 		btScalar speed = velocity.length();
 		if(speed > mMaxSpeed)
 		{
 			velocity *= mMaxSpeed/speed;
-			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndexes[i]]->setLinearVelocity(velocity);
+			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(velocity);
+		}
+		if((*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getCenterOfMassPosition().z() < -15)
+		{
+			std::cout << "BALL LOST" << std::endl;
+			if(ballCount > 0)
+			{
+				btTransform ballTransform;
+				ballTransform.setIdentity();
+				ballTransform.setOrigin(btVector3(-48,2,0));
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setWorldTransform(ballTransform);
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(btVector3(0,0,0));
+				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setAngularVelocity(btVector3(0,0,0));
+				ballCount--;
+			}
 		}
 	}
+
+	btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->plungerIndex]->getLinearVelocity();
+	btScalar speed = velocity.length();
+	if(speed > mMaxSpeed)
+	{
+		velocity *= mMaxSpeed/speed;
+		(*(tempWorld->getLoadedBodies()))[tempWorld->plungerIndex]->setLinearVelocity(velocity);
+	}
+
+	// This section is to detect collisions
+	// (for bumper interactions/scoring)
+//	int numManifolds = world->getDispatcher()->getNumManifolds();
+//	for (int i = 0; i < numManifolds; i++)
+//	{
+//		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+//		const btCollisionObject* obA = contactManifold->getBody0();
+//		const btCollisionObject* obB = contactManifold->getBody1();
+//
+//		int numContacts = contactManifold->getNumContacts();
+//		for (int j = 0; j < numContacts; j++)
+//		{
+//			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+//			if (pt.getDistance() < 0.f)
+//			{
+//				const btVector3& ptA = pt.getPositionWorldOnA();
+//				const btVector3& ptB = pt.getPositionWorldOnB();
+//				const btVector3& normalOnB = pt.m_normalWorldOnB;
+//
+//				// todo: do stuff here
+//			}
+//		}
+//	}
 }
 
 #endif

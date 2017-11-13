@@ -64,8 +64,11 @@ bool Graphics::Initialize(int width, int height) {
 	
 	spotlightMatrices.resize(spotLights.size());
 	
-	//Picking stuff
+	char str[256];
+	int p2Score = 1;
+	sprintf( str, "Player 1:  %d", p2Score);
 	
+	//Picking stuff
 	glGenFramebuffers(1, &pickBuffer);
 	glGenTextures(1, &pickTexture);
 	

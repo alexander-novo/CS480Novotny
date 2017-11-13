@@ -146,28 +146,7 @@
       "scale": 1
     },
     {
-      "name": "Cube",
-      "model": "Cube.obj",
-      "shape": "box",
-      "texture": "2k_sun.jpg",
-      "isDynamic": true,
-      "height": 1,
-      "width": 1,
-      "depth": 1,
-      "location": {
-        "z": -14,
-        "x": -14,
-        "y": 1
-      },
-      "scaleXYZ": {
-        "z": 2,
-        "x": 0.5,
-        "y": 1
-      },
-      "mass": 50
-    },
-    {
-      "name": "Paddle 1",
+      "name": "Right Paddle",
       "shape": "mesh",
       "model": "Paddle.obj",
       "texture": "concrete.jpg",
@@ -175,7 +154,7 @@
       "isKinematic": false,
       "isPaddle": true,
       "location": {
-        "z": -11,
+        "z": 0,
         "x": -15,
         "y": 2.75
       },
@@ -192,7 +171,7 @@
       "mass": 30
     },
     {
-      "name": "Paddle 2",
+      "name": "Left Paddle",
       "shape": "mesh",
       "model": "Paddle.obj",
       "texture": "concrete.jpg",
@@ -200,7 +179,7 @@
       "isKinematic": false,
       "isPaddle": true,
       "location": {
-        "z": -11,
+        "z": 0,
         "x": 15,
         "y": 2.75
       },
@@ -217,6 +196,179 @@
       "mass": 30
     },
     {
+      "name": "Paddle Bumper 1",
+      "model": "paddlebumper.obj",
+      "shape": "mesh",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": 30,
+        "x": 25,
+        "y": 3
+      },
+      "scaleXYZ": {
+        "comment": "After Rot: z:front/back, x:height/thickness: y:left/right",
+        "z": 3.5,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": 1.65,
+        "z": 0
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Paddle Bumper 2",
+      "model": "paddlebumper.obj",
+      "shape": "mesh",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": 30,
+        "x": -25,
+        "y": 3
+      },
+      "scaleXYZ": {
+        "comment": "After Rot: z:front/back, x:height/thickness: y:left/right",
+        "z": 3.5,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -1.65,
+        "z": 3.14159265358979
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Right Paddle Guide",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 12,
+        "x": -28,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 0.9,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": 0.7853981635,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Left Paddle Guide",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 12,
+        "x": 28,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 0.9,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -0.7853981635,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Left Ballout Guide",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 5,
+        "x": 30,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 1.5,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": -0.7853981635,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Launch Guard",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isBounceType": false,
+      "isOneWay": true,
+      "location": {
+        "z": 19,
+        "x": -45.5,
+        "y": 3
+      },
+      "scaleXYZ": {
+        "z": 0.2,
+        "x": 3,
+        "y": 2
+      },
+      "rotation":{
+        "x": 0,
+        "y": 0.4,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 1,
+      "scale": 1
+    },
+    {
       "name": "Bad Sphere",
       "shape": "sphere",
       "model": "BadSphere.obj",
@@ -224,7 +376,7 @@
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": 0,
+        "z": 40,
         "x": 0,
         "y": 12
       },
@@ -238,25 +390,11 @@
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": -15,
+        "z": 40,
         "x": 23,
         "y": 3
       },
       "mass": 3
-    },
-    {
-      "name": "Earth",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "radius": 0.25,
-      "location": {
-        "z": 0,
-        "x": 0,
-        "y": 5
-      },
-      "mass": 1
     },
     {
       "name": "Right Wall",
@@ -288,80 +426,66 @@
       "scale": 1
     },
     {
-      "name": "Cylinder1",
+      "name": "Plunger",
       "model": "Cylinder.obj",
       "shape": "cylinder",
-      "texture": "2k_jupiter.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
+      "texture": "2k_sun.jpg",
+      "isDynamic": true,
+      "isKinematic": false,
+      "isBounceType": false,
+      "isPlunger": true,
       "location": {
-        "z": 10,
-        "x": 10,
-        "y": 1
+        "z": -14,
+        "x": -47,
+        "y": 2
       },
       "scaleXYZ": {
-        "z": 1,
-        "x": 3,
-        "y": 1
+        "z": 1.75,
+        "x": 5,
+        "y": 1.75
       },
-      "mass": 0,
+      "rotation":{
+        "comment": "",
+        "x": -1.570796327,
+        "y": 0,
+        "z": 0
+      },
+      "mass": 30,
       "scale": 1
     },
     {
-      "name": "Cylinder2",
+      "name": "Bumper Ball Shoot",
       "model": "Cylinder.obj",
       "shape": "cylinder",
-      "texture": "2k_jupiter.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "z": 20,
-        "x": 5,
-        "y": 1
-      },
-      "scaleXYZ": {
-        "z": 3,
-        "x": 1,
-        "y": 3
-      },
-      "mass": 0,
-      "scale": 2.5
-    },
-    {
-      "name": "Big Bumper",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_jupiter.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "z": -15,
-        "x": 40,
-        "y": 1
-      },
-      "scaleXYZ": {
-        "z": 12,
-        "x": 6,
-        "y": 12
-      },
-      "mass": 0,
-      "scale": 2.5
-    },
-
-    {
-      "name": "Bumper",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_jupiter.jpg",
+      "texture": "2k_sun.jpg",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": true,
       "location": {
         "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": -15,
+        "z": 15,
+        "x": -40,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2.5,
+        "x": 6,
+        "y": 2.5
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Bumper Left",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_sun.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": 50,
         "x": 20,
         "y": 1
       },
@@ -374,60 +498,83 @@
       "scale": 1
     },
     {
-      "name": "Earth",
+      "name": "Bumper Center",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_sun.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": 60,
+        "x": 0,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2.5,
+        "x": 6,
+        "y": 2.5
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Bumper Right",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_sun.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
+        "z": 50,
+        "x": -20,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 2.5,
+        "x": 6,
+        "y": 2.5
+      },
+      "mass": 0,
+      "scale": 1
+    },
+    {
+      "name": "Big Bumper",
+      "model": "Cylinder.obj",
+      "shape": "cylinder",
+      "texture": "2k_sun.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": true,
+      "location": {
+        "z": 25,
+        "x": 45,
+        "y": 1
+      },
+      "scaleXYZ": {
+        "z": 5,
+        "x": 6,
+        "y": 5
+      },
+      "mass": 0,
+      "scale": 2.5
+    },
+    {
+      "name": "Ball 2",
       "shape": "sphere",
       "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
+      "texture": "metal.jpg",
       "isDynamic": true,
-      "radius": 1.25,
+      "radius": 2,
       "location": {
         "z": 0,
         "x": -48,
         "y": 2
       },
       "mass": 5
-    },
-    {
-      "name": "Earth1",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "radius": 0.5,
-      "location": {
-        "z": -5,
-        "x": -13,
-        "y": 2
-      },
-      "mass": 4
-    },
-    {
-      "name": "Earth2",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "radius": 0.75,
-      "location": {
-        "z": 2,
-        "x": -13,
-        "y": 3
-      },
-      "mass": 9
-    },
-    {
-      "name": "Earth3",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "radius": 1,
-      "location": {
-        "z": -3,
-        "x": 3,
-        "y": 2
-      },
-      "mass": 16
     }
   ]
 }

@@ -53,14 +53,14 @@ bool Engine::Initialize() {
 
 void Engine::Run() {
 	m_running = true;
-	m_menu->setZoom(50);
+	m_menu->setZoom(30);
 	
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
 		
 		while (SDL_PollEvent(&m_event) != 0) {
-			eventHandler();
+			eventHandler(m_DT);
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
 		// Check the keyboard input
@@ -151,27 +151,51 @@ void Engine::Keyboard(unsigned dt) {
 	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
-		float step = 0.05f * dt;
-		m_menu->setRotation(m_menu->options.rotation + step);
-		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
-			step *= M_PI / -180;
-			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
-			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
-			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
+		if(ctx.leftPaddleIndex >= 0)
+		{
+			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->getInvMass());
+			btVector3 directionVector(-1,0,1);
+			directionVector *= directionScalar;
+			btVector3 locationVector(.3,0,-4.5);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No left paddle defined" << std::endl;
 		}
+
 	}
 	if(keyState[SDL_SCANCODE_RIGHT]) {
-		float step = 0.05f * dt;
-		m_menu->setRotation(m_menu->options.rotation - step);
-		if(m_graphics->getCamView()->cameraMode == CAMERA_MODE_FREE) {
-			step *= M_PI / 180;
-			glm::vec3 toLookAt = m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos;
-			m_graphics->getCamView()->lookAt.x = toLookAt.x * cos(step) - toLookAt.z * sin(step) + m_graphics->getCamView()->eyePos.x;
-			m_graphics->getCamView()->lookAt.z = toLookAt.x * sin(step) + toLookAt.z * cos(step) + m_graphics->getCamView()->eyePos.z;
+		if(ctx.rightPaddleIndex >= 0)
+		{
+			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->getInvMass());
+			btVector3 directionVector(1,0,1);
+			directionVector *= directionScalar;
+			btVector3 locationVector(.3,0,-4.5);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No right paddle defined" << std::endl;
 		}
 	}
+	if(keyState[SDL_SCANCODE_PERIOD]) {
+		if(ctx.doorIndex >= 0)
+		{
+			float directionScalar = 50 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->getInvMass());
+			btVector3 directionVector(1,0,0);
+			directionVector *= directionScalar;
+			btVector3 locationVector(0,-2,0);
+			//Apply Impulse in (Direction, @ location on body)
+			(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->applyImpulse(directionVector, locationVector);
+		} else
+		{
+			std::cout << "No right paddle defined" << std::endl;
+		}
+	}
+
 	//Width of spotlight
-	if(keyState[SDL_SCANCODE_UP]) {
+	if( keyState[SDL_SCANCODE_UP]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle < M_PI / 2) {
 			m_graphics->spotLights[0].angle += M_PI / 180;
 			if(m_graphics->spotLights[0].angle > M_PI / 2) {
@@ -189,7 +213,10 @@ void Engine::Keyboard(unsigned dt) {
 	}
 }
 
-void Engine::eventHandler() {
+void Engine::eventHandler(unsigned dt) {
+
+
+	static float plungerTimer = 0.0f;
 	//Quit program
 	if (m_event.type == SDL_QUIT
 	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -278,7 +305,6 @@ void Engine::eventHandler() {
 				break;
 		}
 	}
-	
 		//For single-press keyboard events
 		//For long-hold keyboard events, see keyboard()
 	else if(m_event.type == SDL_KEYDOWN) {
@@ -290,6 +316,41 @@ void Engine::eventHandler() {
 			case SDLK_o:
 				m_menu->toggleOptionsMenu();
 				break;
+			case SDLK_SPACE:
+			{
+				// Prevent too much plunger power
+				if(plungerTimer > 4000)
+				{
+					plungerTimer = 4000;
+				}
+				else
+				{
+					plungerTimer += dt*2;
+				}
+				break;
+			}
+		}
+	}
+	else if(m_event.type == SDL_KEYUP)
+	{
+		switch(m_event.key.keysym.sym)
+		{
+			case SDLK_SPACE:
+			{
+				if(ctx.plungerIndex >= 0)
+				{
+					float directionScalar = (plungerTimer/5) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
+					btVector3 directionVector(0,0,1);
+					directionVector *= directionScalar;
+					//Apply Impulse in (Direction, @ location on body)
+					(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+				} else
+				{
+					std::cout << "No plunger defined" << std::endl;
+				}
+				plungerTimer = 0.0f;
+			}
+
 		}
 	}
 }

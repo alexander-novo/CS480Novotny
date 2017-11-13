@@ -37,3 +37,9 @@ The grand finale. To run this project ```cd PA7``` then follow the instructions 
 
 ## PA8: Bullet    
 Some physics based dynamic spheres, static cylinders, four walls, and a cube to bat some spheres around into things.    
+
+## PA9: Lighting    
+Spotlights that follow a ball.  
+
+## PA10: Pinball    
+Full Pinball game with a ball launcher, paddles, bumpers and scoring on a table.   

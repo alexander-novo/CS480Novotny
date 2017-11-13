@@ -93,9 +93,6 @@ PhysicsModel::loadIndices(aiMesh* mesh, PhysicsModel* newModel, PhysicsWorld* ph
 
 	
 	// create the mesh and add it to the world
-	// btCollisionShape *triMeshShape = new btBvhTriangleMeshShape(objTriMesh, true);
-	// TODO: Make sure triangle mesh is being used correctly.
-	
 	rigidBodyIndex = physWorld->createObject(indexName, objTriMesh, ctx);
 }
 
