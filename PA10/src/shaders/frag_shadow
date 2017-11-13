@@ -1,0 +1,12 @@
+#version 330 core
+
+in vec3 positionW;
+
+uniform float id;
+
+// Output data
+out float frag_depth;
+
+void main(void) {
+    frag_depth = gl_FragCoord.z;
+}

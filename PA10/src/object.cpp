@@ -71,13 +71,37 @@ const glm::mat4& Object::GetModel() const {
 	return modelMat;
 }
 
-void Object::Render() const {
+void Object::Render(bool withShadows, std::vector<glm::mat4> spotlightMatrices) const {
 	//Send our shaders the MVP matrices
 	glm::mat4 modelViewMatrix = *viewMatrix * modelMat;
 	ctx.shader->uniformMatrix4fv("modelMatrix", 1, GL_FALSE, glm::value_ptr(modelMat));
-	ctx.shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(*viewMatrix));
-	ctx.shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(*projectionMatrix));
 	ctx.shader->uniformMatrix4fv("modelViewMatrix", 1, GL_FALSE, glm::value_ptr(modelViewMatrix));
+	
+	if(withShadows) {
+		glm::mat4 biasMatrix(
+				0.5, 0.0, 0.0, 0.0,
+				0.0, 0.5, 0.0, 0.0,
+				0.0, 0.0, 0.5, 0.0,
+				0.5, 0.5, 0.5, 1.0
+		);
+		std::vector<float> rawMatrices(spotlightMatrices.size() * 16);
+		for(int i = 0; i < spotlightMatrices.size(); i++) {
+			spotlightMatrices[i] = spotlightMatrices[i] * modelMat;
+			for(int j = 0; j < 4; j++) {
+				for(int k = 0; k < 4; k++) {
+					rawMatrices[16 * i + 4 * j + k] = spotlightMatrices[i][j][k];
+				}
+			}
+		}
+		
+		/*for(int i = 0; i < 16 * spotlightMatrices.size(); i++) {
+			if(i % 4 == 0) std::cout << std::endl;
+			if(i % 16 == 0) std::cout << std::endl;
+			std::cout << (&rawMatrices[0])[i] << " ";
+		}*/
+		
+		ctx.shader->uniformMatrix4fv("biasMVP", spotlightMatrices.size(), GL_FALSE, &rawMatrices[0]);
+	}
 	
 	//Send the material information
 	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);
@@ -116,6 +140,15 @@ void Object::RenderID(Shader* shader) const {
 	shader->uniformMatrix4fv("M", 1, GL_FALSE, glm::value_ptr(modelMat));
 	float modifiedID = ctx.id;
 	shader->uniform1fv("id", 1, &modifiedID);
+	
+	//Now draw our planet
+	ctx.model->drawModel();
+}
+
+void Object::RenderShadow(Shader* shader, const glm::mat4& lightMatrix) const {
+	//Send our shaders the MVP matrices
+	glm::mat4 MVPMatrix = lightMatrix * modelMat;
+	shader->uniformMatrix4fv("MVP", 1, GL_FALSE, glm::value_ptr(MVPMatrix));
 	
 	//Now draw our planet
 	ctx.model->drawModel();

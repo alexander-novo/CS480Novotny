@@ -56,8 +56,9 @@ class Object {
 		//Updates the physics for the planet
 		void Update(float dt);
 		//Renders the planet on the screen
-		void Render() const;
+		void Render(bool withShadows, std::vector<glm::mat4> spotlightMatrices) const;
 		void RenderID(Shader* shader) const;
+		void RenderShadow(Shader* shader, const glm::mat4& lightMatrix) const;
 
 		//Returns the current model matrix of this planet
 		const glm::mat4& GetModel() const;

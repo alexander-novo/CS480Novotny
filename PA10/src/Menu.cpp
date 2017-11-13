@@ -12,6 +12,9 @@ void Menu::update(int dt, float width, float height) {
 	
 	//ImGui::ShowTestWindow();
 	
+	_options.changedShadowSize = false;
+	int tempShadowSize = _options.shadowSize;
+	
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("File")) {
 			if(ImGui::MenuItem("Options", "o")) _options.showOptionsMenu = true;
@@ -43,6 +46,8 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::RadioButton("Low", &_options.shadowSize, MENU_SHADOWS_LOW); ImGui::SameLine();
 				ImGui::RadioButton("Medium", &_options.shadowSize, MENU_SHADOWS_MED); ImGui::SameLine();
 				ImGui::RadioButton("High", &_options.shadowSize, MENU_SHADOWS_HIGH);
+				
+				if(tempShadowSize != _options.shadowSize) _options.changedShadowSize = true;
 			}
 			
 			ImGui::End();

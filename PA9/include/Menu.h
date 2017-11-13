@@ -10,9 +10,9 @@
 #define MENU_SHADER_FRAGMENT 1
 
 #define MENU_SHADOWS_NONE 0
-#define MENU_SHADOWS_LOW  2048
-#define MENU_SHADOWS_MED  4096
-#define MENU_SHADOWS_HIGH 8192
+#define MENU_SHADOWS_LOW  1024
+#define MENU_SHADOWS_MED  2048
+#define MENU_SHADOWS_HIGH 4096
 
 #define MENU_OPTIONS_INDENT 16.0f
 
@@ -25,7 +25,8 @@ class Menu {
 			float zoom = 1.0;     //Keeps track of how far our camera should be away from the planet we're looking at
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 			bool shouldClose = false; //Whether or not we should exit the program
-			int shadowSize = 2048; //Size of shadow maps
+			int shadowSize = MENU_SHADOWS_LOW; //Size of shadow maps
+			bool changedShadowSize = false; //True if shadowSize changed in the last frame
 			
 			bool paused = false; //Pause simulation
 			bool showOptionsMenu = false; //Whether or not the options menu is out right now

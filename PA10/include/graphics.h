@@ -71,6 +71,8 @@ class Graphics {
 		
 		//Render pass for mouse picking
 		void renderPick();
+		//Render pass for shadow mapping
+		void renderShadows();
 
 		const int& windowWidth;
 		const int& windowHeight;
@@ -78,16 +80,15 @@ class Graphics {
 		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
 		
-		/*vector<float> spotLightPositions;
-		vector<float> spotLightDirections;
-		vector<float> spotLightAngles;
-		vector<float> spotLightStrengths;*/
-		
-		GLuint pickDepthBuffer;
 		GLuint pickBuffer;
 		GLuint pickTexture;
 		
+		GLuint spotlightShadowBuffer;
+		GLuint spotlightShadowTexture;
+		std::vector<glm::mat4> spotlightMatrices; //View-Projection matrices for each light
+		
 		Shader* pickShader;
+		Shader* shadowShader;
 };
 
 #endif /* GRAPHICS_H */

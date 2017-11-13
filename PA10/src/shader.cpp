@@ -102,7 +102,7 @@ bool Shader::Finalize() {
 	}
 	
 	Enable();
-	uniform1i("gShadowMap", GL_SHADOW_TEXTURE_OFFSET);
+	uniform1i("spotlightShadowSampler", GL_SHADOW_TEXTURE_OFFSET);
 	
 	glValidateProgram(m_shaderProg);
 	glGetProgramiv(m_shaderProg, GL_VALIDATE_STATUS, &Success);

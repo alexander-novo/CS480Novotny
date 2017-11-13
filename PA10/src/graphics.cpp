@@ -8,6 +8,7 @@ Graphics::Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld* pW, Gam
 	camView = new Camera(menu);
 	
 	pickShader = Shader::load("shaders/vert_pick", "shaders/frag_pick");
+	shadowShader = Shader::load("shaders/vert_shadow", "shaders/frag_shadow");
 }
 
 Graphics::~Graphics() {
@@ -59,20 +60,41 @@ bool Graphics::Initialize(int width, int height) {
 	}
 	
 	pickShader->Initialize();
+	shadowShader->Initialize();
+	
+	spotlightMatrices.resize(spotLights.size());
+	
+	//Picking stuff
 	
 	glGenFramebuffers(1, &pickBuffer);
-	glGenRenderbuffers(1, &pickDepthBuffer);
 	glGenTextures(1, &pickTexture);
 	
-	glBindTexture(GL_TEXTURE_2D, pickTexture);
 	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
+	glBindTexture(GL_TEXTURE_2D, pickTexture);
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
 	
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
+	//Shadow stuff
+	
+	glGenFramebuffers(1, &spotlightShadowBuffer);
+	glGenTextures(1, &spotlightShadowTexture);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, spotlightShadowBuffer);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, spotlightShadowTexture);
+	
+	//glTextureStorage3D(spotlightShadowTexture, 1, GL_RGB16, m_menu.options.shadowSize, m_menu.options.shadowSize, spotLights.size());
+	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT16, m_menu.options.shadowSize, m_menu.options.shadowSize, spotLights.size(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	
+	glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, spotlightShadowTexture, 0, 0);
+	
+	glDrawBuffer(GL_NONE);
 	
 	//enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -84,13 +106,9 @@ bool Graphics::Initialize(int width, int height) {
 void Graphics::updateScreenSize(int width, int height) {
 	glBindTexture(GL_TEXTURE_2D, pickTexture);
 	glBindFramebuffer(GL_FRAMEBUFFER, pickBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, pickDepthBuffer);
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickTexture, 0);
-	
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickDepthBuffer);
 }
 
 glm::vec3 hsv2rgb(glm::vec3 in) {
@@ -200,6 +218,8 @@ Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
 }
 
 void Graphics::Render() {
+	if(m_menu.options.shadowSize != MENU_SHADOWS_NONE) renderShadows();
+	
 	//Switch to rendering on the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//clear the screen
@@ -231,6 +251,7 @@ void Graphics::Render() {
 		spotLightStrengths[i] = spotLights[i].strength;
 	}
 	
+	
 	//Render planets
 	// Update the object
 	Shader* shader = nullptr;
@@ -244,9 +265,35 @@ void Graphics::Render() {
 			shader->uniform3fv("spotLightColors", spotLightStrengths.size(), &spotLightColors[0]);
 			shader->uniform1fv("spotLightStrengths", spotLightStrengths.size(), &spotLightStrengths[0]);
 			shader->uniform1fv("spotLightAngles", spotLightStrengths.size(), &spotLightAngles[0]);
+			
+			shader->uniformMatrix4fv("viewMatrix", 1, GL_FALSE, glm::value_ptr(camView->GetView()));
+			shader->uniformMatrix4fv("projectionMatrix", 1, GL_FALSE, glm::value_ptr(camView->GetProjection()));
+			
+			if(m_menu.options.shadowSize != MENU_SHADOWS_NONE) {
+				glActiveTexture(GL_SHADOW_TEXTURE);
+				glBindTexture(GL_TEXTURE_2D_ARRAY, spotlightShadowTexture);
+				
+				int samples = 1;
+				switch(m_menu.options.shadowSize) {
+					case MENU_SHADOWS_LOW:
+						samples = 2;
+						break;
+					case MENU_SHADOWS_MED:
+						samples = 4;
+						break;
+					case MENU_SHADOWS_HIGH:
+						samples = 8;
+						break;
+				}
+				
+				shader->uniform1i("numShadowSamples", samples);
+				shader->uniform1i("spotlightShadowSampler", GL_SHADOW_TEXTURE_OFFSET);
+			} else {
+				shader->uniform1i("numShadowSamples", 0);
+			}
 		}
 		
-		gameWorldCtx->worldObjects[i]->Render();
+		gameWorldCtx->worldObjects[i]->Render(m_menu.options.shadowSize != MENU_SHADOWS_NONE, spotlightMatrices);
 	}
 	
 	// Get any errors from OpenGL
@@ -271,6 +318,49 @@ void Graphics::renderPick() {
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
 		gameWorldCtx->worldObjects[i]->RenderID(pickShader);
 	}
+}
+
+void Graphics::renderShadows() {
+	if(m_menu.options.changedShadowSize) {
+		glBindTexture(GL_TEXTURE_2D_ARRAY, spotlightShadowTexture);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT16, m_menu.options.shadowSize, m_menu.options.shadowSize, spotLights.size(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	}
+	
+	shadowShader->Enable();
+	
+	glm::mat4 viewMatrix;
+	glm::mat4 projMatrix;
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, spotlightShadowBuffer);
+	glViewport(0, 0, m_menu.options.shadowSize, m_menu.options.shadowSize);
+	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	
+	glCullFace(GL_BACK);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	
+	for(int i = 0; i < spotLights.size(); i++) {
+		if(spotLights[i].position.x != spotLights[i].pointing->x || spotLights[i].position.x != spotLights[i].pointing->z) {
+			viewMatrix = glm::lookAt(spotLights[i].position, *spotLights[i].pointing, glm::vec3(0.0, 1.0, 0.0));
+		} else {
+			viewMatrix = glm::lookAt(spotLights[i].position, *spotLights[i].pointing, glm::vec3(0.01, 1.0, 0.0));
+		}
+		//projMatrix = glm::perspective(spotLights[i].angle * 2, 1.0f, NEAR_FRUSTRUM, FAR_FRUSTRUM);
+		projMatrix = glm::perspective(float(M_PI / 2), 1.0f, 1.0f, 200.0f);
+		
+		spotlightMatrices[i] = projMatrix * viewMatrix;
+		
+		glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, spotlightShadowTexture, 0, i);
+		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		
+		for (int j = 0; j < gameWorldCtx->worldObjects.size(); j++) {
+			gameWorldCtx->worldObjects[j]->RenderShadow(pickShader, spotlightMatrices[i]);
+		}
+	}
+	
+	glViewport(0, 0, windowWidth, windowHeight);
 }
 
 std::string Graphics::ErrorString(GLenum error) {

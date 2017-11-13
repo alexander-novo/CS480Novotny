@@ -33,7 +33,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
 
-#define INVALID_UNIFORM_LOCATION 0x7fffffff
+#define INVALID_UNIFORM_LOCATION -1
 
 struct Vertex {
 	glm::vec3 vertex;
