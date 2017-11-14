@@ -29,12 +29,15 @@ bool Camera::Initialize(int w, int h) {
 void Camera::calculateCamera() {
 	
 	//What we're looking at
-	glm::vec3 lookVec = {0, 0, 0};
+	glm::vec3 lookVec = lookAt;
 	//What should be in the background (whatever we're orbiting)
-	glm::vec3 backgroundVec = glm::vec3(0.0, 5.0, -2.0);
+	glm::vec3 backgroundVec = glm::vec3(0.0, 0.0, -1.0);
 	float angle = m_menu.options.rotation * (float) M_PI / 180.0f;
+	float elev = m_menu.options.elevation * (float) M_PI / 180.0f;
 	
 	backgroundVec = glm::rotate(backgroundVec, angle, glm::vec3(0.0, 1.0, 0.0));
+	backgroundVec = glm::rotate(backgroundVec, elev, glm::cross(glm::vec3(0.0, -1.0, 0.0), backgroundVec));
+	backgroundVec = glm::normalize(backgroundVec);
 	backgroundVec *= m_menu.options.zoom;
 	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 	backgroundVec += lookVec;

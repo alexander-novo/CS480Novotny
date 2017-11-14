@@ -53,7 +53,6 @@ bool Engine::Initialize() {
 
 void Engine::Run() {
 	m_running = true;
-	m_menu->setZoom(30);
 	
 	while (m_running) {
 		// Update the DT
@@ -103,26 +102,23 @@ void Engine::Run() {
 
 void Engine::Keyboard(unsigned dt) {
 	const Uint8* keyState = SDL_GetKeyboardState(nullptr);
-	float cameraSpeed = glm::length(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos) * dt / 500;
+	float cameraSpeed = glm::length(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos) * dt / 1000;
 	
 	if(SDL_GetModState() & KMOD_SHIFT) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
-		//Go Down
-		glm::vec3 moveDir = {0.0, -1.0, 0.0};
-		moveDir *= cameraSpeed;
-		m_graphics->getCamView()->lookAt += moveDir;
-		m_graphics->getCamView()->eyePos += moveDir;
-	}
-	if(keyState[SDL_SCANCODE_SPACE]) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go Up
 		glm::vec3 moveDir = {0.0, 1.0, 0.0};
 		moveDir *= cameraSpeed;
 		m_graphics->getCamView()->lookAt += moveDir;
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
+	if(SDL_GetModState() & KMOD_CTRL) {
+		//Go Down
+		glm::vec3 moveDir = {0.0, -1.0, 0.0};
+		moveDir *= cameraSpeed;
+		m_graphics->getCamView()->lookAt += moveDir;
+		m_graphics->getCamView()->eyePos += moveDir;
+	}
 	if(keyState[SDL_SCANCODE_W]) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go forward
 		glm::vec3 moveDir = glm::normalize(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos);
 		moveDir *= cameraSpeed;
@@ -131,7 +127,6 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_A]) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go left
 		glm::vec3 moveDir = glm::normalize(glm::cross(glm::vec3(0.0, 1.0, 0.0), m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos));
 		moveDir *= cameraSpeed;
@@ -139,7 +134,6 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_S]) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go back
 		glm::vec3 moveDir = glm::normalize(m_graphics->getCamView()->eyePos - m_graphics->getCamView()->lookAt);
 		moveDir.y = 0;
@@ -148,15 +142,11 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
 	if(keyState[SDL_SCANCODE_D]) {
-		m_graphics->getCamView()->cameraMode = CAMERA_MODE_FREE;
 		//Go right
 		glm::vec3 moveDir = glm::normalize(glm::cross(m_graphics->getCamView()->lookAt - m_graphics->getCamView()->eyePos, glm::vec3(0.0, 1.0, 0.0)));
 		moveDir *= cameraSpeed;
 		m_graphics->getCamView()->lookAt += moveDir;
 		m_graphics->getCamView()->eyePos += moveDir;
-	}
-	if(keyState[SDL_SCANCODE_N]) {
-
 	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
@@ -276,9 +266,11 @@ void Engine::eventHandler(unsigned dt) {
 		}
 	}
 	else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
-		float scale = 360.0f / _ctx.width;
+		float xscale = 360.0f / _ctx.width;
+		float yscale = 180.0f / _ctx.height;
 		
-		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * scale);
+		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
+		m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {

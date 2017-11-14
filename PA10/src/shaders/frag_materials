@@ -106,7 +106,7 @@ void main(void) {
 
         visibility = 0.05;
         for(int j = 0; j < numShadowSamples; j++) {
-            visibility += 0.95 / numShadowSamples * texture( spotlightShadowSampler, vec4(ShadowCoord[i].xy + poissonDisk[j] / 700.0, i, ShadowCoord[i].z-bias) );
+            visibility += 0.95 / numShadowSamples * texture(spotlightShadowSampler, vec4(ShadowCoord[i].xy + poissonDisk[j] / 700.0, i, ShadowCoord[i].z - bias));
         }
 
         if(numShadowSamples == 0) {

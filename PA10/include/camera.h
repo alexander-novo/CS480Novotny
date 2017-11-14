@@ -38,7 +38,7 @@ class Camera {
 		// bool setMenu(Menu& menu);
 		
 		//Keeps track of where the camera is and what it's looking at
-		glm::vec3 lookAt;
+		glm::vec3 lookAt = glm::vec3(0.0, 0.0, 20.0);
 		glm::vec3 eyePos;
 		
 		//Camera mode - see macros above

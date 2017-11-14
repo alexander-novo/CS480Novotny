@@ -22,8 +22,9 @@ class Menu {
 	public:
 		//All the different options the menu changes
 		struct Options {
-			float zoom = 1.0;     //Keeps track of how far our camera should be away from the planet we're looking at
+			float zoom = 100.0;     //Keeps track of how far our camera should be away from the planet we're looking at
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
+			float elevation = 45;
 			bool shouldClose = false; //Whether or not we should exit the program
 			int shadowSize = MENU_SHADOWS_LOW; //Size of shadow maps
 			bool changedShadowSize = false; //True if shadowSize changed in the last frame
@@ -50,6 +51,7 @@ class Menu {
 		void setZoom(float zoom);
 		//Set rotation amount
 		void setRotation(float rotation);
+		void setElevation(float elevation);
 		
 		void toggleOptionsMenu();
 		void swapShaderType();

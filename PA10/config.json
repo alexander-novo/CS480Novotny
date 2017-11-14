@@ -2,7 +2,7 @@
   "window": {
     "fullscreen": false,
     "adjustable": false,
-    "height": 750,
+    "height": 1000,
     "width": 1500,
     "name": "Pinball Machine"
   },
@@ -32,12 +32,12 @@
       "location": {
         "x": 0,
         "y": 50,
-        "z": 60
+        "z": 0
       },
       "pointingAt": {
         "x": 0,
-        "y": 5,
-        "z": 60
+        "y": 0,
+        "z": 0
       },
       "color": {
         "r": 255,

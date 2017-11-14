@@ -95,6 +95,10 @@ void Menu::setRotation(float rotation) {
 	_options.rotation = rotation;
 }
 
+void Menu::setElevation(float elevation) {
+	_options.elevation = elevation;
+}
+
 void Menu::toggleOptionsMenu() {
 	_options.showOptionsMenu = !_options.showOptionsMenu;
 	if(!_options.showOptionsMenu) {
