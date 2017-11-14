@@ -18,72 +18,21 @@
     {
       "type": "spot",
       "location": {
-        "x": 15,
-        "y": 15,
-        "z": 15
+        "x": 0,
+        "y": 50,
+        "z": 0
       },
       "color": "rainbow",
       "pointingAt": "Bad Sphere",
-      "angle": 2,
-      "strength": 700
-    },
-    {
-      "type": "spot",
-      "name": "Bumper Spotlight Red",
-      "location": {
-        "x": 15,
-        "y": 15,
-        "z": 15
-      },
-      "color": {
-        "r": 255,
-        "g": 0,
-        "b": 0
-      },
-      "pointingAt": "Bumper",
-      "angle": 2,
-      "strength": 700
-    },
-    {
-      "type": "spot",
-      "name": "Bumper Spotlight Blue",
-      "location": {
-        "x": 15,
-        "y": 15,
-        "z": 15
-      },
-      "color": {
-        "r": 0,
-        "g": 0,
-        "b": 255
-      },
-      "pointingAt": "Bumper",
-      "angle": 2,
-      "strength": 700
-    },
-    {
-      "type": "spot",
-      "name": "Bumper Spotlight White",
-      "location": {
-        "x": 15,
-        "y": 15,
-        "z": 15
-      },
-      "color": {
-        "r": 255,
-        "g": 255,
-        "b": 255
-      },
-      "pointingAt": "Bumper",
-      "angle": 2,
-      "strength": 700
+      "angle": 5,
+      "strength": 1000
     },
     {
       "type": "spot",
       "location": {
         "x": 0,
-        "y": 25,
-        "z": 0
+        "y": 50,
+        "z": 10
       },
       "pointingAt": {
         "x": 0,
@@ -95,28 +44,8 @@
         "g": 255,
         "b": 255
       },
-      "angle": 70,
-      "strength": 600
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 0,
-        "y": 100,
-        "z": 0
-      },
-      "pointingAt": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "color": {
-        "r": 255,
-        "g": 255,
-        "b": 255
-      },
-      "angle": 70,
-      "strength": 6000
+      "angle": 45,
+      "strength": 1200
     }
   ],
   "game_objects": [
