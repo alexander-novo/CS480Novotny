@@ -69,3 +69,10 @@ Pauses while
 `Tutorial --help` - Pull up the help menu / command usage   
 `Tutorial <config>` - Run the program with the given config file (e.g. "Tutorial config.json")   
 
+# Extra Credit
+
+Multiple Balls   
+Plunger Intensity   
+Spotlight that follows ball   
+Shadow Mapping (shadows)  
+Game Replay   
