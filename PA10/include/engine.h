@@ -9,6 +9,8 @@
 #include "graphics.h"
 #include "Menu.h"
 #include "gameworldctx.h"
+// ballcount variable
+#include "physics_world.h"
 
 #define ENGINE_NAME_DEFAULT "Pinball"
 #define ENGINE_WIDTH_DEFAULT 800
@@ -48,6 +50,9 @@ class Engine {
 		unsigned int getDT();
 		//Get the current time in milliseconds
 		long long GetCurrentTimeMillis();
+
+		// Start a new game
+		void NewGame();
 		
 		//Read-only
 		const int& windowWidth;

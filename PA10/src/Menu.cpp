@@ -41,6 +41,16 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::SameLine();
 				ImGui::RadioButton("Toggle", &_options.plungerShouldHold, 2);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar to start charging power. Press again to launch.");
+
+				ImGui::Text("Play Style");
+				ImGui::Indent(MENU_OPTIONS_INDENT);
+
+				ImGui::RadioButton("One Ball", &_options.singleBall, 1);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Hold spacebar to charge your shot");
+				ImGui::SameLine();
+				ImGui::RadioButton("Multi-Ball", &_options.singleBall, 0);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar for a fully charged shot");
+				// Todo: On either menu exit (preferred) or radial click, start new game after multiball option changed
 				
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
@@ -107,5 +117,12 @@ void Menu::swapShaderType() {
 		_options.shaderType = MENU_SHADER_FRAGMENT;
 	} else {
 		_options.shaderType = MENU_SHADER_VERTEX;
+	}
+}
+
+int Menu::singleBall(int singleBall) {
+	static int single = 1;
+	if(singleBall >= 0) {
+		single = singleBall;
 	}
 }

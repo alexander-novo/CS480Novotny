@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include "graphics_headers.h"
+//#include "Menu.h"
 
 #define BIT(x) (1<<(x))
 enum collisiontypes {
@@ -66,7 +67,14 @@ class PhysicsWorld {
 
 		std::vector<btRigidBody*>* getLoadedBodies();
 		std::vector<int> ballIndices;
+		std::vector<int> singleBallIndex;
+		std::vector<int> *currentBallIndices;
+		bool multiBall = false;
 		int plungerIndex;
+
+		// Pinball Variable to keep track of # of balls
+		// required for the pinball callback which seems to have fixed inputs/returns
+		static int ballCount(int count = -1);
 
 	
 	
@@ -86,7 +94,8 @@ class PhysicsWorld {
 		btDiscreteDynamicsWorld* dynamicsWorld;
 		std::unordered_map<std::string, btCollisionShape*> loadedPhysicsObjects;
 		std::vector<btRigidBody*> loadedBodies;
-	
+
+
 };
 
 #endif /* PHYSICS_WORLD_H */

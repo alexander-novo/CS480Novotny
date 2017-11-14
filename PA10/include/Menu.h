@@ -33,6 +33,7 @@ class Menu {
 			bool shouldSwapShaders = false; //Whether the engine should swap shaders this frame
 			
 			int plungerShouldHold = 1; //Whether or not holding down the plunger button should power it up
+			int singleBall = 1; //Whether to play with 1 ball or 3
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with
 			
@@ -53,6 +54,9 @@ class Menu {
 		
 		void toggleOptionsMenu();
 		void swapShaderType();
+
+		// Allow callback to see game mode type
+		static int singleBall(int singleBall = -1);
 		
 		//Read-only menu options
 		const Options& options;

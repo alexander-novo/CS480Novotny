@@ -38,12 +38,28 @@ make
 
 # Controls
 
-`left click` - Drag to rotate camera, click object to shoot object forward  
+`left click` - Drag to rotate camera, click object to shoot object forward some     
 `right click` - Shoot a cube forward, and several spheres in random directions.   
 `Scroll wheel` - Zoom in and out  
 `R` - Switch between per-vertex / per-fragment lighting  
 `up/down arrows` - Widen/narrow spotlight   
 `Spacebar` - Press to launch ball. Hold to increase power.     
+`N` - To start a new game.   
+
+# Menu
+
+Pauses while 
+
+### Game Options
+
+`Plunger Type` - Choose between three styles of plunger: `Hold` space to charge, release to launch. `Static` predefined charge level, just push to launch. `Toggle` charge by hitting space, then hit space again to launch.   
+`Play Style` - Choose to play with 1 ball at a time, or with 3 balls at once!   
+`Ambient Lighting` - (HUGE menu option - Adjust options window size accordingly if needed) Adjust color and intensity of ambient lighting.   
+
+### Graphics Options
+
+`Shader Type` - Select Between Vertex and Fragment shading.
+`Shadows` - Select shadow quality.  
 
 # Command Line Parameters
 

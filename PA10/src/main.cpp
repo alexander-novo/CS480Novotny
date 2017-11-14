@@ -73,6 +73,7 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 	} else {
 		// Add the physics world (not defined in config)
 		PhysicsWorld* physWorld = new PhysicsWorld();
+
 		ctx.physWorld = physWorld;
 		
 		//Load and process config file

@@ -320,34 +320,6 @@
       "scale": 1
     },
     {
-      "name": "Bad Sphere",
-      "shape": "sphere",
-      "model": "BadSphere.obj",
-      "texture": "2k_earth_daymap.jpg",
-      "isDynamic": true,
-      "radius": 2,
-      "location": {
-        "z": 40,
-        "x": 0,
-        "y": 12
-      },
-      "mass": 1
-    },
-    {
-      "name": "Ball 1",
-      "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
-      "isDynamic": true,
-      "radius": 2,
-      "location": {
-        "z": 40,
-        "x": 23,
-        "y": 3
-      },
-      "mass": 3
-    },
-    {
       "name": "Right Wall",
       "model": "Wall.obj",
       "shape": "box",
@@ -514,6 +486,35 @@
       "scale": 2.5
     },
     {
+      "comment": "Balls Section - Between 1 and 3",
+      "name": "Bad Sphere",
+      "shape": "sphere",
+      "model": "BadSphere.obj",
+      "texture": "2k_earth_daymap.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": -15,
+        "x": 0,
+        "y": 12
+      },
+      "mass": 1
+    },
+    {
+      "name": "Ball 1",
+      "shape": "sphere",
+      "model": "Planet.obj",
+      "texture": "2k_earth_daymap2.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": -15,
+        "x": 23,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
       "name": "Ball 2",
       "shape": "sphere",
       "model": "Planet.obj",
@@ -521,8 +522,8 @@
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": 0,
-        "x": -48,
+        "z": -15,
+        "x": -30,
         "y": 2
       },
       "mass": 5
