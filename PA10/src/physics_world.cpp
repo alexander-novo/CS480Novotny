@@ -1,8 +1,10 @@
 #ifndef PHYSICS_WORLD
 #define PHYSICS_WORLD
 
+#include <Menu.h>
 #include "physics_world.h"
 
+class Menu;
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
 PhysicsWorld::PhysicsWorld() {
@@ -217,6 +219,12 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	if (objCtx->shape == 1)   // SPHERE
 	{
 		ballIndices.push_back(bodyIndex);
+
+		// Keep first Ball as Single
+		if(singleBallIndex.size() == 0)
+		{
+			singleBallIndex.push_back(bodyIndex);
+		}
 	}
 	if (objCtx->isPlunger) // DO this check on the plunger too
 	{
@@ -409,32 +417,52 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
-	static int ballCount = 3;
 	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
-	for(int i = 0; i<tempWorld->ballIndices.size(); i++)
+
+	if(Menu::singleBall())
 	{
-		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getLinearVelocity();
+		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
+	}
+	else
+	{
+		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
+	}
+
+	// Traverse all the balls and check if they are out of bounds on speed or location
+	for(int i = 0; i<tempWorld->currentBallIndices->size(); i++)
+	{
+		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getLinearVelocity();
 		btScalar speed = velocity.length();
 		if(speed > mMaxSpeed)
 		{
 			velocity *= mMaxSpeed/speed;
-			(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(velocity);
+			(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(velocity);
 		}
-		if((*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getCenterOfMassPosition().z() < -15)
+		if((*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getCenterOfMassPosition().z() < -15)
 		{
-			// If ball falls through, reset it.
-			if(ballCount > 0)
+			static bool gameOver = false;
+			// If ball falls through and there are balls left reset it
+			if(PhysicsWorld::ballCount() > 0)
 			{
+				// Todo: change cout statements to in game
 				std::cout << "BALL LOST" << std::endl;
 				btTransform ballTransform;
 				ballTransform.setIdentity();
 				ballTransform.setOrigin(btVector3(-48,2,0));
-				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setWorldTransform(ballTransform);
-				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setLinearVelocity(btVector3(0,0,0));
-				(*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->setAngularVelocity(btVector3(0,0,0));
-				ballCount--;
+				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(ballTransform);
+				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(btVector3(0,0,0));
+				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(btVector3(0,0,0));
+				PhysicsWorld::ballCount(PhysicsWorld::ballCount()-1);
+			}
+			else
+			{
+				if(!gameOver)
+				{
+					std::cout << "Game Over" << std::endl;
+					gameOver = true;
+				}
 			}
 		}
 	}
@@ -467,10 +495,21 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 //				const btVector3& ptB = pt.getPositionWorldOnB();
 //				const btVector3& normalOnB = pt.m_normalWorldOnB;
 //
-//				// todo: do stuff here
+//				// TODO: Collision Detection for Bumper Scoring
 //			}
 //		}
 //	}
+}
+
+// Update the ball count and/or return the # of balls left
+int PhysicsWorld::ballCount(int count)
+{
+	static int ballCount = 3;
+	if(count >= 0)
+	{
+		ballCount = count;
+	}
+	return ballCount;
 }
 
 #endif

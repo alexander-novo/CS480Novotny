@@ -46,14 +46,16 @@ bool Engine::Initialize() {
 	
 	// Set the time
 	m_currentTimeMillis = GetCurrentTimeMillis();
-	
+
 	// No errors
 	return true;
 }
 
 void Engine::Run() {
 	m_running = true;
-	
+
+	bool newGame = false;
+
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
@@ -75,6 +77,13 @@ void Engine::Run() {
 //		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
 
 		// Update planet positions
+
+		if(!newGame)
+		{
+			// Start new game
+			NewGame();
+			newGame = true;
+		}
 		m_graphics->Update(m_DT);
 		if(!m_menu->options.paused) _ctx.physWorld->update(m_DT);
 
@@ -148,6 +157,13 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->lookAt += moveDir;
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
+<<<<<<< HEAD
+=======
+	if(keyState[SDL_SCANCODE_N]) {
+		// New Game
+		NewGame();
+	}
+>>>>>>> master
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
 		if(ctx.leftPaddleIndex >= 0)
@@ -405,4 +421,47 @@ long long Engine::GetCurrentTimeMillis() {
 	gettimeofday(&t, nullptr);
 	long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
 	return ret;
+}
+
+
+void Engine::NewGame() {
+
+	PhysicsWorld * tempWorld = _ctx.physWorld;
+	if(m_menu->options.singleBall)
+	{
+		_ctx.physWorld->ballCount(3);
+		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
+	}
+	else
+	{
+		_ctx.physWorld->ballCount(0);
+		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
+	}
+
+	int xLoc = 25;
+	int zLoc = -17;
+	// Start with all other balls in tray
+	for(int i = 1; i<(*tempWorld).ballIndices.size(); i++)
+	{
+		btTransform ballTransform;
+		ballTransform.setIdentity();
+		ballTransform.setOrigin(btVector3(xLoc,2,zLoc));
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setWorldTransform(ballTransform);
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setLinearVelocity(btVector3(0,0,0));
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setAngularVelocity(btVector3(0,0,0));
+		xLoc += 5;
+	}
+
+	// Place correct balls in ball launcher
+	zLoc = 5;
+	for(int i = 0; i<tempWorld->currentBallIndices->size(); i++)
+	{
+		btTransform ballTransform;
+		ballTransform.setIdentity();
+		ballTransform.setOrigin(btVector3(-48,2,zLoc));
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(ballTransform);
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(btVector3(0,0,0));
+		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(btVector3(0,0,0));
+		zLoc -= 5;
+	}
 }
