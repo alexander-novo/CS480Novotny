@@ -217,12 +217,17 @@ void Engine::eventHandler(unsigned dt) {
 
 
 	static int plungerTimer = -1;
+	static int plungerCooldown = 0;
 	
 	if(plungerTimer != -1) {
 		plungerTimer += dt * 3;
 		if(plungerTimer > 5000) {
 			plungerTimer = 5000;
 		}
+	}
+	
+	if(plungerCooldown > 0) {
+		plungerTimer -= dt;
 	}
 	
 	//Quit program
@@ -328,7 +333,7 @@ void Engine::eventHandler(unsigned dt) {
 			{
 				if(m_menu->options.plungerShouldHold){
 					plungerTimer = 1000;
-				} else {
+				} else if(plungerCooldown <= 0){
 					if(ctx.plungerIndex >= 0)
 					{
 						float directionScalar = (800) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
@@ -340,6 +345,8 @@ void Engine::eventHandler(unsigned dt) {
 					{
 						std::cout << "No plunger defined" << std::endl;
 					}
+					
+					plungerCooldown = 3000;
 				}
 				
 				break;
