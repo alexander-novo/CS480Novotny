@@ -48,6 +48,8 @@ class Shader {
 		std::string geometryShader;
 		std::string key;
 		
+		bool erroredOut = false;
+		
 		static std::unordered_map<std::string, Shader*> loadedShaders;
 };
 

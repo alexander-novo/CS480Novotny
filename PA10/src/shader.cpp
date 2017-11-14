@@ -18,7 +18,7 @@ Shader::~Shader() {
 }
 
 bool Shader::Initialize(std::unordered_map<std::string, std::string> const * dictionary) {
-	if(!initialised) {
+	if(!initialised && !erroredOut) {
 		m_shaderProg = glCreateProgram();
 		
 		if (m_shaderProg == 0) {
@@ -32,7 +32,8 @@ bool Shader::Initialize(std::unordered_map<std::string, std::string> const * dic
 		
 		initialised = true;
 		
-		return Finalize();
+		erroredOut = !Finalize();
+		return !erroredOut;
 	}
 	
 	return true;
@@ -73,8 +74,8 @@ bool Shader::AddShader(GLenum ShaderType, const std::string &s, std::unordered_m
 	glGetShaderiv(ShaderObj, GL_COMPILE_STATUS, &success);
 	
 	if (!success) {
-		GLchar InfoLog[1024];
-		glGetShaderInfoLog(ShaderObj, 1024, NULL, InfoLog);
+		GLchar InfoLog[2048];
+		glGetShaderInfoLog(ShaderObj, 2048, NULL, InfoLog);
 		std::cerr << "Error with " << key << std::endl;
 		std::cerr << "Error compiling: " << InfoLog << std::endl;
 		return false;
@@ -90,7 +91,7 @@ bool Shader::AddShader(GLenum ShaderType, const std::string &s, std::unordered_m
 // to link and validate the program.
 bool Shader::Finalize() {
 	GLint Success = 0;
-	GLchar ErrorLog[1024] = {0};
+	GLchar ErrorLog[2048] = {0};
 	
 	glLinkProgram(m_shaderProg);
 	
