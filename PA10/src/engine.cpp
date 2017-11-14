@@ -216,7 +216,15 @@ void Engine::Keyboard(unsigned dt) {
 void Engine::eventHandler(unsigned dt) {
 
 
-	static float plungerTimer = 0.0f;
+	static int plungerTimer = -1;
+	
+	if(plungerTimer != -1) {
+		plungerTimer += dt * 3;
+		if(plungerTimer > 5000) {
+			plungerTimer = 5000;
+		}
+	}
+	
 	//Quit program
 	if (m_event.type == SDL_QUIT
 	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -318,15 +326,7 @@ void Engine::eventHandler(unsigned dt) {
 				break;
 			case SDLK_SPACE:
 			{
-				// Prevent too much plunger power
-				if(plungerTimer > 4000)
-				{
-					plungerTimer = 4000;
-				}
-				else
-				{
-					plungerTimer += dt*2;
-				}
+				plungerTimer = 0;
 				break;
 			}
 		}
@@ -348,7 +348,7 @@ void Engine::eventHandler(unsigned dt) {
 				{
 					std::cout << "No plunger defined" << std::endl;
 				}
-				plungerTimer = 0.0f;
+				plungerTimer = -1;
 			}
 
 		}
