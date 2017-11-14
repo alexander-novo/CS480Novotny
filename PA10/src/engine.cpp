@@ -157,13 +157,12 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->lookAt += moveDir;
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
-<<<<<<< HEAD
-=======
+
 	if(keyState[SDL_SCANCODE_N]) {
 		// New Game
 		NewGame();
 	}
->>>>>>> master
+
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
 		if(ctx.leftPaddleIndex >= 0)
