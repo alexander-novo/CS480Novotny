@@ -74,6 +74,10 @@ class Engine {
 		void Keyboard(unsigned dt);
 		//Handle other events (mouse, etc.)
 		void eventHandler(unsigned dt);
+
+		// Keeps track of timer powering up
+		int plungerTimer = 100;
+		bool plungerHit = false;
 };
 
 #endif // ENGINE_H

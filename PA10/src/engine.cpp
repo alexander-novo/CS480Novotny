@@ -63,6 +63,12 @@ void Engine::Run() {
 			eventHandler(m_DT);
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
+
+		// Update plunger timer if needed
+		if(m_menu->options.plungerShouldHold > 0 && plungerHit)
+		{
+			plungerTimer += m_DT;
+		}
 		// Check the keyboard input
 		Keyboard(m_DT);
 		
@@ -149,6 +155,9 @@ void Engine::Keyboard(unsigned dt) {
 		m_graphics->getCamView()->lookAt += moveDir;
 		m_graphics->getCamView()->eyePos += moveDir;
 	}
+	if(keyState[SDL_SCANCODE_N]) {
+
+	}
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
 		if(ctx.leftPaddleIndex >= 0)
@@ -215,21 +224,6 @@ void Engine::Keyboard(unsigned dt) {
 
 void Engine::eventHandler(unsigned dt) {
 
-
-	static int plungerTimer = -1;
-	static int plungerCooldown = 0;
-	
-	if(plungerTimer != -1) {
-		plungerTimer += dt * 3;
-		if(plungerTimer > 5000) {
-			plungerTimer = 5000;
-		}
-	}
-	
-	if(plungerCooldown > 0) {
-		plungerCooldown -= dt;
-	}
-	
 	//Quit program
 	if (m_event.type == SDL_QUIT
 	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -331,9 +325,37 @@ void Engine::eventHandler(unsigned dt) {
 				break;
 			case SDLK_SPACE:
 			{
-				if(m_menu->options.plungerShouldHold){
-					plungerTimer = 1000;
-				} else if(plungerCooldown <= 0){
+				if(m_menu->options.plungerShouldHold == 1){
+					// Limit Power
+					if(plungerTimer > 4500)
+					{
+						plungerTimer = 4500;
+					}
+					plungerHit = true;
+				}
+				else if (m_menu->options.plungerShouldHold == 2){
+					// Hit ball if done charging on toggle
+					if(plungerHit)
+					{
+						if (ctx.plungerIndex >= 0) {
+							float directionScalar = (plungerTimer / 5) *
+									(1 / (*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
+							btVector3 directionVector(0, 0, 1);
+							directionVector *= directionScalar;
+							//Apply Impulse in (Direction, @ location on body)
+							(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+						} else {
+							std::cout << "No plunger defined" << std::endl;
+						}
+						plungerTimer = 150;
+						plungerHit = false;
+					}
+					else
+					{
+						plungerHit = true;
+					}
+				}
+				else if(((*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getCenterOfMassPosition()).z() <= -14){
 					if(ctx.plungerIndex >= 0)
 					{
 						float directionScalar = (800) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
@@ -345,8 +367,6 @@ void Engine::eventHandler(unsigned dt) {
 					{
 						std::cout << "No plunger defined" << std::endl;
 					}
-					
-					plungerCooldown = 3000;
 				}
 				
 				break;
@@ -359,18 +379,21 @@ void Engine::eventHandler(unsigned dt) {
 		{
 			case SDLK_SPACE:
 			{
-				if(ctx.plungerIndex >= 0)
-				{
-					float directionScalar = (plungerTimer/5) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
-					btVector3 directionVector(0,0,1);
-					directionVector *= directionScalar;
-					//Apply Impulse in (Direction, @ location on body)
-					(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-				} else
-				{
-					std::cout << "No plunger defined" << std::endl;
+
+				if (m_menu->options.plungerShouldHold == 1) {
+					if (ctx.plungerIndex >= 0) {
+						float directionScalar = (plungerTimer / 5) *
+								(1 / (*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
+						btVector3 directionVector(0, 0, 1);
+						directionVector *= directionScalar;
+						//Apply Impulse in (Direction, @ location on body)
+						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+					} else {
+						std::cout << "No plunger defined" << std::endl;
+					}
+					plungerTimer = 150;
+					plungerHit = false;
 				}
-				plungerTimer = -1;
 			}
 
 		}

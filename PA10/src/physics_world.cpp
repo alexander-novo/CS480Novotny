@@ -424,9 +424,10 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 		}
 		if((*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getCenterOfMassPosition().z() < -15)
 		{
-			std::cout << "BALL LOST" << std::endl;
+			// If ball falls through, reset it.
 			if(ballCount > 0)
 			{
+				std::cout << "BALL LOST" << std::endl;
 				btTransform ballTransform;
 				ballTransform.setIdentity();
 				ballTransform.setOrigin(btVector3(-48,2,0));
@@ -438,6 +439,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 		}
 	}
 
+	// Speed Clamping on plunger
 	btVector3 velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->plungerIndex]->getLinearVelocity();
 	btScalar speed = velocity.length();
 	if(speed > mMaxSpeed)

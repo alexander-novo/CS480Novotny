@@ -33,11 +33,14 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::Text("Plunger Type");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
 				
-				ImGui::RadioButton("Dynamic", &_options.plungerShouldHold, 1);
+				ImGui::RadioButton("Hold", &_options.plungerShouldHold, 1);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Hold spacebar to charge your shot");
 				ImGui::SameLine();
 				ImGui::RadioButton("Static", &_options.plungerShouldHold, 0);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar for a fully charged shot");
+				ImGui::SameLine();
+				ImGui::RadioButton("Toggle", &_options.plungerShouldHold, 2);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar to start charging power. Press again to launch.");
 				
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
