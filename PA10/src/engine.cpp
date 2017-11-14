@@ -227,7 +227,7 @@ void Engine::eventHandler(unsigned dt) {
 	}
 	
 	if(plungerCooldown > 0) {
-		plungerTimer -= dt;
+		plungerCooldown -= dt;
 	}
 	
 	//Quit program
