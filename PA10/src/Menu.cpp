@@ -30,6 +30,16 @@ void Menu::update(int dt, float width, float height) {
 		if (ImGui::Begin("Options", &_options.showOptionsMenu, ImGuiWindowFlags_NoCollapse)) {
 			
 			if(ImGui::CollapsingHeader("Game Options")) {
+				ImGui::Text("Plunger Type");
+				ImGui::Indent(MENU_OPTIONS_INDENT);
+				
+				ImGui::RadioButton("Dynamic", &_options.plungerShouldHold, 1);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Hold spacebar to charge your shot");
+				ImGui::SameLine();
+				ImGui::RadioButton("Static", &_options.plungerShouldHold, 0);
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar for a fully charged shot");
+				
+				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
 			}
 			

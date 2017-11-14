@@ -326,7 +326,22 @@ void Engine::eventHandler(unsigned dt) {
 				break;
 			case SDLK_SPACE:
 			{
-				plungerTimer = 0;
+				if(m_menu->options.plungerShouldHold){
+					plungerTimer = 1000;
+				} else {
+					if(ctx.plungerIndex >= 0)
+					{
+						float directionScalar = (800) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
+						btVector3 directionVector(0,0,1);
+						directionVector *= directionScalar;
+						//Apply Impulse in (Direction, @ location on body)
+						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+					} else
+					{
+						std::cout << "No plunger defined" << std::endl;
+					}
+				}
+				
 				break;
 			}
 		}
