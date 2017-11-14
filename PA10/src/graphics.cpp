@@ -361,7 +361,7 @@ void Graphics::renderShadows() {
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		
 		for (int j = 0; j < gameWorldCtx->worldObjects.size(); j++) {
-			gameWorldCtx->worldObjects[j]->RenderShadow(pickShader, spotlightMatrices[i]);
+			gameWorldCtx->worldObjects[j]->RenderShadow(shadowShader, spotlightMatrices[i]);
 		}
 	}
 	
