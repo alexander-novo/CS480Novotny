@@ -32,6 +32,7 @@ class Menu {
 			bool paused = false; //Pause simulation
 			bool showOptionsMenu = false; //Whether or not the options menu is out right now
 			bool shouldSwapShaders = false; //Whether the engine should swap shaders this frame
+			bool shouldStartNewGame = false;
 			
 			int plungerShouldHold = 1; //Whether or not holding down the plunger button should power it up
 			int singleBall = 1; //Whether to play with 1 ball or 3

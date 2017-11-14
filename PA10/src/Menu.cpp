@@ -13,7 +13,9 @@ void Menu::update(int dt, float width, float height) {
 	//ImGui::ShowTestWindow();
 	
 	_options.changedShadowSize = false;
+	_options.shouldStartNewGame = false;
 	int tempShadowSize = _options.shadowSize;
+	int tempBallMode = _options.singleBall;
 	
 	if(ImGui::BeginMainMenuBar()) {
 		if(ImGui::BeginMenu("File")) {
@@ -85,6 +87,10 @@ void Menu::update(int dt, float width, float height) {
 		_options.shouldSwapShaders = true;
 	} else {
 		_options.shouldSwapShaders = false;
+	}
+	
+	if(_options.singleBall != tempBallMode) {
+		_options.shouldStartNewGame = true;
 	}
 }
 

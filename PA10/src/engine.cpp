@@ -96,6 +96,9 @@ void Engine::Run() {
 				std::swap(i->ctx.shader, i->ctx.altShader);
 			}
 		}
+		if(m_menu->options.shouldStartNewGame) {
+			NewGame();
+		}
 
 		//Render everything
 		m_graphics->Render();
