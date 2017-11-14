@@ -42,9 +42,11 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::RadioButton("Toggle", &_options.plungerShouldHold, 2);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar to start charging power. Press again to launch.");
 
+				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::Text("Play Style");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
-
+				
+				// TODO: Better tooltips?
 				ImGui::RadioButton("One Ball", &_options.singleBall, 1);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Hold spacebar to charge your shot");
 				ImGui::SameLine();
