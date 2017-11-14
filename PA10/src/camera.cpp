@@ -31,7 +31,7 @@ void Camera::calculateCamera() {
 	//What we're looking at
 	glm::vec3 lookVec = {0, 0, 0};
 	//What should be in the background (whatever we're orbiting)
-	glm::vec3 backgroundVec = glm::vec3(0.0, 2.0, -3.0);
+	glm::vec3 backgroundVec = glm::vec3(0.0, 5.0, -2.0);
 	float angle = m_menu.options.rotation * (float) M_PI / 180.0f;
 	
 	backgroundVec = glm::rotate(backgroundVec, angle, glm::vec3(0.0, 1.0, 0.0));

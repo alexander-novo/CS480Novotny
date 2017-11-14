@@ -104,9 +104,9 @@ void main(void) {
         cosTheta = max(dot(n, l), 0);
         cosAlpha = max(dot(e, r), 0);
 
-        visibility = 0.2;
+        visibility = 0.05;
         for(int j = 0; j < numShadowSamples; j++) {
-            visibility += 0.8 / numShadowSamples * texture( spotlightShadowSampler, vec4(ShadowCoord[i].xy + poissonDisk[j] / 700.0, i, ShadowCoord[i].z-bias) );
+            visibility += 0.95 / numShadowSamples * texture( spotlightShadowSampler, vec4(ShadowCoord[i].xy + poissonDisk[j] / 700.0, i, ShadowCoord[i].z-bias) );
         }
 
         if(numShadowSamples == 0) {

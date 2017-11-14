@@ -338,7 +338,6 @@ void Graphics::renderShadows() {
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, spotlightShadowBuffer);
 	glViewport(0, 0, m_menu.options.shadowSize, m_menu.options.shadowSize);
-	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	
 	glCullFace(GL_BACK);
 	
@@ -351,7 +350,7 @@ void Graphics::renderShadows() {
 		} else {
 			viewMatrix = glm::lookAt(spotLights[i].position, *spotLights[i].pointing, glm::vec3(0.01, 1.0, 0.0));
 		}
-		//projMatrix = glm::perspective(spotLights[i].angle * 2, 1.0f, NEAR_FRUSTRUM, FAR_FRUSTRUM);
+		
 		projMatrix = glm::perspective(float(M_PI / 2), 1.0f, 1.0f, 200.0f);
 		
 		spotlightMatrices[i] = projMatrix * viewMatrix;
