@@ -46,12 +46,11 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::Text("Play Style");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
 				
-				// TODO: Better tooltips?
 				ImGui::RadioButton("One Ball", &_options.singleBall, 1);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Hold spacebar to charge your shot");
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with a single ball at a time");
 				ImGui::SameLine();
 				ImGui::RadioButton("Multi-Ball", &_options.singleBall, 0);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Press spacebar for a fully charged shot");
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with 3 balls on the board at once!");
 				// Todo: On either menu exit (preferred) or radial click, start new game after multiball option changed
 				
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
