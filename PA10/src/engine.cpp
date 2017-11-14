@@ -292,7 +292,7 @@ void Engine::eventHandler(unsigned dt) {
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
-		float step = 0.05f * m_menu->options.zoom;
+		float step = 1.0f * dt / 100.0f;
 		//Scroll down
 		if(m_event.wheel.y > 0) {
 			step *= -1;

@@ -53,7 +53,6 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::SameLine();
 				ImGui::RadioButton("Multi-Ball", &_options.singleBall, 0);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with 3 balls on the board at once!");
-				// Todo: On either menu exit (preferred) or radial click, start new game after multiball option changed
 				
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
@@ -100,7 +99,7 @@ void Menu::render() {
 
 void Menu::setZoom(float zoom) {
 	if (zoom < 0.1) zoom = 0.1;
-	else if (zoom > 50.0) zoom = 50.0;
+	else if (zoom > 200.0) zoom = 200.0;
 	
 	_options.zoom = zoom;
 }
