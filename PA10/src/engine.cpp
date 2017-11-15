@@ -431,7 +431,7 @@ void Engine::NewGame() {
 	PhysicsWorld * tempWorld = _ctx.physWorld;
 	if(m_menu->options.singleBall)
 	{
-		_ctx.physWorld->ballCount(3);
+		_ctx.physWorld->ballCount(2);
 		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
 	}
 	else
