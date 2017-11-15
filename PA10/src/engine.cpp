@@ -294,7 +294,7 @@ void Engine::eventHandler(unsigned dt) {
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
-		float step = 1.0f * dt / 100.0f;
+		float step = 0.05f * m_menu->options.zoom;
 		//Scroll down
 		if(m_event.wheel.y > 0) {
 			step *= -1;
@@ -339,9 +339,9 @@ void Engine::eventHandler(unsigned dt) {
 			{
 				if(m_menu->options.plungerShouldHold == 1){
 					// Limit Power
-					if(plungerTimer > 4500)
+					if(plungerTimer > 4000)
 					{
-						plungerTimer = 4500;
+						plungerTimer = 4000;
 					}
 					plungerHit = true;
 				}
@@ -433,7 +433,7 @@ void Engine::NewGame() {
 	PhysicsWorld * tempWorld = _ctx.physWorld;
 	if(m_menu->options.singleBall)
 	{
-		_ctx.physWorld->ballCount(3);
+		_ctx.physWorld->ballCount(2);
 		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
 	}
 	else
