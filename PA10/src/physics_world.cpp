@@ -173,6 +173,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// Set the body to a kinematic object if it is one
 	if (objCtx->isKinematic) {
 		flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
+		body->setActivationState(DISABLE_DEACTIVATION);
 		body->setCollisionFlags(flags);
 	}
 
@@ -182,6 +183,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		body->setCcdMotionThreshold(.00001);
 		// For Spheres use this (< sphere radius):
 		body->setCcdSweptSphereRadius(objCtx->radius / 1.6f);
+		body->setActivationState(DISABLE_DEACTIVATION);
 	}
 	else if(objCtx->isPlunger)
 	{
@@ -494,7 +496,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 		for (int j = 0; j < numContacts; j++)
 		{
 			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance() < 0.f)
+			if (pt.getDistance() < 0.1f)
 			{
 				const btVector3& ptA = pt.getPositionWorldOnA();
 				const btVector3& ptB = pt.getPositionWorldOnB();
