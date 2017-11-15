@@ -1,11 +1,13 @@
 #include "graphics.h"
 
-Graphics::Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld* pW, GameWorld::ctx* gwc) : windowWidth(w),
+Graphics::Graphics(Menu& menu, const int& w, const int& h, GameWorld::ctx* gwc) : windowWidth(w),
                                                                                                     windowHeight(h),
                                                                                                     m_menu(menu),
-                                                                                                    physWorld(pW),
                                                                                                     gameWorldCtx(gwc) {
 	camView = new Camera(menu);
+	
+	Object::projectionMatrix = &camView->GetProjection();
+	Object::viewMatrix = &camView->GetView();
 	
 	pickShader = Shader::load("shaders/vert_pick", "shaders/frag_pick");
 	shadowShader = Shader::load("shaders/vert_shadow", "shaders/frag_shadow");
@@ -18,10 +20,10 @@ Graphics::~Graphics() {
 	}
 }
 
-void Graphics::addLight(const LightContext& light) {
-	if (light.type == LIGHT_SPOT) {
+void Graphics::addLight(LightContext* light) {
+	if (light->type == LIGHT_SPOT) {
 		spotLights.push_back(light);
-	} else if (light.type == LIGHT_POINT) {
+	} else if (light->type == LIGHT_POINT) {
 		//TODO do this
 	}
 }
@@ -180,9 +182,17 @@ void Graphics::Update(unsigned int dt) {
 	}
 	
 	for (auto& i : spotLights) {
-		if (i.isRainbow) {
-			i.timer += dt / 25;
-			i.color = hsv2rgb(glm::vec3(i.timer, 1.0, 1.0));
+		if (i->isRainbow) {
+			i->timer += dt / 25;
+			i->color = hsv2rgb(glm::vec3(i->timer, 1.0, 1.0));
+		} else if(i->isBumperLight) {
+			if(i->timer > 0) {
+				if(i->timer < dt) {
+					i->timer = 0;
+				} else {
+					i->timer -= dt;
+				}
+			}
 		}
 	}
 	
@@ -236,22 +246,25 @@ void Graphics::Render() {
 	
 	glm::vec3 normalLightPoint;
 	for (unsigned i = 0; i < spotLights.size(); i++) {
-		spotLightPositions[i * 3 + 0] = spotLights[i].position.x;
-		spotLightPositions[i * 3 + 1] = spotLights[i].position.y;
-		spotLightPositions[i * 3 + 2] = spotLights[i].position.z;
+		spotLightPositions[i * 3 + 0] = spotLights[i]->position.x;
+		spotLightPositions[i * 3 + 1] = spotLights[i]->position.y;
+		spotLightPositions[i * 3 + 2] = spotLights[i]->position.z;
 		
-		normalLightPoint = glm::normalize(*spotLights[i].pointing - spotLights[i].position);
+		normalLightPoint = glm::normalize(*spotLights[i]->pointing - spotLights[i]->position);
 		
 		spotLightDirections[i * 3 + 0] = normalLightPoint.x;
 		spotLightDirections[i * 3 + 1] = normalLightPoint.y;
 		spotLightDirections[i * 3 + 2] = normalLightPoint.z;
 		
-		spotLightColors[i * 3 + 0] = spotLights[i].color.x;
-		spotLightColors[i * 3 + 1] = spotLights[i].color.y;
-		spotLightColors[i * 3 + 2] = spotLights[i].color.z;
+		spotLightColors[i * 3 + 0] = spotLights[i]->color.x;
+		spotLightColors[i * 3 + 1] = spotLights[i]->color.y;
+		spotLightColors[i * 3 + 2] = spotLights[i]->color.z;
 		
-		spotLightAngles[i] = cos(spotLights[i].angle);
-		spotLightStrengths[i] = spotLights[i].strength;
+		spotLightAngles[i] = cos(spotLights[i]->angle);
+		spotLightStrengths[i] = spotLights[i]->strength;
+		if(spotLights[i]->isBumperLight && spotLights[i]->timer <= 0) {
+			spotLightStrengths[i] = 0;
+		}
 	}
 	
 	
@@ -345,10 +358,14 @@ void Graphics::renderShadows() {
 	glDepthFunc(GL_LESS);
 	
 	for(int i = 0; i < spotLights.size(); i++) {
-		if(spotLights[i].position.x != spotLights[i].pointing->x || spotLights[i].position.x != spotLights[i].pointing->z) {
-			viewMatrix = glm::lookAt(spotLights[i].position, *spotLights[i].pointing, glm::vec3(0.0, 1.0, 0.0));
+		if(spotLights[i]->isBumperLight && spotLights[i]->timer == 0) {
+			continue;
+		}
+		
+		if(spotLights[i]->position.x != spotLights[i]->pointing->x || spotLights[i]->position.x != spotLights[i]->pointing->z) {
+			viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.0, 1.0, 0.0));
 		} else {
-			viewMatrix = glm::lookAt(spotLights[i].position, *spotLights[i].pointing, glm::vec3(0.01, 1.0, 0.0));
+			viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.01, 1.0, 0.0));
 		}
 		
 		projMatrix = glm::perspective(float(M_PI / 2), 1.0f, 1.0f, 200.0f);

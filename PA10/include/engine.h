@@ -32,7 +32,7 @@ class Engine {
 			int plungerIndex = -1;
 			int doorIndex = -1;
 			
-			std::vector<Graphics::LightContext>* lights = nullptr;
+			std::vector<Graphics::LightContext*>* lights = nullptr;
 		};
 		
 		Engine(const Context &ctx);

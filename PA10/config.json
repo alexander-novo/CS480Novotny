@@ -46,6 +46,70 @@
       },
       "angle": 70,
       "strength": 1200
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 46,
+        "y": 50,
+        "z": 26
+      },
+      "pointingAt": "Big Bumper",
+      "color": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "angle": 20,
+      "strength": 1500
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 21,
+        "y": 50,
+        "z": 51
+      },
+      "pointingAt": "Bumper Left",
+      "color": {
+        "r": 0,
+        "g": 255,
+        "b": 0
+      },
+      "angle": 20,
+      "strength": 1500
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": -21,
+        "y": 50,
+        "z": 51
+      },
+      "pointingAt": "Bumper Right",
+      "color": {
+        "r": 0,
+        "g": 0,
+        "b": 255
+      },
+      "angle": 20,
+      "strength": 1500
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 1,
+        "y": 50,
+        "z": 61
+      },
+      "pointingAt": "Bumper Center",
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 0
+      },
+      "angle": 20,
+      "strength": 1500
     }
   ],
   "game_objects": [

@@ -3,8 +3,8 @@
 
 #include <map>
 
+#include "graphics_headers.h"
 #include "window.h"
-#include "object.h"
 
 #define MENU_SHADER_VERTEX   0
 #define MENU_SHADER_FRAGMENT 1

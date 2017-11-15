@@ -4,10 +4,9 @@
 #include <iostream>
 
 #include "graphics_headers.h"
-#include "shader.h"
 #include "object.h"
+#include "shader.h"
 #include "Menu.h"
-#include "physics_world.h"
 #include "camera.h"
 #include "gameworldctx.h"
 
@@ -22,15 +21,16 @@ class Graphics {
 			glm::vec3 const * pointing; //Where the light is pointing, if spot light
 			glm::vec3 color;            //What color the light is
 			bool isRainbow = false;     //Whether the color should change over time
+			bool isBumperLight = false; //Whether or not the light stays on for only a set period of time
 			unsigned timer = 0;         //Timer for color over time
 			float strength;             //How bright
 			float angle;                //How wide of a cone - for spot lights
 		};
 		
-		Graphics(Menu& menu, const int& w, const int& h, PhysicsWorld *pW, GameWorld::ctx *gwc);
+		Graphics(Menu& menu, const int& w, const int& h, GameWorld::ctx *gwc);
 		~Graphics();
 		
-		void addLight(const LightContext& light);
+		void addLight(LightContext* light);
 		
 		//Initialise OpenGL
 		bool Initialize(int width, int height);
@@ -52,7 +52,7 @@ class Graphics {
 		
 		//DO NOT MODIFY AFTER Initialize() HAS BEEN CALLED
 		//Feel free to modify the LightContext objects, though
-		vector<LightContext> spotLights;
+		vector<LightContext*> spotLights;
 	
 	private:
 		
@@ -77,7 +77,6 @@ class Graphics {
 		const int& windowWidth;
 		const int& windowHeight;
 		
-		PhysicsWorld* physWorld;
 		GameWorld::ctx *gameWorldCtx;
 		
 		GLuint pickBuffer;

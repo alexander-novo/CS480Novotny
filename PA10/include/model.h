@@ -11,7 +11,6 @@
 #include <unordered_map>
 
 #include "graphics_headers.h"
-#include "physics_world.h"
 
 //Set up which texture channels to use with which type of texture
 #define GL_COLOR_TEXTURE    GL_TEXTURE0
@@ -57,7 +56,7 @@ class Model {
 		void loadVertices(aiMesh *mesh, Model *newModel);
 		Vertex loadVerticesExtended(aiMesh *mesh, int vertexIndex);
 		void loadIndices(aiMesh *mesh, Model *newModel);
-		void loadBulletIndices(aiMesh *mesh, Model *newModel, PhysicsWorld physWorld);
+		//void loadBulletIndices(aiMesh *mesh, Model *newModel, PhysicsWorld physWorld);
 		Material loadMaterials(const aiScene *scene);
 
 		//OpenGL buffers

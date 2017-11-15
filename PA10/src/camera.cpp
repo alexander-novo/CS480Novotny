@@ -2,8 +2,6 @@
 
 Camera::Camera(Menu& menu) : m_menu(menu) {
 	cameraMode = CAMERA_MODE_FOLLOW;
-	Object::viewMatrix = &view;
-	Object::projectionMatrix = &projection;
 }
 
 Camera::~Camera() {
@@ -51,11 +49,11 @@ void Camera::calculateCamera() {
 	                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
 }
 
-glm::mat4 Camera::GetProjection() {
+glm::mat4& Camera::GetProjection() {
 	return projection;
 }
 
-glm::mat4 Camera::GetView() {
+glm::mat4& Camera::GetView() {
 	return view;
 }
 

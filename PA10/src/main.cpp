@@ -1,3 +1,4 @@
+#include <model.h>
 #include "main.h"
 
 int main(int argc, char** argv) {
@@ -126,12 +127,12 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 			}
 		}
 		
-		vector<Graphics::LightContext>* lights = new vector<Graphics::LightContext>();
-		Graphics::LightContext lightCtx;
+		vector<Graphics::LightContext*>* lights = new vector<Graphics::LightContext*>();
 		for(auto& i : config["lights"]) {
-			error = loadLightContext(i, lightCtx, gameCtx->worldObjects);
+			Graphics::LightContext* newCtx = new Graphics::LightContext;
+			error = loadLightContext(i, *newCtx, gameCtx->worldObjects);
+			lights->push_back(newCtx);
 			if(error != -1) return error;
-			lights->push_back(lightCtx);
 		}
 		if(lights->size() > 0) ctx.lights = lights;
 		else                   ctx.lights = nullptr;
@@ -255,14 +256,30 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	if (config.find("model") != config.end()) {
 		filename = config["model"];
 		
-		ctx.model = PhysicsModel::load("models/" + filename, physWorld, &objectPhysics);
+		ctx.model = Model::load("models/" + filename);
 		
 		if (ctx.model == nullptr) {
 			std::cout << ctx.name << " Could not load model file " << config["model"] << std::endl;
 			return 1;
 		}
+		btTriangleMesh* objTriMesh = new btTriangleMesh();
+		if(ctx.shape > 4 || ctx.shape <= 0)
+		{
+			for(int i = 0; i < ctx.model->_indices.size() / 3; i++) {
+				btVector3 triArray[3];
+				for(int j = 0; j < 3; j++) {
+					glm::vec3 position = ctx.model->_vertices[ctx.model->_indices[3 * i + j]].vertex;
+					triArray[j] = btVector3(position.x*ctx.scaleX, position.y*ctx.scaleY, position.z*ctx.scaleZ);
+				}
+				
+				
+				objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
+			}
+		}
 		
-		ctx.physicsBody = (*(physWorld->getLoadedBodies()))[ctx.model->getRigidBodyIndex()];
+		ctx.rigidBodyIndex = physWorld->createObject(ctx.name, objTriMesh, &objectPhysics);
+		
+		ctx.physicsBody = (*(physWorld->getLoadedBodies()))[ctx.rigidBodyIndex];
 	} else if (ctx.name != "Game Surface") {
 		std::cout << config["name"] << "Object has no model " << std::endl;
 		return 1;
@@ -270,19 +287,19 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 
 	if(ctx.name == "Left Paddle")
 	{
-		ctx.leftPaddleIndex = ctx.model->getRigidBodyIndex();
+		ctx.leftPaddleIndex = ctx.rigidBodyIndex;
 	}
 	if(ctx.name == "Right Paddle")
 	{
-		ctx.rightPaddleIndex = ctx.model->getRigidBodyIndex();
+		ctx.rightPaddleIndex = ctx.rigidBodyIndex;
 	}
 	if(ctx.name == "Plunger")
 	{
-		ctx.plungerIndex= ctx.model->getRigidBodyIndex();
+		ctx.plungerIndex= ctx.rigidBodyIndex;
 	}
 	if(ctx.name == "Launch Guard")
 	{
-		ctx.doorIndex = ctx.model->getRigidBodyIndex();
+		ctx.doorIndex = ctx.rigidBodyIndex;
 	}
 	
 	//Check if the object has a texture
@@ -373,9 +390,15 @@ int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vecto
 			for(const auto& i : objects) {
 				if(i->ctx.name == name) {
 					ctx.pointing = &i->position;
+					if(!ctx.isRainbow) {
+						ctx.isBumperLight = true;
+						i->ctx.bumperLight = &ctx.timer;
+					}
 					break;
 				}
 			}
+			
+			
 		} else {
 			glm::vec3* newPoint = new glm::vec3;
 			newPoint->x = config["pointingAt"]["x"];

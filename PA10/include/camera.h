@@ -2,7 +2,6 @@
 #define CAMERA_H
 
 #include "graphics_headers.h"
-#include "object.h"
 #include "Menu.h"
 
 #define NEAR_FRUSTRUM 0.1f
@@ -25,9 +24,9 @@ class Camera {
 		
 		bool Initialize(int w, int h);
 		
-		glm::mat4 GetProjection();
+		glm::mat4& GetProjection();
 		
-		glm::mat4 GetView();
+		glm::mat4& GetView();
 		
 		//Calculate where the camera should be, and the corresponding View matrix
 		void calculateCamera();

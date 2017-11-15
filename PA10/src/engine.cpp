@@ -28,7 +28,7 @@ bool Engine::Initialize() {
 	m_menu = new Menu(*m_window);
 	
 	// Start the graphics
-	m_graphics = new Graphics(*m_menu, _ctx.width, _ctx.height, _ctx.physWorld, _ctx.gameWorldCtx);
+	m_graphics = new Graphics(*m_menu, _ctx.width, _ctx.height, _ctx.gameWorldCtx);
 	if(_ctx.lights != nullptr){
 		for(auto& i : *_ctx.lights) {
 			m_graphics->addLight(i);
@@ -43,6 +43,8 @@ bool Engine::Initialize() {
 	}
 	
 	Object::menu = m_menu;
+	
+	PhysicsWorld::game = _ctx.gameWorldCtx;
 	
 	// Set the time
 	m_currentTimeMillis = GetCurrentTimeMillis();
@@ -213,18 +215,18 @@ void Engine::Keyboard(unsigned dt) {
 
 	//Width of spotlight
 	if( keyState[SDL_SCANCODE_UP]) {
-		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle < M_PI / 2) {
-			m_graphics->spotLights[0].angle += M_PI / 180;
-			if(m_graphics->spotLights[0].angle > M_PI / 2) {
-				m_graphics->spotLights[0].angle = M_PI / 2;
+		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle < M_PI / 2) {
+			m_graphics->spotLights[0]->angle += M_PI / 180;
+			if(m_graphics->spotLights[0]->angle > M_PI / 2) {
+				m_graphics->spotLights[0]->angle = M_PI / 2;
 			}
 		}
 	}
 	if(keyState[SDL_SCANCODE_DOWN]) {
-		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0].angle > 0) {
-			m_graphics->spotLights[0].angle -= M_PI / 180;
-			if(m_graphics->spotLights[0].angle < 0) {
-				m_graphics->spotLights[0].angle = 0;
+		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle > 0) {
+			m_graphics->spotLights[0]->angle -= M_PI / 180;
+			if(m_graphics->spotLights[0]->angle < 0) {
+				m_graphics->spotLights[0]->angle = 0;
 			}
 		}
 	}

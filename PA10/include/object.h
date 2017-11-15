@@ -3,14 +3,18 @@
 
 #include <vector>
 #include <cmath>
+#include <btBulletDynamicsCommon.h>
+
 #include "graphics_headers.h"
 #include "model.h"
-#include "physics_model.h"
 #include "shader.h"
 #include "Menu.h"
 
 
 class Menu;
+class Model;
+class Texture;
+class Shader;
 
 class Object {
 	public:
@@ -19,11 +23,15 @@ class Object {
             bool isDynamic;
 			bool isPaddle = false;
 			bool isPlunger = false;
+			bool isBall = false;
+			
+			unsigned* bumperLight = nullptr;
+			
 			std::string name = "Object";
 			std::string vertexShader;
 			std::string fragmentShader;
 
-			PhysicsModel* model = nullptr;
+			Model* model = nullptr;
 			Texture* texture = nullptr;
 			Texture* altTexture = nullptr;
 			Texture* normalMap = nullptr;
@@ -46,6 +54,7 @@ class Object {
 
             bool hasPhysics = true;
             btRigidBody * physicsBody;
+			int rigidBodyIndex = 0;
 
 			int leftPaddleIndex = -1;
 			int rightPaddleIndex = -1;

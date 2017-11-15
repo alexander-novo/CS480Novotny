@@ -9,7 +9,7 @@
 #include <vector>
 #include <functional>
 #include "graphics_headers.h"
-//#include "Menu.h"
+#include "gameworldctx.h"
 
 #define BIT(x) (1<<(x))
 enum collisiontypes {
@@ -19,6 +19,8 @@ enum collisiontypes {
 	COL_PLATE = 4, //<Collide with walls
 	COL_EVERYTHING_ELSE = 8 //<Collide with everything
 };
+
+class Object;
 
 class PhysicsWorld {
 	public:
@@ -42,9 +44,9 @@ class PhysicsWorld {
 			float scaleX = 1;
 			float scaleY = 1;
 			float scaleZ = 1;
-            float scale = 1.0f;
-
-            bool isPaddle = false;
+			float scale = 1.0f;
+			
+			bool isPaddle = false;
 			bool isPlunger = false;
 			bool isOneWay = false;
 			bool hasPhysics = true;
@@ -64,22 +66,25 @@ class PhysicsWorld {
 		void renderPlane();
 		
 		void update(float dt);
-
+		
 		std::vector<btRigidBody*>* getLoadedBodies();
+		
 		std::vector<int> ballIndices;
 		std::vector<int> singleBallIndex;
-		std::vector<int> *currentBallIndices;
+		std::vector<int>* currentBallIndices;
 		bool multiBall = false;
 		int plungerIndex;
-
+		
 		// Pinball Variable to keep track of # of balls
 		// required for the pinball callback which seems to have fixed inputs/returns
 		static int ballCount(int count = -1);
-
-	
+		
+		
+		static GameWorld::ctx* game;
 	
 	private:
 		bool addInvisibleWalls();
+		
 		btRigidBody* floorPlane;
 		btRigidBody* backWallPlane;
 		btRigidBody* frontWallPlane;
@@ -94,8 +99,10 @@ class PhysicsWorld {
 		btDiscreteDynamicsWorld* dynamicsWorld;
 		std::unordered_map<std::string, btCollisionShape*> loadedPhysicsObjects;
 		std::vector<btRigidBody*> loadedBodies;
-
-
+	
+	
 };
+
+
 
 #endif /* PHYSICS_WORLD_H */

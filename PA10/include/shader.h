@@ -6,8 +6,8 @@
 #include <map>
 #include <unordered_map>
 
-#include "model.h"
 #include "graphics_headers.h"
+#include "model.h"
 
 #define SHADER_DIR "shaders/"
 #define SHADER_FILE "shaders/shaderList"

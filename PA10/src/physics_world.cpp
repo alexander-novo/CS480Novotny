@@ -1,10 +1,10 @@
 #ifndef PHYSICS_WORLD
 #define PHYSICS_WORLD
 
-#include <Menu.h>
 #include "physics_world.h"
 
-class Menu;
+GameWorld::ctx* PhysicsWorld::game;
+
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
 PhysicsWorld::PhysicsWorld() {
@@ -167,6 +167,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	
 	// takes in the body
 	btRigidBody* body = new btRigidBody(info);
+	
+	body->setUserIndex(loadedBodies.size());
 	
 	// Set the body to a kinematic object if it is one
 	if (objCtx->isKinematic) {
@@ -409,8 +411,6 @@ std::vector<btRigidBody*>* PhysicsWorld::getLoadedBodies() {
 
 void PhysicsWorld::update(float dt) {
 	// The time between ticks of checking for collisions in the world.
-//    dynamicsWorld->stepSimulation(dt/1000);
-//    dynamicsWorld->stepSimulation(1/60.0);
 	dynamicsWorld->stepSimulation(dt / 1000, 25);
 }
 
@@ -478,27 +478,46 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 
 	// This section is to detect collisions
 	// (for bumper interactions/scoring)
-//	int numManifolds = world->getDispatcher()->getNumManifolds();
-//	for (int i = 0; i < numManifolds; i++)
-//	{
-//		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
-//		const btCollisionObject* obA = contactManifold->getBody0();
-//		const btCollisionObject* obB = contactManifold->getBody1();
-//
-//		int numContacts = contactManifold->getNumContacts();
-//		for (int j = 0; j < numContacts; j++)
-//		{
-//			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-//			if (pt.getDistance() < 0.f)
-//			{
-//				const btVector3& ptA = pt.getPositionWorldOnA();
-//				const btVector3& ptB = pt.getPositionWorldOnB();
-//				const btVector3& normalOnB = pt.m_normalWorldOnB;
-//
-//				// TODO: Collision Detection for Bumper Scoring
-//			}
-//		}
-//	}
+	int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
+		
+		if(obA->getUserIndex() == -1 || obB->getUserIndex() == -1) continue;
+
+
+		int numContacts = contactManifold->getNumContacts();
+		for (int j = 0; j < numContacts; j++)
+		{
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance() < 0.f)
+			{
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				
+				Object* obj1 = nullptr;
+				Object* obj2 = nullptr;
+				
+				for(auto& obj : PhysicsWorld::game->worldObjects ) {
+					if(obj->ctx.physicsBody->getUserIndex() == obA->getUserIndex()) {
+						obj1 = obj;
+					}
+					if(obj->ctx.physicsBody->getUserIndex() == obB->getUserIndex()) {
+						obj2 = obj;
+					}
+				}
+				
+				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) {
+					*obj2->ctx.bumperLight = 500;
+				} else if(obj2->ctx.shape == 1 && obj1->ctx.bumperLight != nullptr) {
+					*obj1->ctx.bumperLight = 500;
+				}
+			}
+		}
+	}
 }
 
 // Update the ball count and/or return the # of balls left

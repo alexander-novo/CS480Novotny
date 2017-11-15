@@ -5,6 +5,11 @@
 #ifndef GAMEWORLDCTX_H
 #define GAMEWORLDCTX_H
 
+#include <vector>
+#include "object.h"
+
+class Object;
+
 // A safe space to store the config of our main world
 namespace GameWorld
 {
@@ -12,7 +17,7 @@ namespace GameWorld
     {
 //        Object *surfacePlane;
 //        bool surfaceIsDynamic = false;
-        vector<Object *> worldObjects;
+        std::vector<Object *> worldObjects;
     };
 }
 
