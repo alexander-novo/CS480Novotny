@@ -420,6 +420,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
+	static long long score = 0;
 
 	if(Menu::singleBall())
 	{
@@ -461,6 +462,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 				if(!gameOver)
 				{
 					std::cout << "Game Over" << std::endl;
+					std::cout << "Final Score: " << score << std::endl;
 					gameOver = true;
 				}
 			}
@@ -510,10 +512,16 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					}
 				}
 				
-				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) {
+				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
+					score += 125;
 					*obj2->ctx.bumperLight = 500;
 				} else if(obj2->ctx.shape == 1 && obj1->ctx.bumperLight != nullptr) {
+					score += 125;
 					*obj1->ctx.bumperLight = 500;
+				}
+				else if(obj1->ctx.isBounceType) // Other Bumpers
+				{
+					score+= 11;
 				}
 			}
 		}

@@ -53,6 +53,7 @@ class Object {
 			int id = 0;
 
             bool hasPhysics = true;
+			bool isBounceType = false;
             btRigidBody * physicsBody;
 			int rigidBodyIndex = 0;
 

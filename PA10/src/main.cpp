@@ -183,6 +183,7 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	}
 	if (config.find("isBounceType") != config.end()) {
 		objectPhysics.isBounceType = config["isBounceType"];
+		ctx.isBounceType = objectPhysics.isBounceType;
 	}
 	
 	std::string filename;
