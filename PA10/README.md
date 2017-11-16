@@ -20,7 +20,7 @@ This project uses [Bullet Physics](https://bulletphysics.org).
 
 ### Ubuntu/Linux
 ```bash
-sudo apt-get install libglew-dev libglm-dev libsdl2-dev libassimp-dev libmagick++-dev libbullet-dev
+sudo apt-get install libglew-dev libglm-dev libsdl2-dev libsdl2-mixer-dev libassimp-dev libmagick++-dev libbullet-dev
 ```
 
 ## Building and Running

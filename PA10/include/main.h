@@ -13,9 +13,6 @@ using json = nlohmann::json;
 
 #define PROGRAM_NAME "Tutorial"
 
-#define FLIPPER_SOUND "./sounds/flipper.wav"
-#define BUMPER_SOUND "./sounds/bumper.wav"
-
 GameWorld::ctx *gameCtx = new GameWorld::ctx;
 
 //Take all the information in the config file, and stuff it into where it needs to go

@@ -335,6 +335,13 @@ void Engine::eventHandler(unsigned dt) {
 			case SDLK_o:
 				m_menu->toggleOptionsMenu();
 				break;
+			case SDLK_LEFT:
+				Mix_PlayChannel(-1, Window::flipperSound, 0);
+				break;
+			case SDLK_RIGHT:
+				Mix_PlayChannel(-1, Window::flipperSound, 0);
+				break;
+
 			case SDLK_SPACE:
 			{
 				if(m_menu->options.plungerShouldHold == 1){
@@ -356,6 +363,7 @@ void Engine::eventHandler(unsigned dt) {
 							directionVector *= directionScalar;
 							//Apply Impulse in (Direction, @ location on body)
 							(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+							Mix_PlayChannel(-1, Window::launcherSound, 0);
 						} else {
 							std::cout << "No plunger defined" << std::endl;
 						}
@@ -375,6 +383,7 @@ void Engine::eventHandler(unsigned dt) {
 						directionVector *= directionScalar;
 						//Apply Impulse in (Direction, @ location on body)
 						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+						Mix_PlayChannel(-1, Window::launcherSound, 0);
 					} else
 					{
 						std::cout << "No plunger defined" << std::endl;
@@ -400,6 +409,7 @@ void Engine::eventHandler(unsigned dt) {
 						directionVector *= directionScalar;
 						//Apply Impulse in (Direction, @ location on body)
 						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
+						Mix_PlayChannel(-1, Window::launcherSound, 0);
 					} else {
 						std::cout << "No plunger defined" << std::endl;
 					}
