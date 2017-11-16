@@ -135,4 +135,5 @@ int Menu::singleBall(int singleBall) {
 	if(singleBall >= 0) {
 		single = singleBall;
 	}
+	return single;
 }

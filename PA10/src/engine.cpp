@@ -434,13 +434,16 @@ void Engine::NewGame() {
 	if(m_menu->options.singleBall)
 	{
 		_ctx.physWorld->ballCount(2);
+		Menu::singleBall(1);
 		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
 	}
 	else
 	{
 		_ctx.physWorld->ballCount(0);
+		Menu::singleBall(0);
 		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
 	}
+	_ctx.physWorld->lifeCount(2);
 
 	int xLoc = 25;
 	int zLoc = -17;

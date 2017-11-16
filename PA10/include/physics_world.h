@@ -11,6 +11,7 @@
 #include "graphics_headers.h"
 #include "gameworldctx.h"
 
+// Collision Types
 #define BIT(x) (1<<(x))
 enum collisiontypes {
 	COL_NOTHING = 0, //<Collide with nothing
@@ -19,6 +20,9 @@ enum collisiontypes {
 	COL_PLATE = 4, //<Collide with walls
 	COL_EVERYTHING_ELSE = 8 //<Collide with everything
 };
+
+// Callback to determine collisions
+static void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
 class Object;
 
@@ -78,13 +82,16 @@ class PhysicsWorld {
 		// Pinball Variable to keep track of # of balls
 		// required for the pinball callback which seems to have fixed inputs/returns
 		static int ballCount(int count = -1);
+		static int lifeCount(int count = -1);
 		
 		
 		static GameWorld::ctx* game;
 	
 	private:
 		bool addInvisibleWalls();
-		
+
+
+		// Invisible bodies to contain the world
 		btRigidBody* floorPlane;
 		btRigidBody* backWallPlane;
 		btRigidBody* frontWallPlane;
@@ -92,12 +99,15 @@ class PhysicsWorld {
 		btRigidBody* rightSidePlane;
 		btRigidBody* ceilingPlane;
 		btRigidBody* plungerPlatePlane;
+
+		// Physics configuration
 		btBroadphaseInterface* broadphase;
 		btDefaultCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		btDiscreteDynamicsWorld* dynamicsWorld;
-		std::unordered_map<std::string, btCollisionShape*> loadedPhysicsObjects;
+
+		// Lists of loaded objects
 		std::vector<btRigidBody*> loadedBodies;
 	
 	

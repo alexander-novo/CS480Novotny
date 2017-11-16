@@ -5,8 +5,6 @@
 
 GameWorld::ctx* PhysicsWorld::game;
 
-static void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
-
 PhysicsWorld::PhysicsWorld() {
 	// ====================== <Initialization> ===================
 	
@@ -169,7 +167,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btRigidBody* body = new btRigidBody(info);
 	
 	body->setUserIndex(loadedBodies.size());
-	
+
 	// Set the body to a kinematic object if it is one
 	if (objCtx->isKinematic) {
 		flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
@@ -283,7 +281,6 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	}
 	
 	// TODO: add check for if it exists
-	loadedPhysicsObjects[objectName] = newShape;
 	return bodyIndex;
 }
 
@@ -419,6 +416,7 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
+	static int lostBalls[3] = {0,0,0};
 	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
@@ -443,29 +441,42 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			velocity *= mMaxSpeed/speed;
 			(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(velocity);
 		}
-		if((*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getCenterOfMassPosition().z() < -15)
-		{
+		if((*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getCenterOfMassPosition().z() < -16.5) {
 			static bool gameOver = false;
-			// If ball falls through and there are balls left reset it
-			if(PhysicsWorld::ballCount() > 0)
+			if (lostBalls[i] != 1)
 			{
-				// Todo: change cout statements to in game
-				std::cout << "BALL LOST" << std::endl;
-				btTransform ballTransform;
-				ballTransform.setIdentity();
-				ballTransform.setOrigin(btVector3(-48,2,0));
-				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(ballTransform);
-				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(btVector3(0,0,0));
-				(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(btVector3(0,0,0));
-				PhysicsWorld::ballCount(PhysicsWorld::ballCount()-1);
-			}
-			else
-			{
-				if(!gameOver)
+				lostBalls[i] = 1;
+				int lifeCount = PhysicsWorld::lifeCount();
+				// If ball falls through and there are lives left decrement lives
+				if (lifeCount > 0) {
+					// Game in progress/started
+					gameOver = false;
+					// Todo: change cout statements to in game
+					std::cout << "BALL LOST" << std::endl;
+					// If there are balls left, reset the ball
+					if (PhysicsWorld::ballCount() > 0) {
+						lostBalls[i] = 0;
+						btTransform ballTransform;
+						ballTransform.setIdentity();
+						ballTransform.setOrigin(btVector3(-48, 2, 0));
+						(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(
+								ballTransform);
+						(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(
+								btVector3(0, 0, 0));
+						(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(
+								btVector3(0, 0, 0));
+						PhysicsWorld::ballCount(PhysicsWorld::ballCount() - 1);
+					}
+					PhysicsWorld::lifeCount(PhysicsWorld::lifeCount() - 1);
+				}
+				else
 				{
-					std::cout << "Game Over" << std::endl;
-					std::cout << "Final Score: " << score << std::endl;
-					gameOver = true;
+					if(!gameOver)
+					{
+						std::cout << "Game Over" << std::endl;
+						std::cout << "Final Score: " << score << std::endl;
+						gameOver = true;
+					}
 				}
 			}
 		}
@@ -531,6 +542,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 }
 
 // Update the ball count and/or return the # of balls left
+// When a ball is placed in the shoot, lose a life
 int PhysicsWorld::ballCount(int count)
 {
 	static int ballCount = 3;
@@ -539,6 +551,17 @@ int PhysicsWorld::ballCount(int count)
 		ballCount = count;
 	}
 	return ballCount;
+}
+
+// When a ball is lost, lose a life
+int PhysicsWorld::lifeCount(int count)
+{
+	static int lifeCount = 3;
+	if(count >= 0)
+	{
+		lifeCount = count;
+	}
+	return lifeCount;
 }
 
 #endif

@@ -76,3 +76,4 @@ Plunger Intensity
 Spotlight that follows ball   
 Shadow Mapping (shadows)  
 Game Replay   
+Bumper Lights   

@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 
 #include "imgui_impl_sdl_gl3.h"
