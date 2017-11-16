@@ -72,7 +72,6 @@ class Engine {
 		bool m_running;
 
 		Menu *m_menu;
-		Menu *score_menu;
 		
 		bool mouseDown;
 		

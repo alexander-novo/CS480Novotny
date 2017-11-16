@@ -27,9 +27,6 @@ bool Engine::Initialize() {
 	//Start the menu and connect it to the window
 	m_menu = new Menu(*m_window);
 
-	//Start the menu and connect it to the window
-	score_menu = new Menu(*m_window);
-
 	// Start the graphics
 	m_graphics = new Graphics(*m_menu, _ctx.width, _ctx.height, _ctx.gameWorldCtx);
 	if(_ctx.lights != nullptr){
