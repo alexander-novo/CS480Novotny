@@ -184,6 +184,9 @@ void Graphics::Update(unsigned int dt) {
 	for (auto& i : spotLights) {
 		if (i->isRainbow) {
 			i->timer += dt / 25;
+			if(i->timer >= 360) {
+				i->timer -= 360;
+			}
 			i->color = hsv2rgb(glm::vec3(i->timer, 1.0, 1.0));
 		} else if(i->isBumperLight) {
 			if(i->timer > 0) {
