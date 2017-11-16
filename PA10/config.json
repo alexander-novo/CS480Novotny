@@ -25,7 +25,31 @@
       "color": "rainbow",
       "pointingAt": "Bad Sphere",
       "angle": 5,
-      "strength": 1000
+      "strength": 2000
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 50,
+        "z": 0
+      },
+      "color": "rainbow",
+      "pointingAt": "Ball 1",
+      "angle": 5,
+      "strength": 2000
+    },
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 50,
+        "z": 0
+      },
+      "color": "rainbow",
+      "pointingAt": "Ball 2",
+      "angle": 5,
+      "strength": 2000
     },
     {
       "type": "spot",

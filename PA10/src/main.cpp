@@ -11,6 +11,8 @@ int main(int argc, char** argv) {
 		strncpy(argv[1], newArgv.c_str(), newArgv.size());
 	}
 	
+	srand(time(nullptr));
+	
 	//Stores the properties of our engine, such as window name/size, fullscreen, and shader info
 	Engine::Context ctx;
 	ctx.gameWorldCtx = gameCtx;
@@ -376,6 +378,7 @@ int loadLightContext(json &config, Graphics::LightContext &ctx, const std::vecto
 	if(config["color"].is_string()) {
 		if(config["color"] == "rainbow") {
 			ctx.isRainbow = true;
+			ctx.timer = rand() %  360;
 		}
 	} else {
 		ctx.isRainbow = false;
