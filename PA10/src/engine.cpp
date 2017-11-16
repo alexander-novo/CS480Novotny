@@ -467,6 +467,7 @@ long long Engine::GetCurrentTimeMillis() {
 
 void Engine::NewGame() {
 
+
 	PhysicsWorld * tempWorld = _ctx.physWorld;
 	if(m_menu->options.singleBall)
 	{
