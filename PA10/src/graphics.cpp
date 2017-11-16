@@ -178,6 +178,20 @@ void Graphics::Update(unsigned int dt) {
 	
 	// Update the object
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		if(gameWorldCtx->worldObjects[i]->ctx.name == "Scoreboard" && m_menu.options.rotateBack && !m_menu.options.paused)
+		{
+			btQuaternion transformRotation;
+			// Rotate about axis (using vec3) by an angle.
+			transformRotation.setRotation(btVector3(0.0,0.0,1.0),(dt * 3.141592/2000 ));
+			btTransform boardTransform;
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->getMotionState()->getWorldTransform(boardTransform);
+			boardTransform.setRotation(transformRotation *(gameWorldCtx->worldObjects[i]->ctx.physicsBody->getWorldTransform().getRotation()));
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->getMotionState()->setWorldTransform(boardTransform);
+		}
+		else if (gameWorldCtx->worldObjects[i]->ctx.name == "Scoreboard" && m_menu.options.rotateBack && !m_menu.options.paused)
+		{
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->setWorldTransform(gameWorldCtx->worldObjects[i]->ctx.physicsBody->getWorldTransform());
+		}
 		gameWorldCtx->worldObjects[i]->Update(dt);
 	}
 	

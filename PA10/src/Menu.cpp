@@ -54,7 +54,13 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::SameLine();
 				ImGui::RadioButton("Multi-Ball", &_options.singleBall, 0);
 				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with 3 balls on the board at once!");
-				
+
+				ImGui::Unindent(MENU_OPTIONS_INDENT);
+				ImGui::Text("Special");
+				ImGui::Indent(MENU_OPTIONS_INDENT);
+
+				ImGui::Checkbox("Surprise!", &_options.rotateBack);
+
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);
 			}

@@ -38,6 +38,7 @@ class Menu {
 			int singleBall = 1; //Whether to play with 1 ball or 3
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with
+			bool rotateBack = false;
 			
 			glm::vec3 ambientColor = glm::vec3(0.05, 0.05, 0.05);
 		};
