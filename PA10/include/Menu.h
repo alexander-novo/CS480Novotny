@@ -57,6 +57,7 @@ class Menu {
 		
 		void toggleOptionsMenu();
 		void swapShaderType();
+		void pause();
 
 		// Allow callback to see game mode type
 		static int singleBall(int singleBall = -1);

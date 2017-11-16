@@ -45,6 +45,7 @@ make
 `up/down arrows` - Widen/narrow spotlight   
 `Spacebar` - Press to launch ball. Hold to increase power.     
 `N` - To start a new game.   
+`P` - To pause the game.   
 
 # Menu
 
@@ -78,3 +79,4 @@ Shadow Mapping (shadows)
 Game Replay   
 Bumper Lights   
 Sound Effects / Music   
+Pause Game

@@ -1,6 +1,7 @@
 #include "Menu.h"
 
 Menu::Menu(Window& a) : window(a), options(_options) {
+	_options.paused = false;
 	//Attach ImGUI to our SDL window
 	ImGui_ImplSdlGL3_Init(window.getSDL_Window());
 }
@@ -136,4 +137,8 @@ int Menu::singleBall(int singleBall) {
 		single = singleBall;
 	}
 	return single;
+}
+
+void Menu::pause() {
+	_options.paused = !_options.paused;
 }

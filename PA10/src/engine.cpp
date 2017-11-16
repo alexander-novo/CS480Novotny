@@ -27,6 +27,9 @@ bool Engine::Initialize() {
 	//Start the menu and connect it to the window
 	m_menu = new Menu(*m_window);
 
+	//Start the menu and connect it to the window
+	score_menu = new Menu(*m_window);
+
 	// Start the graphics
 	m_graphics = new Graphics(*m_menu, _ctx.width, _ctx.height, _ctx.gameWorldCtx);
 	if(_ctx.lights != nullptr){
@@ -167,6 +170,8 @@ void Engine::Keyboard(unsigned dt) {
 		// New Game
 		NewGame();
 	}
+
+
 
 	//Rotations
 	if(keyState[SDL_SCANCODE_LEFT]) {
@@ -337,13 +342,17 @@ void Engine::eventHandler(unsigned dt) {
 			case SDLK_o:
 				m_menu->toggleOptionsMenu();
 				break;
+			case SDLK_p:
+				// Pause Game
+				m_menu->pause();
+				break;
 			case SDLK_LEFT:
-				if(!leftReset) break;
+				if(!leftReset || m_menu->options.paused) break;
 				Mix_PlayChannel(-1, Window::flipperSound, 0);
 				leftReset = false;
 				break;
 			case SDLK_RIGHT:
-				if(!rightReset) break;
+				if(!rightReset || m_menu->options.paused) break;
 				Mix_PlayChannel(-1, Window::flipperSound, 0);
 				rightReset = false;
 				break;
@@ -369,7 +378,10 @@ void Engine::eventHandler(unsigned dt) {
 							directionVector *= directionScalar;
 							//Apply Impulse in (Direction, @ location on body)
 							(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-							Mix_PlayChannel(-1, Window::launcherSound, 0);
+							if(!m_menu->options.paused)
+							{
+								Mix_PlayChannel(-1, Window::launcherSound, 0);
+							}
 						} else {
 							std::cout << "No plunger defined" << std::endl;
 						}
@@ -389,7 +401,10 @@ void Engine::eventHandler(unsigned dt) {
 						directionVector *= directionScalar;
 						//Apply Impulse in (Direction, @ location on body)
 						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-						Mix_PlayChannel(-1, Window::launcherSound, 0);
+						if(!m_menu->options.paused)
+						{
+							Mix_PlayChannel(-1, Window::launcherSound, 0);
+						}
 					} else
 					{
 						std::cout << "No plunger defined" << std::endl;
@@ -415,7 +430,10 @@ void Engine::eventHandler(unsigned dt) {
 						directionVector *= directionScalar;
 						//Apply Impulse in (Direction, @ location on body)
 						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-						Mix_PlayChannel(-1, Window::launcherSound, 0);
+						if(!m_menu->options.paused)
+						{
+							Mix_PlayChannel(-1, Window::launcherSound, 0);
+						}
 					} else {
 						std::cout << "No plunger defined" << std::endl;
 					}
