@@ -349,6 +349,63 @@
       "scale": 1
     },
     {
+      "name": "Right Paddle Bumper Protector",
+      "model": "Wall.obj",
+      "shape": "box",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 16,
+        "x": -22,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 0.375,
+        "x": 3,
+        "y": 1
+      },
+      "rotation":{
+        "x": 0,
+        "y": 0.7853981635,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+
+    {
+      "name": "Left Paddle Bumper Protector",
+      "model": "Wall.obj",
+      "shape": "box",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 16,
+        "x": 22,
+        "y": 2.5
+      },
+      "scaleXYZ": {
+        "z": 0.375,
+        "x": 3,
+        "y": 1
+      },
+      "rotation":{
+        "x": 0,
+        "y": -0.7853981635,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0,
+      "scale": 1
+    },
+    {
       "name": "Left Ballout Guide",
       "model": "Wall.obj",
       "shape": "box",
