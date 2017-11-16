@@ -169,35 +169,6 @@ void Engine::Keyboard(unsigned dt) {
 	}
 
 	//Rotations
-	if(keyState[SDL_SCANCODE_LEFT]) {
-		if(ctx.leftPaddleIndex >= 0)
-		{
-			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->getInvMass());
-			btVector3 directionVector(-1,0,1);
-			directionVector *= directionScalar;
-			btVector3 locationVector(.3,0,-4.5);
-			//Apply Impulse in (Direction, @ location on body)
-			(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->applyImpulse(directionVector, locationVector);
-		} else
-		{
-			std::cout << "No left paddle defined" << std::endl;
-		}
-
-	}
-	if(keyState[SDL_SCANCODE_RIGHT]) {
-		if(ctx.rightPaddleIndex >= 0)
-		{
-			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->getInvMass());
-			btVector3 directionVector(1,0,1);
-			directionVector *= directionScalar;
-			btVector3 locationVector(.3,0,-4.5);
-			//Apply Impulse in (Direction, @ location on body)
-			(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->applyImpulse(directionVector, locationVector);
-		} else
-		{
-			std::cout << "No right paddle defined" << std::endl;
-		}
-	}
 	if(keyState[SDL_SCANCODE_PERIOD]) {
 		if(ctx.doorIndex >= 0)
 		{
@@ -234,6 +205,9 @@ void Engine::Keyboard(unsigned dt) {
 
 void Engine::eventHandler(unsigned dt) {
 
+	static bool leftReset = true;
+	static bool rightReset = true;
+	
 	//Quit program
 	if (m_event.type == SDL_QUIT
 	    || m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -335,13 +309,41 @@ void Engine::eventHandler(unsigned dt) {
 			case SDLK_o:
 				m_menu->toggleOptionsMenu();
 				break;
-			case SDLK_LEFT:
-				Mix_PlayChannel(-1, Window::flipperSound, 0);
+			case SDLK_LEFT: {
+				if(!leftReset) break;
+				if(ctx.leftPaddleIndex >= 0)
+				{
+					Mix_PlayChannel(-1, Window::flipperSound, 0);
+					float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->getInvMass());
+					btVector3 directionVector(-1,0,1);
+					directionVector *= directionScalar;
+					btVector3 locationVector(.3,0,-4.5);
+					//Apply Impulse in (Direction, @ location on body)
+					(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->applyImpulse(directionVector, locationVector);
+					leftReset = false;
+				} else
+				{
+					std::cout << "No left paddle defined" << std::endl;
+				}
 				break;
-			case SDLK_RIGHT:
-				Mix_PlayChannel(-1, Window::flipperSound, 0);
+			}
+			case SDLK_RIGHT: {
+				if(!rightReset) break;
+				if (ctx.rightPaddleIndex >= 0) {
+					Mix_PlayChannel(-1, Window::flipperSound, 0);
+					float directionScalar = 10 * (1 / (*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->getInvMass());
+					btVector3 directionVector(1, 0, 1);
+					directionVector *= directionScalar;
+					btVector3 locationVector(.3, 0, -4.5);
+					//Apply Impulse in (Direction, @ location on body)
+					(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->applyImpulse(directionVector,
+					                                                                        locationVector);
+					rightReset = false;
+				} else {
+					std::cout << "No right paddle defined" << std::endl;
+				}
 				break;
-
+			}
 			case SDLK_SPACE:
 			{
 				if(m_menu->options.plungerShouldHold == 1){
@@ -417,7 +419,12 @@ void Engine::eventHandler(unsigned dt) {
 					plungerHit = false;
 				}
 			}
-
+			case SDLK_LEFT:
+				leftReset = true;
+				break;
+			case SDLK_RIGHT:
+				rightReset = true;
+				break;
 		}
 	}
 }
