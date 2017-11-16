@@ -445,15 +445,15 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			static bool gameOver = false;
 			if (lostBalls[i] != 1)
 			{
-				if(!gameOver)
-				{
-					lostBalls[i] = 1;
-				}
 				int lifeCount = PhysicsWorld::lifeCount();
 				// If ball falls through and there are lives left decrement lives
 				if (lifeCount > 0) {
 					// Game in progress/started
 					gameOver = false;
+					if(!gameOver)
+					{
+						lostBalls[i] = 1;
+					}
 					// Todo: change cout statements to in game
 					std::cout << "BALL LOST" << std::endl;
 					// If there are balls left, reset the ball
@@ -478,7 +478,10 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					{
 						std::cout << "Game Over" << std::endl;
 						std::cout << "Final Score: " << score << std::endl;
-						lostBalls[i] = 0;
+						for(int j = 0; j<tempWorld->currentBallIndices->size(); j++)
+						{
+							lostBalls[j] = 0;
+						}
 						score = 0;
 						gameOver = true;
 					}
