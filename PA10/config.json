@@ -252,9 +252,9 @@
     },
     {
       "name": "Paddle Bumper 1",
-      "model": "paddlebumper.obj",
+      "model": "paddlebumper2.obj",
       "shape": "mesh",
-      "texture": "wood.jpg",
+      "texture": "wood3.jpg",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": true,
@@ -280,9 +280,9 @@
     },
     {
       "name": "Paddle Bumper 2",
-      "model": "paddlebumper.obj",
+      "model": "paddlebumper2.obj",
       "shape": "mesh",
-      "texture": "wood.jpg",
+      "texture": "wood3.jpg",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": true,

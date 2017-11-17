@@ -107,7 +107,7 @@ Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
 		}
 		
 		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
-		                  {uv.x, uv.y},
+		                  {uv.x, 1-uv.y},
 		                  {normal.x, normal.y, normal.z},
 		                  {tangent.x, tangent.y, tangent.z},
 		                  {bitangent.x, bitangent.y, bitangent.z}};
