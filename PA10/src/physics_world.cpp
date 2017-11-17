@@ -536,11 +536,20 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
 					score += 125;
 					*obj2->ctx.bumperLight = 500;
-					Mix_PlayChannel(-1, Window::bumperSound, 0);
+					if(obj1->ctx.isAlt) {
+						Mix_PlayChannel(-1, Window::explodeSound, 0);
+					} else {
+						Mix_PlayChannel(-1, Window::bumperSound, 0);
+					}
+					
 				} else if(obj2->ctx.shape == 1 && obj1->ctx.bumperLight != nullptr) {
 					score += 125;
 					*obj1->ctx.bumperLight = 500;
-					Mix_PlayChannel(-1, Window::bumperSound, 0);
+					if(obj1->ctx.isAlt) {
+						Mix_PlayChannel(-1, Window::explodeSound, 0);
+					} else {
+						Mix_PlayChannel(-1, Window::bumperSound, 0);
+					}
 				}
 				else if((obj1->ctx.shape == 1) && (obj2->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
 				{

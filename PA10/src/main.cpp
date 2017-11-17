@@ -346,6 +346,12 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		ctx.shader = defaultShader;
 	}
 	
+	if (config.find("isAlt") != config.end()) {
+		ctx.isAlt = config["isAlt"];
+	} else {
+		ctx.isAlt = false;
+	}
+	
 	if (config.find("alt_shaders") != config.end()) {
 		std::string vertexLocation = config["alt_shaders"]["vertex"];
 		std::string fragLocation = config["alt_shaders"]["fragment"];

@@ -5,6 +5,7 @@ Mix_Chunk * Window::bumperSound;
 Mix_Chunk * Window::flipperSound;
 Mix_Music * Window::bgMusicSound;
 Mix_Chunk * Window::launcherSound;
+Mix_Chunk * Window::explodeSound;
 
 Window::Window()
 {
@@ -20,6 +21,7 @@ Window::~Window()
   Mix_FreeChunk(Window::flipperSound);
   Mix_FreeChunk(Window::launcherSound);
   Mix_FreeChunk(Window::bumperSound);
+  Mix_FreeChunk(Window::explodeSound);
   SDL_Quit();
 }
 
@@ -47,6 +49,7 @@ bool Window::Initialize(const string &name, int* width, int* height)
   Window::flipperSound = Mix_LoadWAV(FLIPPER_SOUND);
   Window::bgMusicSound = Mix_LoadMUS(BGMUSIC_SOUND);
   Window::launcherSound = Mix_LoadWAV(LAUNCHER_SOUND);
+  Window::explodeSound = Mix_LoadWAV(BUMPER_ALT_SOUND);
 
   if(!bumperSound) {
     printf("Mix_LoadMUS(\"music.mp3\"): %s\n", Mix_GetError());

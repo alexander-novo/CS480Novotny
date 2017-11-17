@@ -13,6 +13,7 @@ using namespace std;
 #define BUMPER_SOUND "sounds/bumper.wav"
 #define BGMUSIC_SOUND "sounds/music.mp3"
 #define LAUNCHER_SOUND "sounds/launch.wav"
+#define BUMPER_ALT_SOUND "sounds/explosion.wav"
 
 class Window
 {
@@ -29,6 +30,7 @@ class Window
 		static Mix_Chunk *flipperSound;
 		static Mix_Music *bgMusicSound;
 		static Mix_Chunk *launcherSound;
+		static Mix_Chunk *explodeSound;
 
 
 	private:

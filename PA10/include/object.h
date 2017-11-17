@@ -24,6 +24,7 @@ class Object {
 			bool isPaddle = false;
 			bool isPlunger = false;
 			bool isBall = false;
+			bool isAlt = false;
 			
 			unsigned* bumperLight = nullptr;
 			
