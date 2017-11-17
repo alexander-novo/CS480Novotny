@@ -99,7 +99,6 @@ Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
 		
 		if(mesh->HasTextureCoords(0)) {
 			uv = mesh->mTextureCoords[0][vertexIndex];
-			std::cout << uv.x << "," << uv.y  << std::endl;
 		}
 		
 		if(mesh->HasTangentsAndBitangents()) {
