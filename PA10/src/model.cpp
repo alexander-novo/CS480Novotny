@@ -99,6 +99,7 @@ Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
 		
 		if(mesh->HasTextureCoords(0)) {
 			uv = mesh->mTextureCoords[0][vertexIndex];
+			std::cout << uv.x << "," << uv.y  << std::endl;
 		}
 		
 		if(mesh->HasTangentsAndBitangents()) {
@@ -107,7 +108,7 @@ Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
 		}
 		
 		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
-		                  {uv.x, uv.y},
+		                  {uv.x, 1-uv.y},
 		                  {normal.x, normal.y, normal.z},
 		                  {tangent.x, tangent.y, tangent.z},
 		                  {bitangent.x, bitangent.y, bitangent.z}};
