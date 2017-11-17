@@ -202,12 +202,12 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 
 	// Scaling in directions for Non-Spheres
 	if (config.find("scaleXYZ") != config.end()) {
-		ctx.scaleX = config["scaleXYZ"]["z"];
-		ctx.scaleY = config["scaleXYZ"]["x"];
-		ctx.scaleZ = config["scaleXYZ"]["y"];
-		objectPhysics.scaleX = ctx.scaleX;
-		objectPhysics.scaleY = ctx.scaleY;
-		objectPhysics.scaleZ = ctx.scaleZ;
+		ctx.scale.x = config["scaleXYZ"]["z"];
+		ctx.scale.y = config["scaleXYZ"]["x"];
+		ctx.scale.z = config["scaleXYZ"]["y"];
+		objectPhysics.scaleX = ctx.scale.x;
+		objectPhysics.scaleY = ctx.scale.y;
+		objectPhysics.scaleZ = ctx.scale.z;
 	}
 
 	// Scaling in directions for Non-Spheres
@@ -233,13 +233,13 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	
 	if (config.find("radius") != config.end()) {
 		objectPhysics.radius = config["radius"];
-		ctx.scale = objectPhysics.radius;
+		ctx.scale.x = ctx.scale.y = ctx.scale.z = objectPhysics.radius;
 	}
 
 	// Scaling for spheres
 	if (config.find("scale") != config.end()) {
 		objectPhysics.scale = config["scale"];
-		ctx.scale = config["scale"];
+		ctx.scale.x = ctx.scale.y = ctx.scale.z = config["scale"];
 	}
 	
 	if (config.find("isPaddle") != config.end()) {
@@ -272,7 +272,7 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 				btVector3 triArray[3];
 				for(int j = 0; j < 3; j++) {
 					glm::vec3 position = ctx.model->_vertices[ctx.model->_indices[3 * i + j]].vertex;
-					triArray[j] = btVector3(position.x*ctx.scaleX, position.y*ctx.scaleY, position.z*ctx.scaleZ);
+					triArray[j] = btVector3(position.x*ctx.scale.x, position.y*ctx.scale.y, position.z*ctx.scale.z);
 				}
 				
 				

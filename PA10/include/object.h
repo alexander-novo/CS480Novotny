@@ -43,13 +43,12 @@ class Object {
             int xLoc = 0;
             int yLoc = 0;
             int zLoc = 0;
-			float scaleX = 1;
-			float scaleY = 1;
-			float scaleZ = 1;
+
 			int shape = 0;
 			float mass = 0;
 			
-			float scale = 1.0f;
+			glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+			glm::vec3 tempScale = glm::vec3(1.0f, 1.0f, 1.0f);
 			
 			int id = 0;
 
@@ -62,6 +61,8 @@ class Object {
 			int rightPaddleIndex = -1;
 			int plungerIndex = -1;
 			int doorIndex = -1;
+			
+			int expansionTimer = 0;
 		};
 		
 		Object(const Context &ctx);

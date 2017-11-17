@@ -53,13 +53,14 @@ void Object::Update(float dt) {
 		float mat[16];
 		transformObject.getOpenGLMatrix(mat);
 		modelMat = glm::make_mat4(mat);
-		if(ctx.shape != 1)
-		{
-			modelMat = glm::scale(modelMat, glm::vec3(ctx.scaleX, ctx.scaleY, ctx.scaleZ));
-		}
-		else
-		{
-			modelMat = glm::scale(modelMat, glm::vec3(ctx.scale, ctx.scale, ctx.scale));
+		if(ctx.expansionTimer == 0) {
+			modelMat = glm::scale(modelMat, ctx.scale);
+		} else {
+			modelMat = glm::scale(modelMat, ctx.tempScale);
+			ctx.expansionTimer -= dt;
+			if(ctx.expansionTimer < 0) {
+				ctx.expansionTimer = 0;
+			}
 		}
 
 		

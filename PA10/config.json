@@ -175,8 +175,7 @@
       "height": 1,
       "width": 0,
       "depth": 0,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Scoreboard",
@@ -197,8 +196,7 @@
         "y": 1.570796327,
         "z": 0
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Right Paddle",
@@ -275,8 +273,7 @@
         "y": 1.65,
         "z": 0
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Paddle Bumper 2",
@@ -303,8 +300,7 @@
         "y": -1.65,
         "z": 3.14159265358979
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Right Paddle Guide",
@@ -332,8 +328,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Left Paddle Guide",
@@ -361,8 +356,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Right Paddle Bumper Protector",
@@ -389,8 +383,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
 
     {
@@ -418,8 +411,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Left Ballout Guide",
@@ -447,8 +439,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Launch Guard",
@@ -473,8 +464,7 @@
         "y": -0.483981635,
         "z": 0
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Right Wall",
@@ -502,8 +492,7 @@
       "height": 1,
       "width": 15,
       "depth": 0.3,
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Plunger",
@@ -530,8 +519,7 @@
         "y": 0,
         "z": 0
       },
-      "mass": 30,
-      "scale": 1
+      "mass": 30
     },
     {
       "name": "Bumper Ball Shoot",
@@ -553,8 +541,7 @@
         "x": 3,
         "y": 3.3
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Bumper Left",
@@ -575,8 +562,7 @@
         "x": 3,
         "y": 2.5
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Bumper Center",
@@ -598,8 +584,7 @@
         "x": 3,
         "y": 2.5
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Bumper Right",
@@ -620,8 +605,7 @@
         "x": 3,
         "y": 2.5
       },
-      "mass": 0,
-      "scale": 1
+      "mass": 0
     },
     {
       "name": "Big Bumper",
