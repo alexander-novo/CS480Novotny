@@ -70,11 +70,6 @@ void Engine::Run() {
 		// Check the keyboard input
 		Keyboard(m_DT);
 
-		//Make certain whatever we're looking at is at origin
-//		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
-
-		// Update planet positions
-
 		if(!newGame)
 		{
 			// Start new game
