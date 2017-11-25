@@ -1,0 +1,280 @@
+{
+  "window": {
+    "fullscreen": false,
+    "adjustable": false,
+    "height": 1000,
+    "width": 1500,
+    "name": "Pinball Machine"
+  },
+  "default_shaders": {
+    "vertex": "vert_materials",
+    "fragment": "frag_materials"
+  },
+  "default_alt_shaders": {
+    "vertex": "vert_materials_vert",
+    "fragment": "frag_materials_vert"
+  },
+  "lights": [
+    {
+      "type": "spot",
+      "location": {
+        "x": 0,
+        "y": 50,
+        "z": 0
+      },
+      "pointingAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "angle": 70,
+      "strength": 1200
+    }
+  ],
+  "game_objects": [
+    {
+      "name": "Floor",
+      "model": "Wall.obj",
+      "shape": "box",
+      "texture": "wood.jpg",
+      "isDynamic": false,
+      "isKinematic": true,
+      "isBounceType": false,
+      "location": {
+        "z": 0,
+        "x": 0,
+        "y": -2
+      },
+      "scaleXYZ": {
+        "x": 60,
+        "y": 2,
+        "z": 4
+
+      },
+      "rotation":{
+        "x": 1.570796327,
+        "y": 0,
+        "z": 0
+      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
+      "mass": 0
+    },
+    {
+      "name": "Ball 1",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv1.jpg",
+      "isDynamic": true,
+      "radius": 3,
+      "location": {
+        "z": 15,
+        "x": -21,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 2",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv2.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -18,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball3",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv3.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -15,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 4",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv4.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -12,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 5",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv5.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -9,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 6",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv6.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -6,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 7",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv7.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -3,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 8",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv8.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -0,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 8",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv9.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -3,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 10",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv10.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -6,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 11",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv11.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -9,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 12",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv12.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -12,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 13",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv13.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -15,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 14",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv14.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -18,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 15",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv15.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -21,
+        "y": 3
+      },
+      "mass": 3
+    }
+  ]
+}

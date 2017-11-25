@@ -1,0 +1,13 @@
+# Blender MTL File: 'newcyl.blend'
+# Material Count: 1
+
+newmtl CylinderMat
+Ns 29.411765
+Ka 0.100000 0.100000 0.100000
+Kd 0.248653 0.097470 0.005473
+Ks 0.100000 0.100000 0.100000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /home/matt/Downloads/CS480/CodeBase/cs480Novotny/PA10/textures/cylinder.jpg
