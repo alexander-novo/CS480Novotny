@@ -43,3 +43,6 @@ Spotlights that follow a ball.
 
 ## PA10: Pinball    
 Full Pinball game with a ball launcher, paddles, bumpers and scoring on a table.   
+
+## PA11: Pool (Final)    
+Full Pool (Pocket Billiards) game.   
