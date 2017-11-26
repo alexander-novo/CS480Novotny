@@ -22,11 +22,19 @@ Model* Model::load(std::string filename) {
 		std::cerr << "Could not load model from " << filename << std::endl;
 		return nullptr;
 	}
-	aiMesh* mesh = scene->mMeshes[0];
 	
-	newModel->loadVertices(mesh, newModel);
-	newModel->loadIndices(mesh, newModel);
-	newModel->material = newModel->loadMaterials(scene);
+	
+	for(int i = 0; i < scene->mNumMeshes; i++) {
+		aiMesh* mesh = scene->mMeshes[i];
+		Mesh newMesh;
+		
+		loadVertices(mesh, &newMesh);
+		loadIndices(mesh, &newMesh);
+		newMesh.material = loadMaterials(scene, i);
+		
+		newModel->meshes.push_back(newMesh);
+	}
+	
 	newModel->initialised = false;
 	
 	//Now save this model for later in case we need to use it again
@@ -39,38 +47,50 @@ Model::Model(){}
 
 void Model::initGL() {
 	if(!initialised) {
-		glGenBuffers(1, &VB);
-		glBindBuffer(GL_ARRAY_BUFFER, VB);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vertices.size(), &_vertices[0], GL_STATIC_DRAW);
-		
-		glGenBuffers(1, &IB);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), &_indices[0], GL_STATIC_DRAW);
+		for(auto& i : meshes) {
+			glGenBuffers(1, &i.VB);
+			glBindBuffer(GL_ARRAY_BUFFER, i.VB);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * i._vertices.size(), &i._vertices[0], GL_STATIC_DRAW);
+			
+			glGenBuffers(1, &i.IB);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i.IB);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * i._indices.size(), &i._indices[0], GL_STATIC_DRAW);
+		}
 		
 		initialised = true;
 	}
 }
 
-void Model::drawModel() {
+void Model::drawModel(Shader* shader) {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
 	
-	//Now send vertices, uvs, and normals
-	glBindBuffer(GL_ARRAY_BUFFER, VB);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
-	
-	//Send all our face information
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IB);
-	
-	//Now draw everything
-	glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+	for(auto& i : meshes) {
+		if(shader != nullptr) {
+			//Send the material information
+			shader->uniform3fv("MaterialAmbientColor", 1, &i.material.ambient.r);
+			shader->uniform3fv("MaterialDiffuseColor", 1, &i.material.diffuse.r);
+			shader->uniform3fv("MaterialSpecularColor", 1, &i.material.specular.r);
+			shader->uniform1fv("shininess", 1, &i.material.shininess);
+		}
+		
+		glBindBuffer(GL_ARRAY_BUFFER, i.VB);
+		//Now send vertices, uvs, and normals
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, uv));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
+		
+		//Send all our face information
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i.IB);
+		
+		//Now draw everything
+		glDrawElements(GL_TRIANGLES, i._indices.size(), GL_UNSIGNED_INT, 0);
+	}
 	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -79,24 +99,17 @@ void Model::drawModel() {
 	glDisableVertexAttribArray(4);
 }
 
-void Model::loadVertices(aiMesh *mesh, Model *newModel)
+void Model::loadVertices(aiMesh *mesh, Mesh *newModel)
 {
 	//Add all our vertices for openGL
+	aiVector3D uv = {0.0, 0.0, 0.0};
+	aiVector3D tangent = {0.0, 0.0, 0.0};
+	aiVector3D bitangent = {0.0, 0.0, 0.0};
+	
 	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) 
 	{
-		Vertex newVert = loadVerticesExtended(mesh, vertexIndex);
-		newModel->_vertices.push_back(newVert);
-	}
-}
-
-Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
-{
 		aiVector3D& vertex = mesh->mVertices[vertexIndex];
 		aiVector3D& normal = mesh->mNormals[vertexIndex];
-		aiVector3D uv = {0.0, 0.0, 0.0};
-		aiVector3D tangent = {0.0, 0.0, 0.0};
-		aiVector3D bitangent = {0.0, 0.0, 0.0};
-		
 		if(mesh->HasTextureCoords(0)) {
 			uv = mesh->mTextureCoords[0][vertexIndex];
 		}
@@ -107,15 +120,16 @@ Vertex Model::loadVerticesExtended(aiMesh *mesh, int vertexIndex)
 		}
 		
 		Vertex newVert = {{vertex.x, vertex.y, vertex.z},
-		                  {uv.x, 1-uv.y},
+		                  {uv.x, 1-uv.y}, // To account for OpenGL starting from the top left instead of the bottom left
 		                  {normal.x, normal.y, normal.z},
 		                  {tangent.x, tangent.y, tangent.z},
 		                  {bitangent.x, bitangent.y, bitangent.z}};
-
-        return newVert;
+		
+		newModel->_vertices.push_back(newVert);
+	}
 }
 
-void Model::loadIndices(aiMesh *mesh, Model *newModel)
+void Model::loadIndices(aiMesh *mesh, Mesh *newModel)
 {
 	//Now our indices
 	for(unsigned faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) 
@@ -130,10 +144,10 @@ void Model::loadIndices(aiMesh *mesh, Model *newModel)
 }
 
 
-Material Model::loadMaterials(const aiScene *scene)
+Material Model::loadMaterials(const aiScene *scene, int meshIndex)
 {
 	//Now material stuff
-	aiMaterial* material = scene->mMaterials[scene->mMeshes[0]->mMaterialIndex];
+	aiMaterial* material = scene->mMaterials[scene->mMeshes[meshIndex]->mMaterialIndex];
 	aiColor3D ambientColor(0.0f, 0.0f, 0.0f);
 	aiColor3D diffuseColor(0.0f, 0.0f, 0.0f);
 	aiColor3D specularColor(0.0f, 0.0f, 0.0f);

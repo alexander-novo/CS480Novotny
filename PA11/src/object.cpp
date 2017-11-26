@@ -92,12 +92,6 @@ void Object::Render(bool withShadows, std::vector<glm::mat4> spotlightMatrices) 
 		ctx.shader->uniformMatrix4fv("biasMVP", spotlightMatrices.size(), GL_FALSE, &rawMatrices[0]);
 	}
 	
-	//Send the material information
-	ctx.shader->uniform3fv("MaterialAmbientColor", 1, &ctx.model->material.ambient.r);
-	ctx.shader->uniform3fv("MaterialDiffuseColor", 1, &ctx.model->material.diffuse.r);
-	ctx.shader->uniform3fv("MaterialSpecularColor", 1, &ctx.model->material.specular.r);
-	ctx.shader->uniform1fv("shininess", 1, &ctx.model->material.shininess);
-	
 	//If we have a texture, use it
 	if(ctx.texture != nullptr) {
 		ctx.texture->bind(GL_COLOR_TEXTURE);
@@ -117,7 +111,7 @@ void Object::Render(bool withShadows, std::vector<glm::mat4> spotlightMatrices) 
 	}
 
 	//Now draw our planet
-	ctx.model->drawModel();
+	ctx.model->drawModel(ctx.shader);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -131,7 +125,7 @@ void Object::RenderID(Shader* shader) const {
 	shader->uniform1fv("id", 1, &modifiedID);
 	
 	//Now draw our planet
-	ctx.model->drawModel();
+	ctx.model->drawModel(nullptr);
 }
 
 void Object::RenderShadow(Shader* shader, const glm::mat4& lightMatrix) const {
@@ -140,5 +134,5 @@ void Object::RenderShadow(Shader* shader, const glm::mat4& lightMatrix) const {
 	shader->uniformMatrix4fv("MVP", 1, GL_FALSE, glm::value_ptr(MVPMatrix));
 	
 	//Now draw our planet
-	ctx.model->drawModel();
+	ctx.model->drawModel(nullptr);
 }

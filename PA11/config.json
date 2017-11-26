@@ -39,9 +39,8 @@
   "game_objects": [
     {
       "name": "Floor",
-      "model": "Wall.obj",
+      "model": "PoolTable.obj",
       "shape": "box",
-      "texture": "wood.jpg",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": false,
@@ -51,15 +50,10 @@
         "y": -2
       },
       "scaleXYZ": {
-        "x": 60,
+        "x": 2,
         "y": 2,
-        "z": 4
+        "z": 2
 
-      },
-      "rotation":{
-        "x": 1.570796327,
-        "y": 0,
-        "z": 0
       },
       "height": 1,
       "width": 15,

@@ -238,15 +238,16 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		btTriangleMesh* objTriMesh = new btTriangleMesh();
 		if(ctx.shape > 4 || ctx.shape <= 0)
 		{
-			for(int i = 0; i < ctx.model->_indices.size() / 3; i++) {
-				btVector3 triArray[3];
-				for(int j = 0; j < 3; j++) {
-					glm::vec3 position = ctx.model->_vertices[ctx.model->_indices[3 * i + j]].vertex;
-					triArray[j] = btVector3(position.x*ctx.scale.x, position.y*ctx.scale.y, position.z*ctx.scale.z);
+			for(const auto& m : ctx.model->meshes) {
+				for(int i = 0; i < m._indices.size() / 3; i++) {
+					btVector3 triArray[3];
+					for(int j = 0; j < 3; j++) {
+						glm::vec3 position = ctx.model->meshes[0]._vertices[m._indices[3 * i + j]].vertex;
+						triArray[j] = btVector3(position.x*ctx.scale.x, position.y*ctx.scale.y, position.z*ctx.scale.z);
+					}
+					
+					objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 				}
-				
-				
-				objTriMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
 			}
 		}
 		

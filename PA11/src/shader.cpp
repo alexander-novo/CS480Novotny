@@ -102,8 +102,9 @@ bool Shader::Finalize() {
 		return false;
 	}
 	
+	//To prevent shader linking errors due to separate samplers referencing same texture
 	Enable();
-	uniform1i("spotlightShadowSampler", GL_SHADOW_TEXTURE_OFFSET);
+	uniform1i("spotlightShadowSampler", 1);
 	
 	glValidateProgram(m_shaderProg);
 	glGetProgramiv(m_shaderProg, GL_VALIDATE_STATUS, &Success);
