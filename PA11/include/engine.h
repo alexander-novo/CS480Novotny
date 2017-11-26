@@ -27,10 +27,6 @@ class Engine {
 			
 			PhysicsWorld *physWorld;
 			GameWorld::ctx *gameWorldCtx;
-			int leftPaddleIndex = -1;
-			int rightPaddleIndex = -1;
-			int plungerIndex = -1;
-			int doorIndex = -1;
 			
 			std::vector<Graphics::LightContext*>* lights = nullptr;
 		};
@@ -79,10 +75,6 @@ class Engine {
 		void Keyboard(unsigned dt);
 		//Handle other events (mouse, etc.)
 		void eventHandler(unsigned dt);
-
-		// Keeps track of timer powering up
-		int plungerTimer = 100;
-		bool plungerHit = false;
 };
 
 #endif // ENGINE_H

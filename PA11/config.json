@@ -22,42 +22,6 @@
         "y": 50,
         "z": 0
       },
-      "color": "rainbow",
-      "pointingAt": "Bad Sphere",
-      "angle": 5,
-      "strength": 2000
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 0,
-        "y": 50,
-        "z": 0
-      },
-      "color": "rainbow",
-      "pointingAt": "Ball 1",
-      "angle": 5,
-      "strength": 2000
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 0,
-        "y": 50,
-        "z": 0
-      },
-      "color": "rainbow",
-      "pointingAt": "Ball 2",
-      "angle": 5,
-      "strength": 2000
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 0,
-        "y": 50,
-        "z": 0
-      },
       "pointingAt": {
         "x": 0,
         "y": 0,
@@ -70,240 +34,11 @@
       },
       "angle": 70,
       "strength": 1200
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 46,
-        "y": 50,
-        "z": 26
-      },
-      "pointingAt": "Big Bumper",
-      "color": {
-        "r": 255,
-        "g": 0,
-        "b": 0
-      },
-      "angle": 20,
-      "strength": 1500
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 21,
-        "y": 50,
-        "z": 51
-      },
-      "pointingAt": "Bumper Left",
-      "color": {
-        "r": 0,
-        "g": 255,
-        "b": 0
-      },
-      "angle": 20,
-      "strength": 1500
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": -21,
-        "y": 50,
-        "z": 51
-      },
-      "pointingAt": "Bumper Right",
-      "color": {
-        "r": 0,
-        "g": 0,
-        "b": 255
-      },
-      "angle": 20,
-      "strength": 1500
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 1,
-        "y": 50,
-        "z": 61
-      },
-      "pointingAt": "Bumper Center",
-      "color": {
-        "r": 255,
-        "g": 255,
-        "b": 0
-      },
-      "angle": 20,
-      "strength": 1500
-    },
-    {
-      "type": "spot",
-      "location": {
-        "x": 46,
-        "y": 50,
-        "z": 26
-      },
-      "pointingAt": "Bumper Ball Shoot",
-      "color": {
-        "r": 255,
-        "g": 255,
-        "b": 255
-      },
-      "angle": 20,
-      "strength": 100
     }
   ],
   "game_objects": [
     {
-      "name": "Surface Plane",
-      "model": "HandTable.obj",
-      "shape": "mesh",
-      "isLightSource": true,
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": -20,
-        "x": 0,
-        "y": 0
-      },
-      "rotation":{
-        "x": 0,
-        "y": 1.570796327,
-        "z": 0
-      },
-      "height": 1,
-      "width": 0,
-      "depth": 0,
-      "mass": 0
-    },
-    {
-      "name": "Scoreboard",
-      "model": "Scoreboard.obj",
-      "shape": "mesh",
-      "isLightSource": true,
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": -20,
-        "x": 0,
-        "y": 0
-      },
-      "rotation":{
-        "x": 0,
-        "y": 1.570796327,
-        "z": 0
-      },
-      "mass": 0
-    },
-    {
-      "name": "Right Paddle",
-      "shape": "mesh",
-      "model": "Paddle.obj",
-      "texture": "concrete.jpg",
-      "isDynamic": true,
-      "isKinematic": false,
-      "isPaddle": true,
-      "location": {
-        "z": -3.1,
-        "x": -15,
-        "y": 2.75
-      },
-      "scaleXYZ": {
-        "z": 1.5,
-        "x": 2,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": 1.570796327,
-        "z": 0
-      },
-      "mass": 30
-    },
-    {
-      "name": "Left Paddle",
-      "shape": "mesh",
-      "model": "Paddle.obj",
-      "texture": "concrete.jpg",
-      "isDynamic": true,
-      "isKinematic": false,
-      "isPaddle": true,
-      "location": {
-        "z": -3.1,
-        "x": 15,
-        "y": 2.75
-      },
-      "scaleXYZ": {
-        "z": 1.5,
-        "x": 2,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": -1.570796327,
-        "z": 0
-      },
-      "mass": 30
-    },
-    {
-      "name": "Paddle Bumper 1",
-      "model": "paddlebumper2.obj",
-      "shape": "mesh",
-      "texture": "wood3.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 30,
-        "x": 25,
-        "y": 3
-      },
-      "scaleXYZ": {
-        "comment": "After Rot: z:front/back, x:height/thickness: y:left/right",
-        "z": 3.5,
-        "x": 3,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": 1.65,
-        "z": 0
-      },
-      "mass": 0
-    },
-    {
-      "name": "Paddle Bumper 2",
-      "model": "paddlebumper2.obj",
-      "shape": "mesh",
-      "texture": "wood3.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 30,
-        "x": -25,
-        "y": 3
-      },
-      "scaleXYZ": {
-        "comment": "After Rot: z:front/back, x:height/thickness: y:left/right",
-        "z": 3.5,
-        "x": 3,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": -1.65,
-        "z": 3.14159265358979
-      },
-      "mass": 0
-    },
-    {
-      "name": "Right Paddle Guide",
+      "name": "Floor",
       "model": "Wall.obj",
       "shape": "box",
       "texture": "wood.jpg",
@@ -311,348 +46,36 @@
       "isKinematic": true,
       "isBounceType": false,
       "location": {
-        "z": 12,
-        "x": -28,
-        "y": 2.5
+        "z": 0,
+        "x": 0,
+        "y": -2
       },
       "scaleXYZ": {
-        "z": 1.1,
-        "x": 3,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": 0.7853981635,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
-    {
-      "name": "Left Paddle Guide",
-      "model": "Wall.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 12,
-        "x": 28,
-        "y": 2.5
-      },
-      "scaleXYZ": {
-        "z": 1.1,
-        "x": 3,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": -0.7853981635,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
-    {
-      "name": "Right Paddle Bumper Protector",
-      "model": "Wall.obj",
-      "shape": "box",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 16,
-        "x": -22,
-        "y": 2.5
-      },
-      "scaleXYZ": {
-        "z": 0.375,
-        "x": 3,
-        "y": 1
-      },
-      "rotation":{
-        "x": 0,
-        "y": 0.7853981635,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
+        "x": 60,
+        "y": 2,
+        "z": 4
 
-    {
-      "name": "Left Paddle Bumper Protector",
-      "model": "Wall.obj",
-      "shape": "box",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 16,
-        "x": 22,
-        "y": 2.5
-      },
-      "scaleXYZ": {
-        "z": 0.375,
-        "x": 3,
-        "y": 1
       },
       "rotation":{
-        "x": 0,
-        "y": -0.7853981635,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
-    {
-      "name": "Left Ballout Guide",
-      "model": "Wall.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 5,
-        "x": 30,
-        "y": 2.5
-      },
-      "scaleXYZ": {
-        "z": 1.5,
-        "x": 3,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": -0.7853981635,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
-    {
-      "name": "Launch Guard",
-      "model": "launchguard2.obj",
-      "shape": "mesh",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": 37,
-        "x": -47.5,
-        "y": 5.5
-      },
-      "scaleXYZ": {
-        "z": 2,
-        "x": 2.5,
-        "y": 5
-      },
-      "rotation":{
-        "x": 3.14159265358979,
-        "y": -0.483981635,
-        "z": 0
-      },
-      "mass": 0
-    },
-    {
-      "name": "Right Wall",
-      "model": "Wall.obj",
-      "shape": "box",
-      "texture": "wood.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
-      "location": {
-        "z": -5.5,
-        "x": -44,
-        "y": 2.5
-      },
-      "scaleXYZ": {
-        "z": 1,
-        "x": 2.5,
-        "y": 2
-      },
-      "rotation":{
-        "x": 0,
-        "y": -1.570796327,
-        "z": 0
-      },
-      "height": 1,
-      "width": 15,
-      "depth": 0.3,
-      "mass": 0
-    },
-    {
-      "name": "Plunger",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_sun.jpg",
-      "isDynamic": true,
-      "isKinematic": false,
-      "isBounceType": false,
-      "isPlunger": true,
-      "location": {
-        "z": -14,
-        "x": -47,
-        "y": 2
-      },
-      "scaleXYZ": {
-        "z": 1.75,
-        "x": 5,
-        "y": 1.75
-      },
-      "rotation":{
-        "comment": "",
-        "x": -1.570796327,
+        "x": 1.570796327,
         "y": 0,
         "z": 0
       },
-      "mass": 30
-    },
-    {
-      "name": "Bumper Ball Shoot",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "cylinder.jpg",
-      "isAlt": true,
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 15,
-        "x": -40,
-        "y": 3.5
-      },
-      "scaleXYZ": {
-        "z": 3.3,
-        "x": 3,
-        "y": 3.3
-      },
+      "height": 1,
+      "width": 15,
+      "depth": 0.3,
       "mass": 0
-    },
-    {
-      "name": "Bumper Left",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_sun.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 50,
-        "x": 20,
-        "y": 3.5
-      },
-      "scaleXYZ": {
-        "z": 2.5,
-        "x": 3,
-        "y": 2.5
-      },
-      "mass": 0
-    },
-    {
-      "name": "Bumper Center",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "cylinder.jpg",
-      "isAlt": true,
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 60,
-        "x": 0,
-        "y": 3.5
-      },
-      "scaleXYZ": {
-        "z": 2.5,
-        "x": 3,
-        "y": 2.5
-      },
-      "mass": 0
-    },
-    {
-      "name": "Bumper Right",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_sun.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "comment": "loc: y = (+)up/(-)down, z = (+)back/(-)forward, x = (+)left/(-)right",
-        "z": 50,
-        "x": -20,
-        "y": 3.5
-      },
-      "scaleXYZ": {
-        "z": 2.5,
-        "x": 3,
-        "y": 2.5
-      },
-      "mass": 0
-    },
-    {
-      "name": "Big Bumper",
-      "model": "Cylinder.obj",
-      "shape": "cylinder",
-      "texture": "2k_sun.jpg",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": true,
-      "location": {
-        "z": 25,
-        "x": 45,
-        "y": 3.5
-      },
-      "scaleXYZ": {
-        "z": 5,
-        "x": 3,
-        "y": 5
-      },
-      "mass": 0,
-      "scale": 2.5
-    },
-    {
-      "comment": "Balls Section - Between 1 and 3",
-      "name": "Bad Sphere",
-      "shape": "sphere",
-      "model": "BadSphere.obj",
-      "texture": "2k_earth_daymap.jpg",
-      "isDynamic": true,
-      "radius": 2,
-      "location": {
-        "z": -15,
-        "x": 0,
-        "y": 12
-      },
-      "mass": 1
     },
     {
       "name": "Ball 1",
       "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "2k_earth_daymap2.jpg",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv1.jpg",
       "isDynamic": true,
-      "radius": 2,
+      "radius": 3,
       "location": {
-        "z": -15,
-        "x": 23,
+        "z": 15,
+        "x": -21,
         "y": 3
       },
       "mass": 3
@@ -660,16 +83,198 @@
     {
       "name": "Ball 2",
       "shape": "sphere",
-      "model": "Planet.obj",
-      "texture": "metal.jpg",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv2.jpg",
       "isDynamic": true,
       "radius": 2,
       "location": {
-        "z": -15,
-        "x": -30,
-        "y": 2
+        "z": 15,
+        "x": -18,
+        "y": 3
       },
-      "mass": 5
+      "mass": 3
+    },
+    {
+      "name": "Ball3",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv3.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -15,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 4",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv4.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -12,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 5",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv5.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -9,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 6",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv6.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -6,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 7",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv7.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -3,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 8",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv8.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -0,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 8",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv9.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -3,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 10",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv10.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -6,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 11",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv11.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -9,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 12",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv12.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -12,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 13",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv13.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -15,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 14",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv14.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -18,
+        "y": 3
+      },
+      "mass": 3
+    },
+    {
+      "name": "Ball 15",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluv15.jpg",
+      "isDynamic": true,
+      "radius": 2,
+      "location": {
+        "z": 15,
+        "x": -21,
+        "y": 3
+      },
+      "mass": 3
     }
   ]
 }

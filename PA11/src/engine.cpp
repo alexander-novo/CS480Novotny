@@ -67,18 +67,8 @@ void Engine::Run() {
 			ImGui_ImplSdlGL3_ProcessEvent(&m_event);
 		}
 
-		// Update plunger timer if needed
-		if(m_menu->options.plungerShouldHold > 0 && plungerHit)
-		{
-			plungerTimer += m_DT;
-		}
 		// Check the keyboard input
 		Keyboard(m_DT);
-
-		//Make certain whatever we're looking at is at origin
-//		Object::globalOffset = &m_menu->getPlanet(m_menu->options.lookingAt)->position;
-
-		// Update planet positions
 
 		if(!newGame)
 		{
@@ -105,7 +95,6 @@ void Engine::Run() {
 		//Render everything
 		m_graphics->Render();
 		m_menu->render();
-		_ctx.physWorld->renderPlane();
 
 		// Swap to the Window
 		m_window->Swap();
@@ -169,52 +158,6 @@ void Engine::Keyboard(unsigned dt) {
 	}
 
 
-
-	//Rotations
-	if(keyState[SDL_SCANCODE_LEFT]) {
-		if(ctx.leftPaddleIndex >= 0)
-		{
-			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->getInvMass());
-			btVector3 directionVector(-1,0,1);
-			directionVector *= directionScalar;
-			btVector3 locationVector(.3,0,-4.5);
-			//Apply Impulse in (Direction, @ location on body)
-			(*ctx.physWorld->getLoadedBodies())[ctx.leftPaddleIndex]->applyImpulse(directionVector, locationVector);
-		} else
-		{
-			std::cout << "No left paddle defined" << std::endl;
-		}
-
-	}
-	if(keyState[SDL_SCANCODE_RIGHT]) {
-		if(ctx.rightPaddleIndex >= 0)
-		{
-			float directionScalar = 10 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->getInvMass());
-			btVector3 directionVector(1,0,1);
-			directionVector *= directionScalar;
-			btVector3 locationVector(.3,0,-4.5);
-			//Apply Impulse in (Direction, @ location on body)
-			(*ctx.physWorld->getLoadedBodies())[ctx.rightPaddleIndex]->applyImpulse(directionVector, locationVector);
-		} else
-		{
-			std::cout << "No right paddle defined" << std::endl;
-		}
-	}
-	if(keyState[SDL_SCANCODE_PERIOD]) {
-		if(ctx.doorIndex >= 0)
-		{
-			float directionScalar = 50 * (1/(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->getInvMass());
-			btVector3 directionVector(1,0,0);
-			directionVector *= directionScalar;
-			btVector3 locationVector(0,-2,0);
-			//Apply Impulse in (Direction, @ location on body)
-			(*ctx.physWorld->getLoadedBodies())[ctx.doorIndex]->applyImpulse(directionVector, locationVector);
-		} else
-		{
-			std::cout << "No right paddle defined" << std::endl;
-		}
-	}
-
 	//Width of spotlight
 	if( keyState[SDL_SCANCODE_UP]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle < M_PI / 2) {
@@ -235,9 +178,6 @@ void Engine::Keyboard(unsigned dt) {
 }
 
 void Engine::eventHandler(unsigned dt) {
-	static bool leftReset = true;
-	static bool rightReset = true;
-
 	//Quit program
 	if (m_event.type == SDL_QUIT
 		|| m_event.type == SDL_KEYDOWN && m_event.key.keysym.sym == SDLK_ESCAPE) {
@@ -260,10 +200,6 @@ void Engine::eventHandler(unsigned dt) {
 
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
-					if(picked->ctx.isPaddle)
-					{
-						impVector *= 8;
-					}
 					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
 				}
 				break;
@@ -344,70 +280,16 @@ void Engine::eventHandler(unsigned dt) {
 				m_menu->pause();
 				break;
 			case SDLK_LEFT:
-				if(!leftReset || m_menu->options.paused) break;
+				if(m_menu->options.paused) break;
 				Mix_PlayChannel(-1, Window::flipperSound, 0);
-				leftReset = false;
 				break;
 			case SDLK_RIGHT:
-				if(!rightReset || m_menu->options.paused) break;
+				if( m_menu->options.paused) break;
 				Mix_PlayChannel(-1, Window::flipperSound, 0);
-				rightReset = false;
 				break;
 
 			case SDLK_SPACE:
 			{
-				if(m_menu->options.plungerShouldHold == 1){
-					// Limit Power
-					if(plungerTimer > 4000)
-					{
-						plungerTimer = 4000;
-					}
-					plungerHit = true;
-				}
-				else if (m_menu->options.plungerShouldHold == 2){
-					// Hit ball if done charging on toggle
-					if(plungerHit)
-					{
-						if (ctx.plungerIndex >= 0) {
-							float directionScalar = (plungerTimer / 5) *
-													(1 / (*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
-							btVector3 directionVector(0, 0, 1);
-							directionVector *= directionScalar;
-							//Apply Impulse in (Direction, @ location on body)
-							(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-							if(!m_menu->options.paused)
-							{
-								Mix_PlayChannel(-1, Window::launcherSound, 0);
-							}
-						} else {
-							std::cout << "No plunger defined" << std::endl;
-						}
-						plungerTimer = 150;
-						plungerHit = false;
-					}
-					else
-					{
-						plungerHit = true;
-					}
-				}
-				else if(((*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getCenterOfMassPosition()).z() <= -14){
-					if(ctx.plungerIndex >= 0)
-					{
-						float directionScalar = (800) * (1/(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
-						btVector3 directionVector(0,0,1);
-						directionVector *= directionScalar;
-						//Apply Impulse in (Direction, @ location on body)
-						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-						if(!m_menu->options.paused)
-						{
-							Mix_PlayChannel(-1, Window::launcherSound, 0);
-						}
-					} else
-					{
-						std::cout << "No plunger defined" << std::endl;
-					}
-				}
-
 				break;
 			}
 		}
@@ -418,31 +300,11 @@ void Engine::eventHandler(unsigned dt) {
 		{
 			case SDLK_SPACE:
 			{
-
-				if (m_menu->options.plungerShouldHold == 1) {
-					if (ctx.plungerIndex >= 0) {
-						float directionScalar = (plungerTimer / 5) *
-												(1 / (*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->getInvMass());
-						btVector3 directionVector(0, 0, 1);
-						directionVector *= directionScalar;
-						//Apply Impulse in (Direction, @ location on body)
-						(*ctx.physWorld->getLoadedBodies())[ctx.plungerIndex]->applyCentralImpulse(directionVector);
-						if(!m_menu->options.paused)
-						{
-							Mix_PlayChannel(-1, Window::launcherSound, 0);
-						}
-					} else {
-						std::cout << "No plunger defined" << std::endl;
-					}
-					plungerTimer = 150;
-					plungerHit = false;
-				}
+				break;
 			}
 			case SDLK_LEFT:
-				leftReset = true;
 				break;
 			case SDLK_RIGHT:
-				rightReset = true;
 				break;
 
 		}
@@ -471,20 +333,18 @@ void Engine::NewGame() {
 	PhysicsWorld * tempWorld = _ctx.physWorld;
 	if(m_menu->options.singleBall)
 	{
-		_ctx.physWorld->ballCount(2);
 		Menu::singleBall(1);
 		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
 	}
 	else
 	{
-		_ctx.physWorld->ballCount(0);
 		Menu::singleBall(0);
 		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
 	}
-	_ctx.physWorld->lifeCount(2);
 
-	int xLoc = 25;
+	int xLoc = -25;
 	int zLoc = -17;
+
 	// Start with all other balls in tray
 	for(int i = 1; i<(*tempWorld).ballIndices.size(); i++)
 	{
@@ -503,10 +363,10 @@ void Engine::NewGame() {
 	{
 		btTransform ballTransform;
 		ballTransform.setIdentity();
-		ballTransform.setOrigin(btVector3(-48,2,zLoc));
+		ballTransform.setOrigin(btVector3(-45,2,zLoc));
 		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(ballTransform);
 		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(btVector3(0,0,0));
 		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(btVector3(0,0,0));
-		zLoc -= 5;
+		zLoc += 5;
 	}
 }
