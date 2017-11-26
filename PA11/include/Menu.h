@@ -33,10 +33,9 @@ class Menu {
 			bool showOptionsMenu = false; //Whether or not the options menu is out right now
 			bool shouldSwapShaders = false; //Whether the engine should swap shaders this frame
 			bool shouldStartNewGame = false;
-
+			
+			int plungerShouldHold = 1; //Whether or not holding down the plunger button should power it up
 			int singleBall = 1; //Whether to play with 1 ball or 3
-			bool isPlayingMusic = false;
-			bool isPlayingSounds = true;
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with
 			bool rotateBack = false;

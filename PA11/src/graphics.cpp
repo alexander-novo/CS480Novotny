@@ -175,9 +175,23 @@ glm::vec3 hsv2rgb(glm::vec3 in) {
 
 void Graphics::Update(unsigned int dt) {
 	glm::vec3 offsetChange = {0, 0, 0};
-
+	
 	// Update the object
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+		if(gameWorldCtx->worldObjects[i]->ctx.name == "Scoreboard" && m_menu.options.rotateBack && !m_menu.options.paused)
+		{
+			btQuaternion transformRotation;
+			// Rotate about axis (using vec3) by an angle.
+			transformRotation.setRotation(btVector3(0.0,0.0,1.0),(dt * 3.141592/2000 ));
+			btTransform boardTransform;
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->getMotionState()->getWorldTransform(boardTransform);
+			boardTransform.setRotation(transformRotation *(gameWorldCtx->worldObjects[i]->ctx.physicsBody->getWorldTransform().getRotation()));
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->getMotionState()->setWorldTransform(boardTransform);
+		}
+		else if (gameWorldCtx->worldObjects[i]->ctx.name == "Scoreboard" && m_menu.options.rotateBack && !m_menu.options.paused)
+		{
+			gameWorldCtx->worldObjects[i]->ctx.physicsBody->setWorldTransform(gameWorldCtx->worldObjects[i]->ctx.physicsBody->getWorldTransform());
+		}
 		gameWorldCtx->worldObjects[i]->Update(dt);
 	}
 	
@@ -252,12 +266,8 @@ void Graphics::Render() {
 		spotLightPositions[i * 3 + 0] = spotLights[i]->position.x;
 		spotLightPositions[i * 3 + 1] = spotLights[i]->position.y;
 		spotLightPositions[i * 3 + 2] = spotLights[i]->position.z;
-
-		if(spotLights[i]->pointing != NULL)
-		{
-			normalLightPoint = glm::normalize(*spotLights[i]->pointing - spotLights[i]->position);
-		}
-
+		
+		normalLightPoint = glm::normalize(*spotLights[i]->pointing - spotLights[i]->position);
 		
 		spotLightDirections[i * 3 + 0] = normalLightPoint.x;
 		spotLightDirections[i * 3 + 1] = normalLightPoint.y;
@@ -368,14 +378,11 @@ void Graphics::renderShadows() {
 		if(spotLights[i]->isBumperLight && spotLights[i]->timer == 0) {
 			continue;
 		}
-
-		if(spotLights[i] != nullptr && spotLights[i]->pointing != NULL)
-		{
-			if(spotLights[i]->position.x != spotLights[i]->pointing->x || spotLights[i]->position.x != spotLights[i]->pointing->z) {
-				viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.0, 1.0, 0.0));
-			} else {
-				viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.01, 1.0, 0.0));
-			}
+		
+		if(spotLights[i]->position.x != spotLights[i]->pointing->x || spotLights[i]->position.x != spotLights[i]->pointing->z) {
+			viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.0, 1.0, 0.0));
+		} else {
+			viewMatrix = glm::lookAt(spotLights[i]->position, *spotLights[i]->pointing, glm::vec3(0.01, 1.0, 0.0));
 		}
 		
 		projMatrix = glm::perspective(float(M_PI / 2), 1.0f, 1.0f, 200.0f);

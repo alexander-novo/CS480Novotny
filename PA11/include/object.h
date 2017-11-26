@@ -21,6 +21,8 @@ class Object {
 		//The characteristics of a particular planet that can be changed at any time
 		struct Context {
             bool isDynamic;
+			bool isPaddle = false;
+			bool isPlunger = false;
 			bool isBall = false;
 			bool isAlt = false;
 			
@@ -55,6 +57,11 @@ class Object {
             btRigidBody * physicsBody;
 			int rigidBodyIndex = 0;
 
+			int leftPaddleIndex = -1;
+			int rightPaddleIndex = -1;
+			int plungerIndex = -1;
+			int doorIndex = -1;
+			
 			int expansionTimer = 0;
 		};
 		

@@ -88,7 +88,7 @@ void Object::Render(bool withShadows, std::vector<glm::mat4> spotlightMatrices) 
 				}
 			}
 		}
-
+		
 		ctx.shader->uniformMatrix4fv("biasMVP", spotlightMatrices.size(), GL_FALSE, &rawMatrices[0]);
 	}
 	

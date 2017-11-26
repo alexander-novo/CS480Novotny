@@ -1,8 +1,11 @@
 #include <window.h>
 #include <iostream>
 
+Mix_Chunk * Window::bumperSound;
 Mix_Chunk * Window::flipperSound;
 Mix_Music * Window::bgMusicSound;
+Mix_Chunk * Window::launcherSound;
+Mix_Chunk * Window::explodeSound;
 
 Window::Window()
 {
@@ -16,6 +19,9 @@ Window::~Window()
   gWindow = NULL;
   Mix_FreeMusic(Window::bgMusicSound);
   Mix_FreeChunk(Window::flipperSound);
+  Mix_FreeChunk(Window::launcherSound);
+  Mix_FreeChunk(Window::bumperSound);
+  Mix_FreeChunk(Window::explodeSound);
   SDL_Quit();
 }
 
@@ -36,11 +42,19 @@ bool Window::Initialize(const string &name, int* width, int* height)
     return false;
   }
 
-  // Sound Initialization
   Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024);
+
+
+  Window::bumperSound = Mix_LoadWAV(BUMPER_SOUND);
   Window::flipperSound = Mix_LoadWAV(FLIPPER_SOUND);
   Window::bgMusicSound = Mix_LoadMUS(BGMUSIC_SOUND);
-  Mix_AllocateChannels(16);
+  Window::launcherSound = Mix_LoadWAV(LAUNCHER_SOUND);
+  Window::explodeSound = Mix_LoadWAV(BUMPER_ALT_SOUND);
+
+  if(!bumperSound) {
+    printf("Mix_LoadMUS(\"music.mp3\"): %s\n", Mix_GetError());
+  }
+	Mix_AllocateChannels(16);
   Mix_PlayMusic(bgMusicSound,-1);
 
 
