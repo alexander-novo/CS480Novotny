@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "graphics_headers.h"
+#include <shader.h>
 
 //Set up which texture channels to use with which type of texture
 #define GL_COLOR_TEXTURE    GL_TEXTURE0
@@ -35,33 +36,35 @@ struct Material {
 	float shininess = 0.0f;               //Ns
 };
 
+struct Mesh {
+	std::vector<Vertex> _vertices;
+	std::vector<unsigned int> _indices;
+	Material material;
+	
+	//OpenGL buffers
+	GLuint VB;
+	GLuint IB;
+};
+
 class Model {
 	public:
-		Material material;
-		
 		//Load a model from a file
 		static Model* load(std::string filename);
 		
-		std::vector<Vertex> _vertices;
-		std::vector<unsigned int> _indices;
+		std::vector<Mesh> meshes;
 		
 		//Initalise OpenGL
 		//Call after starting OpenGL, but before using drawModel()
 		void initGL();
 		//Draw the model to the screen
-		void drawModel();
+		void drawModel(Shader* shader);
 		
 	protected:
 		Model();
-		void loadVertices(aiMesh *mesh, Model *newModel);
-		Vertex loadVerticesExtended(aiMesh *mesh, int vertexIndex);
-		void loadIndices(aiMesh *mesh, Model *newModel);
-		//void loadBulletIndices(aiMesh *mesh, Model *newModel, PhysicsWorld physWorld);
-		Material loadMaterials(const aiScene *scene);
-
-		//OpenGL buffers
-		GLuint VB;
-		GLuint IB;
+		
+		static void loadVertices(aiMesh *mesh, Mesh *newModel);
+		static void loadIndices(aiMesh *mesh, Mesh *newModel);
+		static Material loadMaterials(const aiScene *scene, int meshIndex);
 		
 		//Keeps track of whether of not initGL() has been called yet
 		bool initialised;

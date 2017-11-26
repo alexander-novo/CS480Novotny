@@ -58,6 +58,12 @@ out vec4 frag_color;
 
 void main(void) {
     vec4 MaterialDiffuseTexture2d = texture2D(gSampler, uvCoord.st);
+
+    //If we don't have a texture, default to the materials
+    if(MaterialDiffuseTexture2d.rgb == vec3(0.0, 0.0, 0.0)) {
+        MaterialDiffuseTexture2d.rgb = MaterialDiffuseColor;
+    }
+
     vec3 materialAmbientModified = (MaterialAmbientColor) * MaterialDiffuseTexture2d.rgb;
 
     //All of these are in camera/eye space
@@ -81,7 +87,6 @@ void main(void) {
     float visibility; //How much of the spotlight actually reaches our object - shadows
     float random_dot; //Used for poisson sampling of shadows
     float bias = 0.000075;
-
 
     for(int i = 0; i < spotlightDirC.length(); i++) {
         l = normalize(spotlightDirC[i]);
