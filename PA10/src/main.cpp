@@ -435,3 +435,8 @@ void helpMenu() {
 	          << "    " << PROGRAM_NAME << " <filename>" << std::endl
 	          << "        Run program with specified config file" << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& stream, const glm::vec3 & vector) {
+	stream << "(" << vector.x << "," << vector.y << "," << vector.z << ")";
+	return stream;
+}

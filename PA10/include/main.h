@@ -8,6 +8,7 @@
 #include "model.h"
 #include "physics_world.h"
 #include "gameworldctx.h"
+#include "graphics_headers.h"
 
 using json = nlohmann::json;
 
