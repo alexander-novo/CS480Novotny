@@ -328,45 +328,15 @@ long long Engine::GetCurrentTimeMillis() {
 
 
 void Engine::NewGame() {
-
-
-	PhysicsWorld * tempWorld = _ctx.physWorld;
-	if(m_menu->options.singleBall)
-	{
-		Menu::singleBall(1);
-		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
-	}
-	else
-	{
-		Menu::singleBall(0);
-		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
-	}
-
-	int xLoc = -25;
-	int zLoc = -17;
-
-	// Start with all other balls in tray
-	for(int i = 1; i<(*tempWorld).ballIndices.size(); i++)
-	{
+	//Reset everything
+	for(auto& i : ctx.gameWorldCtx->worldObjects) {
 		btTransform ballTransform;
 		ballTransform.setIdentity();
-		ballTransform.setOrigin(btVector3(xLoc,2,zLoc));
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setWorldTransform(ballTransform);
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setLinearVelocity(btVector3(0,0,0));
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld).ballIndices[i]]->setAngularVelocity(btVector3(0,0,0));
-		xLoc += 5;
-	}
-
-	// Place correct balls in ball launcher
-	zLoc = 5;
-	for(int i = 0; i<tempWorld->currentBallIndices->size(); i++)
-	{
-		btTransform ballTransform;
-		ballTransform.setIdentity();
-		ballTransform.setOrigin(btVector3(-45,2,zLoc));
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(ballTransform);
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(btVector3(0,0,0));
-		(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(btVector3(0,0,0));
-		zLoc += 5;
+		ballTransform.setOrigin(btVector3(i->ctx.xLoc, i->ctx.yLoc, i->ctx.zLoc));
+		
+		btRigidBody* body = i->ctx.physicsBody;
+		body->setWorldTransform(ballTransform);
+		body->setLinearVelocity(btVector3(0, 0, 0));
+		body->setAngularVelocity(btVector3(0, 0, 0));
 	}
 }

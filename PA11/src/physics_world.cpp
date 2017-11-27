@@ -35,7 +35,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -39.81f, 0));
+	dynamicsWorld->setGravity(btVector3(0, -1, 0));
 
 	dynamicsWorld->setInternalTickCallback(myTickCallback, static_cast<void *> (this) );
 }
@@ -94,6 +94,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btVector3(xPos, yPos, zPos));
+
 	if(objCtx->rotationX != 0 || objCtx->rotationY != 0 || objCtx->rotationZ != 0)
 	{
 		btQuaternion transformRotationX;

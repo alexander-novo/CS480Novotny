@@ -22,7 +22,7 @@ class Menu {
 	public:
 		//All the different options the menu changes
 		struct Options {
-			float zoom = 100.0;     //Keeps track of how far our camera should be away from the planet we're looking at
+			float zoom = 20.0;     //Keeps track of how far our camera should be away from the planet we're looking at
 			float rotation = 0.0; //Keeps track of our camera rotating around whatever we're looking at
 			float elevation = 45;
 			bool shouldClose = false; //Whether or not we should exit the program
