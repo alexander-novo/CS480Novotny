@@ -196,7 +196,7 @@ void Engine::eventHandler(unsigned dt) {
 					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
 					glmImpVector.y = 0;
 					glmImpVector = glm::normalize(glmImpVector);
-					glmImpVector *= 10 * picked->ctx.mass;
+					glmImpVector *= picked->ctx.mass;
 
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
