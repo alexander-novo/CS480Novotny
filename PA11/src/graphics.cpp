@@ -378,7 +378,7 @@ void Graphics::renderShadows() {
 			}
 		}
 		
-		projMatrix = glm::perspective(float(M_PI / 2), 1.0f, 1.0f, 200.0f);
+		projMatrix = glm::perspective(spotLights[i]->angle * 2.25f, 1.0f, 1.0f, 200.0f);
 		
 		spotlightMatrices[i] = projMatrix * viewMatrix;
 		
