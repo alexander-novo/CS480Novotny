@@ -46,4 +46,6 @@ struct Vertex {
 	Vertex(glm::vec3 v, glm::vec2 u, glm::vec3 n, glm::vec3 t, glm::vec3 b) : vertex(v), uv(u), normal(n), tangent(t), bitangent(b) {}
 };
 
+std::ostream& operator<<(std::ostream& stream, const glm::vec3 & vector);
+
 #endif /* GRAPHICS_HEADERS_H */
