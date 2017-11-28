@@ -329,7 +329,7 @@ long long Engine::GetCurrentTimeMillis() {
 
 void Engine::NewGame() {
 	static float radius = 0.1; //todo maybe load from config?
-	static float height = sqrt(5) * radius;
+	static float height = sqrt(3) * radius;
 	static float yOrigin = radius;
 	static float zOrigin = -0.25f;
 	
