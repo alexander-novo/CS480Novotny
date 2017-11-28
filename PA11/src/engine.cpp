@@ -328,15 +328,31 @@ long long Engine::GetCurrentTimeMillis() {
 
 
 void Engine::NewGame() {
-	//Reset everything
-	for(auto& i : ctx.gameWorldCtx->worldObjects) {
-		btTransform ballTransform;
-		ballTransform.setIdentity();
-		ballTransform.setOrigin(btVector3(i->ctx.xLoc, i->ctx.yLoc, i->ctx.zLoc));
-		
-		btRigidBody* body = i->ctx.physicsBody;
-		body->setWorldTransform(ballTransform);
-		body->setLinearVelocity(btVector3(0, 0, 0));
-		body->setAngularVelocity(btVector3(0, 0, 0));
+	static float radius = 0.1; //todo maybe load from config?
+	static float height = sqrt(5) * radius;
+	static float yOrigin = radius;
+	static float zOrigin = -0.25f;
+	
+	float xCoord;
+	btTransform ballTransform;
+	btRigidBody* body;
+	
+	for(int i = 0; i < 5; i++) {
+		float width = i * radius * 2;
+		for(int j = 0; j <= i; j++) {
+			xCoord = i == 0 ? 0 : - width / 2 + width / i * j;
+			
+			ballTransform.setIdentity();
+			ballTransform.setOrigin(btVector3(xCoord, yOrigin, i * height + zOrigin));
+			
+			body = (*(_ctx.physWorld->getLoadedBodies()))[_ctx.physWorld->ballIndices[i * (i + 1) / 2 + j]];
+			body->setWorldTransform(ballTransform);
+			body->setLinearVelocity(btVector3(0, 0, 0));
+			body->setAngularVelocity(btVector3(0, 0, 0));
+		}
 	}
+
+	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
+	//_ctx.physWorld->update(20);
+	//m_menu->pause();
 }
