@@ -236,13 +236,21 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 			return 1;
 		}
 		btTriangleMesh* objTriMesh = new btTriangleMesh();
+		Model* collisionMesh = ctx.model;
+		if(config.find("collision-mesh") != config.end()) {
+			filename = config["collision-mesh"];
+			
+			collisionMesh = Model::load("models/" + filename);
+			ctx.shape = 0;
+		}
+		
 		if(ctx.shape > 4 || ctx.shape <= 0)
 		{
-			for(const auto& m : ctx.model->meshes) {
+			for(const auto& m : collisionMesh->meshes) {
 				for(int i = 0; i < m._indices.size() / 3; i++) {
 					btVector3 triArray[3];
 					for(int j = 0; j < 3; j++) {
-						glm::vec3 position = ctx.model->meshes[0]._vertices[m._indices[3 * i + j]].vertex;
+						glm::vec3 position = m._vertices[m._indices[3 * i + j]].vertex;
 						triArray[j] = btVector3(position.x*ctx.scale.x, position.y*ctx.scale.y, position.z*ctx.scale.z);
 					}
 					

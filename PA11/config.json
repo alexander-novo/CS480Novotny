@@ -40,7 +40,7 @@
     {
       "name": "Floor",
       "model": "PoolTable.obj",
-      "shape": "plane",
+      "collision-mesh": "PoolTopSmall.obj",
       "isDynamic": false,
       "isKinematic": true,
       "isBounceType": false,

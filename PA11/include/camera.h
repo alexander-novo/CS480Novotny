@@ -5,7 +5,7 @@
 #include "Menu.h"
 
 #define NEAR_FRUSTRUM 0.1f
-#define FAR_FRUSTRUM 500.0f
+#define FAR_FRUSTRUM 25.0f
 
 #define CAMERA_MODE_FOLLOW 1
 #define CAMERA_MODE_FREE   2
