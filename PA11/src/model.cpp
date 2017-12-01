@@ -105,11 +105,16 @@ void Model::loadVertices(aiMesh *mesh, Mesh *newModel)
 	aiVector3D uv = {0.0, 0.0, 0.0};
 	aiVector3D tangent = {0.0, 0.0, 0.0};
 	aiVector3D bitangent = {0.0, 0.0, 0.0};
+	aiVector3D normal = {0.0, 0.0, 0.0};
 	
 	for(unsigned vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) 
 	{
 		aiVector3D& vertex = mesh->mVertices[vertexIndex];
-		aiVector3D& normal = mesh->mNormals[vertexIndex];
+		
+		if(mesh->HasNormals()) {
+			normal = mesh->mNormals[vertexIndex];
+		}
+		
 		if(mesh->HasTextureCoords(0)) {
 			uv = mesh->mTextureCoords[0][vertexIndex];
 		}
