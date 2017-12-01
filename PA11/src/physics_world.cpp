@@ -183,7 +183,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 
 	// add friction to object (.5-.8 for steel)
 	// used to reduce the amount of continuous spinning of the ball while on table
-	body->setFriction(.5f);
+	body->setFriction(0.7f);
+	body->setRollingFriction(0.05f);
 	
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
