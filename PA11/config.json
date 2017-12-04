@@ -7,12 +7,12 @@
     "name": "Pinball Machine"
   },
   "default_shaders": {
-    "vertex": "vert_materials",
-    "fragment": "frag_materials"
+    "vertex": "materials.vert",
+    "fragment": "materials.frag"
   },
   "default_alt_shaders": {
-    "vertex": "vert_materials_vert",
-    "fragment": "frag_materials_vert"
+    "vertex": "materials_vert.vert",
+    "fragment": "materials_vert.frag"
   },
   "lights": [
     {
