@@ -31,12 +31,16 @@ class Menu {
 			
 			bool paused = false; //Pause simulation
 			bool showOptionsMenu = false; //Whether or not the options menu is out right now
+			bool showPlayers = true; //Whether or not the player1/player2 menu is currently shown
 			bool shouldSwapShaders = false; //Whether the engine should swap shaders this frame
 			bool shouldStartNewGame = false;
 
 			int singleBall = 1; //Whether to play with 1 ball or 3
 			bool isPlayingMusic = false;
 			bool isPlayingSounds = true;
+			bool isPlayer1Turn = true;
+			bool isPlayer2Turn = false;
+			bool playerCheckBoxDisabled = true;
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with
 			bool rotateBack = false;

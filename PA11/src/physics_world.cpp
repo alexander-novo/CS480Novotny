@@ -149,10 +149,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// (mass [0 = static], motionstate, collisionshape, inertia)
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, newShape, inertia);
 	
-	if (objCtx->isBounceType) {
-		info.m_restitution = 7.0f;
-	} else if (objCtx->shape == 1) {
-		info.m_restitution = 0.5f;
+	if (objCtx->shape == 1) {
+		info.m_restitution = 0.75f;
 	}
 	else	{
 		info.m_restitution = 0.7f;

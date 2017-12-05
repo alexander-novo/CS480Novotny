@@ -28,13 +28,35 @@ void Menu::update(int dt, float width, float height) {
 		
 		ImGui::EndMainMenuBar();
 	}
+
+	if(_options.showPlayers) {
+
+		ImGui::SetNextWindowSize(ImVec2(100,100), ImGuiCond_FirstUseEver);
+		if (ImGui::Begin("Player Turn", &_options.showPlayers, ImGuiWindowFlags_NoCollapse)) {
+			if (_options.playerCheckBoxDisabled)
+			{
+				// ToDo: Figure out why this function isn't being found
+//				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
+				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+			}
+			ImGui::Checkbox("Player 1", &_options.isPlayer1Turn);
+			ImGui::Checkbox("Player 2", &_options.isPlayer2Turn);
+			if (_options.playerCheckBoxDisabled)
+			{
+//				ImGui::PopItemFlag();
+				ImGui::PopStyleVar();
+			}
+			ImGui::End();
+		}
+
+	}
+
 	if(_options.showOptionsMenu) {
 		ImGui::SetNextWindowSize(ImVec2(600,680), ImGuiCond_FirstUseEver);
 		if (ImGui::Begin("Options", &_options.showOptionsMenu, ImGuiWindowFlags_NoCollapse)) {
 			
 			if(ImGui::CollapsingHeader("Game Options")) {
 
-				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::Text("Play Style");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
 				

@@ -264,6 +264,19 @@
         "y": 0.15
       },
       "mass": 3
+    },
+    {
+      "name": "Q Ball",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "isDynamic": true,
+      "radius": 0.1,
+      "location": {
+        "z": 0,
+        "x": 1.83,
+        "y": 0.15
+      },
+      "mass": 3
     }
   ]
 }
