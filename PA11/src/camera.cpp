@@ -28,6 +28,7 @@ void Camera::calculateCamera() {
 	
 	//What we're looking at
 	glm::vec3 lookVec = lookAt;
+	glm::vec3 shakeFactor = glm::vec3(0.0, 0.0, 0.0);
 	//What should be in the background (whatever we're orbiting)
 	glm::vec3 backgroundVec = glm::vec3(0.0, 0.0, -1.0);
 	float angle = m_menu.options.rotation * (float) M_PI / 180.0f;
@@ -36,9 +37,22 @@ void Camera::calculateCamera() {
 	backgroundVec = glm::rotate(backgroundVec, angle, glm::vec3(0.0, 1.0, 0.0));
 	backgroundVec = glm::rotate(backgroundVec, elev, glm::cross(glm::vec3(0.0, -1.0, 0.0), backgroundVec));
 	backgroundVec = glm::normalize(backgroundVec);
-	backgroundVec *= m_menu.options.zoom;
+	backgroundVec *= m_menu.options.zoom * tempZoom;
 	//Then add it back to the location of whatever we were looking at to angle the camera in front of what we're looking at AND what it's orbiting
 	backgroundVec += lookVec;
+	
+	if(screenShake != glm::vec2(0.0, 0.0)) {
+		glm::vec3 upVector = glm::vec3(0.0, 1.0, 0.0);
+		glm::vec3 lookTowards = glm::normalize(lookVec - backgroundVec);
+		glm::vec3 upVectorOrtho = glm::normalize(upVector - glm::dot(upVector, lookTowards) * lookTowards);
+		glm::vec3 rightVector = glm::cross(lookTowards, upVectorOrtho);
+		
+		shakeFactor = (upVectorOrtho * screenShake.y + rightVector * screenShake.x) * m_menu.options.zoom * tempZoom * 0.1f;
+		backgroundVec += shakeFactor;
+		lookVec += shakeFactor;
+		
+		screenShake = glm::vec2(0.0, 0.0);
+	}
 	
 	eyePos = backgroundVec;
 	lookAt = lookVec;
@@ -47,6 +61,10 @@ void Camera::calculateCamera() {
 	view = glm::lookAt(eyePos, //Eye Position
 	                   lookAt, //Focus point
 	                   glm::vec3(0.0, 1.0, 0.0)); //Positive Y is up
+	
+	lookAt -= shakeFactor;
+	
+	tempZoom = 1;
 }
 
 glm::mat4& Camera::GetProjection() {

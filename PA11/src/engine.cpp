@@ -69,6 +69,35 @@ void Engine::Run() {
 
 		// Check the keyboard input
 		Keyboard(m_DT);
+		
+		static Texture* billboardTex = Texture::load("textures/Green_Ring.png");
+		static Texture* billboardTex2 = Texture::load("textures/Red_Ring.png");
+		
+		if(mouseDown) {
+#define MAX_RADIUS 0.2f
+#define MAX_ZOOM 0.2f
+#define MAX_AMPLITUDE 0.15f
+#define MAX_TIME 3.0f
+			
+			billboardTex->initGL();
+			billboardTex2->initGL();
+			
+			float billRadius = min(mouseTimer / 1000.0f / (MAX_TIME / MAX_RADIUS), MAX_RADIUS);
+			Texture* billTex = (billRadius == MAX_RADIUS) ? billboardTex2 : billboardTex;
+			
+			m_graphics->addGuiBillboard(glm::vec3(clickedLocation.x / _ctx.width * 2 - 1,
+			                                      clickedLocation.y / _ctx.height * 2 - 1,
+			                                      billRadius),
+			                            billTex);
+			m_graphics->getCamView()->tempZoom *= 1 - min(mouseTimer / 1000.0f / (MAX_TIME / MAX_ZOOM), MAX_ZOOM);
+			
+			float amplitude = min(float(pow(mouseTimer / 1000.0f / (MAX_TIME / sqrt(MAX_AMPLITUDE)), 2)), MAX_AMPLITUDE);
+			float theta = mouseTimer / 50.0f;
+			float shakeRadius = amplitude * sin(theta);
+			
+			m_graphics->getCamView()->screenShake = glm::vec2(shakeRadius * cos(theta), shakeRadius * sin(theta));
+			mouseTimer += m_DT;
+		}
 
 		if(!newGame)
 		{
@@ -190,18 +219,8 @@ void Engine::eventHandler(unsigned dt) {
 			case SDL_BUTTON_LEFT:
 			{
 				mouseDown = true;
-				glm::vec3 pickedPosition;
-				Object* picked = m_graphics->getObjectOnScreen(m_event.button.x, _ctx.height - m_event.button.y, &pickedPosition);
-				if(picked != nullptr) {
-					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
-					glmImpVector.y = 0;
-					glmImpVector = glm::normalize(glmImpVector);
-					glmImpVector *= picked->ctx.mass;
-
-					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
-					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
-					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
-				}
+				clickedLocation.x = m_event.button.x;
+				clickedLocation.y = _ctx.height - m_event.button.y;
 				break;
 			}
 			case SDL_BUTTON_RIGHT:
@@ -221,7 +240,20 @@ void Engine::eventHandler(unsigned dt) {
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
+				glm::vec3 pickedPosition;
+				Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y, &pickedPosition);
+				if(picked != nullptr) {
+					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
+					glmImpVector.y = 0;
+					glmImpVector = glm::normalize(glmImpVector);
+					glmImpVector *= 1 + mouseTimer / 200;
+					
+					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
+					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
+					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
+				}
 				mouseDown = false;
+				mouseTimer = 0;
 				break;
 		}
 	}

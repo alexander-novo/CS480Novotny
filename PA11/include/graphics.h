@@ -50,6 +50,8 @@ class Graphics {
 
 		Camera * getCamView();
 		
+		void addGuiBillboard(const glm::vec3& location, Texture* texture);
+		
 		//DO NOT MODIFY AFTER Initialize() HAS BEEN CALLED
 		//Feel free to modify the LightContext objects, though
 		vector<LightContext*> spotLights;
@@ -62,6 +64,8 @@ class Graphics {
 			float b;
 			float a;
 		};
+		
+		std::vector<pair<glm::vec3, Texture*>> billboards;
 
 		// The camera view
 		Camera *camView = nullptr;
@@ -73,6 +77,7 @@ class Graphics {
 		void renderPick();
 		//Render pass for shadow mapping
 		void renderShadows();
+		void renderBillboards();
 
 		const int& windowWidth;
 		const int& windowHeight;

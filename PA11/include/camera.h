@@ -42,6 +42,8 @@ class Camera {
 		
 		//Camera mode - see macros above
 		int cameraMode;
+		float tempZoom = 1;
+		glm::vec2 screenShake = glm::vec2(0.0, 0.0);
 	
 	private:
 		

@@ -1,16 +1,16 @@
 #include "graphics.h"
 
 Graphics::Graphics(Menu& menu, const int& w, const int& h, GameWorld::ctx* gwc) : windowWidth(w),
-                                                                                                    windowHeight(h),
-                                                                                                    m_menu(menu),
-                                                                                                    gameWorldCtx(gwc) {
+                                                                                  windowHeight(h),
+                                                                                  m_menu(menu),
+                                                                                  gameWorldCtx(gwc) {
 	camView = new Camera(menu);
 	
 	Object::projectionMatrix = &camView->GetProjection();
 	Object::viewMatrix = &camView->GetView();
 	
-	pickShader = Shader::load("shaders/vert_pick", "shaders/frag_pick");
-	shadowShader = Shader::load("shaders/vert_shadow", "shaders/frag_shadow");
+	pickShader = Shader::load("shaders/pick.vert", "shaders/pick.frag");
+	shadowShader = Shader::load("shaders/shadow.vert", "shaders/shadow.frag");
 }
 
 Graphics::~Graphics() {
@@ -233,6 +233,10 @@ Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
 	
 }
 
+void Graphics::addGuiBillboard(const glm::vec3& location, Texture* texture) {
+	billboards.emplace_back(location, texture);
+}
+
 void Graphics::Render() {
 	if(m_menu.options.shadowSize != MENU_SHADOWS_NONE) renderShadows();
 	
@@ -321,6 +325,9 @@ void Graphics::Render() {
 		gameWorldCtx->worldObjects[i]->Render(m_menu.options.shadowSize != MENU_SHADOWS_NONE, spotlightMatrices);
 	}
 	
+	renderBillboards();
+	billboards.clear();
+	
 	// Get any errors from OpenGL
 	auto error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -392,6 +399,34 @@ void Graphics::renderShadows() {
 	}
 	
 	glViewport(0, 0, windowWidth, windowHeight);
+}
+
+void Graphics::renderBillboards() {
+	static Model* billboardModel = Model::load("models/Billboard.obj");
+	static Shader* billboardShader = Shader::load("shaders/billboard.vert", "shaders/billboard.frag");
+	
+	if(billboards.size() <= 0) {
+		return;
+	}
+	
+	billboardModel->initGL();
+	billboardShader->Initialize();
+	billboardShader->Enable();
+	
+	if(billboards.size() > 0) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		float aspectRatio = windowHeight / float(windowWidth);
+		for (const auto& i : billboards) {
+			i.second->bind(GL_COLOR_TEXTURE);
+			billboardShader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);
+			billboardShader->uniform1fv("aspect", 1, &aspectRatio);
+			billboardShader->uniform3fv("billboardLocation", 1, &i.first.x);
+			billboardModel->drawModel(nullptr);
+		}
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_BLEND);
+	}
 }
 
 std::string Graphics::ErrorString(GLenum error) {

@@ -70,6 +70,8 @@ class Engine {
 		Menu *m_menu;
 		
 		bool mouseDown;
+		int mouseTimer = 0;
+		glm::vec2 clickedLocation;
 		
 		//Handle keyboard controls
 		void Keyboard(unsigned dt);
