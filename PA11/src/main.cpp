@@ -105,13 +105,50 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 		Shader* defaultAltShader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 		
 		//Load the gameworld's objects
+		int j = 0;
+		int k = 0;
 		for (auto& i : config["game_objects"]) {
 			Object::Context objCtx;
 			error = loadObjectContext(i, objCtx, defaultShader, defaultAltShader, physWorld);
 			if (error != -1) return error;
 			Object* newObject = new Object(objCtx);
 			gameCtx->worldObjects.push_back(newObject);
+
+			// Ball Indices
+			// Assumes ordered 1-15, cue-ball last (16)
+			if(objCtx.name.find("Ball"))
+			{
+				if(k < 8)
+				{
+					gameCtx->ballSolids.push_back(j);
+				}
+				else if (k == 8)
+				{
+					gameCtx->eightBall = j;
+				}
+				else if (k > 8 && k <= 15)
+				{
+					gameCtx->ballStripes.push_back(j);
+				}
+				else if (k == 16)
+				{
+					gameCtx->cueBall = j;
+				}
+
+				k++;
+			}
+			j++;
+
 		}
+
+		// Set Initial Balls to not sunk and not out of bounds
+		for (int i = 0; i<8; i++) {
+			gameCtx->oobSolids[i] = false;
+			gameCtx->oobStripes[i] = false;
+			gameCtx->sunkSolids[i] = false;
+			gameCtx->sunkStripes[i] = false;
+		}
+
 		
 		vector<Graphics::LightContext*>* lights = new vector<Graphics::LightContext*>();
 		for(auto& i : config["lights"]) {

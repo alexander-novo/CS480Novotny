@@ -18,6 +18,17 @@ namespace GameWorld
 //        Object *surfacePlane;
 //        bool surfaceIsDynamic = false;
         std::vector<Object *> worldObjects;
+        std::vector<int> ballSolids;
+        std::vector<int> ballStripes;
+        bool sunkSolids[7];
+        bool sunkStripes[7];
+        // oob = out of bounds
+        bool oobStripes[7];
+        bool oobSolids[7];
+        int cueBall;
+        int eightBall;
+        bool isNextShotOK = true;
+        bool isTurnChange = true;
     };
 }
 

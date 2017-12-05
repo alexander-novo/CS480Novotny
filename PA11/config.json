@@ -266,7 +266,7 @@
       "mass": 3
     },
     {
-      "name": "Q Ball",
+      "name": "Cue Ball",
       "shape": "sphere",
       "model": "Ball1.obj",
       "isDynamic": true,
