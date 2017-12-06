@@ -32,11 +32,13 @@ void Menu::update(int dt, float width, float height) {
 
 	if(_options.showPlayers) {
 
-		ImGui::SetNextWindowSize(ImVec2(100,100), ImGuiCond_FirstUseEver);
-		if (ImGui::Begin("Player Turn", &_options.showPlayers, ImGuiWindowFlags_NoCollapse)) {
+		ImGui::SetNextWindowSize(ImVec2(200,200));
+		if (ImGui::Begin("Player Turn", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
             if (_options.playerCheckBoxDisabled) {
                 // ToDo: Figure out why this function isn't being found
-//				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
+	            // It's in ImGui_internal, which means we don't have access to it - Alex
+	            
+				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
                 ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
             }
             if (PhysicsWorld::game->isPlayer1) {
