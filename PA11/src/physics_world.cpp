@@ -265,6 +265,11 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 	{
 		int sunkBall = 0;
 		float maxSpeed = .02;
+
+		// Check GAME STATES to and do appropriate actions
+		// i.e. place out of bounds balls back on table
+		//		prep cue ball placement on scratch/new game
+		//		swap players on turn change
 		if(!PhysicsWorld::game->isGameOver)
 		{
 			btVector3 velocity;
@@ -295,31 +300,32 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 
 			if(resting)
 			{
-				if(!PhysicsWorld::game->isNextShotOK)
+				if(PhysicsWorld::game->isTurnChange && !PhysicsWorld::game->turnSwapped)
 				{
-                    std::cout << "playerShot ready" << std::endl;
+					PhysicsWorld::game->isPlayer1 = !PhysicsWorld::game->isPlayer1;
+					PhysicsWorld::game->turnSwapped = true;
+					PhysicsWorld::game->isTurnChange = true;
+				}
+				else
+				{
+					PhysicsWorld::game->turnSwapped = true;
+					PhysicsWorld::game->isTurnChange = true;
+				}
+
+				if(!PhysicsWorld::game->isNextShotOK && PhysicsWorld::game->turnSwapped) {
+					std::cout << "playerShot ready" << std::endl;
 					PhysicsWorld::game->isNextShotOK = true;
+
 
 					// ToDo: Check if game is win/loss -> activate win/loss
 
 					// ToDo::Place out of bounds balls
 					// ToDo: Place out of bounds Cue-Ball
-						// if cue-ball out of bounds
-							// if opposing has balls sunk
-								// pull a sunk ball
-								// place sunk ball at footspot
-							// place cue-ball in kitchen (later: have player set cue-ball
-				}
-
-                if(PhysicsWorld::game->isTurnChange && !PhysicsWorld::game->turnSwapped)
-                {
-                    PhysicsWorld::game->isPlayer1 = !PhysicsWorld::game->isPlayer1;
-					PhysicsWorld::game->turnSwapped = true;
-                }
-
-				if(PhysicsWorld::game->turnSwapped)
-				{
-					PhysicsWorld::game->isTurnChange = true;
+					// if cue-ball out of bounds
+					// if opposing has balls sunk
+					// pull a sunk ball
+					// place sunk ball at footspot
+					// place cue-ball in kitchen (later: have player set cue-ball
 				}
 			}
 		}
@@ -360,6 +366,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setWorldTransform(ballTransform);
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setLinearVelocity(btVector3(0, 0, 0));
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setAngularVelocity(btVector3(0, 0, 0));
+					// game over on player1 turn
                     if(PhysicsWorld::game->isPlayer1)
                     {
                         int numBallsSunk = 0;
@@ -377,13 +384,40 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
                         if(numBallsSunk >= 7)
                         {
                             PhysicsWorld::game->isPlayer1Win = true;
+							std::cout << "Player 1 Wins" << std::endl;
                         }
                         else
                         {
                             PhysicsWorld::game->isPlayer1Loss = true;
+							std::cout << "Player 2 Wins" << std::endl;
                         }
-
                     }
+					// game over on player2 turn
+					if(!PhysicsWorld::game->isPlayer1)
+					{
+						int numBallsSunk = 0;
+						for(int i = 0; i<7; i++)
+						{
+							if(!PhysicsWorld::game->isPlayer1Stripes && PhysicsWorld::game->sunkStripes[i])
+							{
+								numBallsSunk++;
+							}
+							else if (!PhysicsWorld::game->isPlayer1Solids && PhysicsWorld::game->sunkSolids[i])
+							{
+								numBallsSunk++;
+							}
+						}
+						if(numBallsSunk >= 7)
+						{
+							PhysicsWorld::game->isPlayer1Win = false;
+							std::cout << "Player 2 Wins" << std::endl;
+						}
+						else
+						{
+							PhysicsWorld::game->isPlayer1Loss = false;
+							std::cout << "Player 1 Wins" << std::endl;
+						}
+					}
 				}
 				else
 				{
@@ -488,9 +522,16 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 							PhysicsWorld::game->isPlayer1Solids = true;
 						}
 					}
-					if(PhysicsWorld::game->isPlayer1Stripes)
+					// player one sinks stripes whens tripes
+					if(PhysicsWorld::game->isPlayer1 && PhysicsWorld::game->isPlayer1Stripes)
 					{
 						PhysicsWorld::game->isTurnChange = false;
+						PhysicsWorld::game->turnSwapped = false;
+					} // player two sinks stripes when stripes
+					else if(!PhysicsWorld::game->isPlayer1 && PhysicsWorld::game->isPlayer1Solids)
+					{
+						PhysicsWorld::game->isTurnChange = false;
+						PhysicsWorld::game->turnSwapped = false;
 					}
 					if(PhysicsWorld::game->sunkStripes[i] != true)
 					{
@@ -555,9 +596,16 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 							PhysicsWorld::game->isPlayer1Stripes = true;
 						}
 					}
-					if(PhysicsWorld::game->isPlayer1Solids)
+					// player one sinks solids and is solids
+					if(PhysicsWorld::game->isPlayer1 && PhysicsWorld::game->isPlayer1Solids)
 					{
 						PhysicsWorld::game->isTurnChange = false;
+						PhysicsWorld::game->turnSwapped = false;
+					} // player two sinks solids and is solids
+					else if(!PhysicsWorld::game->isPlayer1 && PhysicsWorld::game->isPlayer1Stripes)
+					{
+						PhysicsWorld::game->isTurnChange = false;
+						PhysicsWorld::game->turnSwapped = false;
 					}
 					if(PhysicsWorld::game->sunkSolids[i] != true)
 					{
