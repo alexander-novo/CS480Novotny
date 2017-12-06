@@ -269,6 +269,7 @@
       "name": "Cue Ball",
       "shape": "sphere",
       "model": "Ball1.obj",
+      "texture": "PoolBalluvCue.jpg",
       "isDynamic": true,
       "radius": 0.1,
       "location": {
