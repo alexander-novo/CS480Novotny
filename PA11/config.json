@@ -4,7 +4,7 @@
     "adjustable": false,
     "height": 1000,
     "width": 1500,
-    "name": "Pinball Machine"
+    "name": "8 Ball Pool"
   },
   "default_shaders": {
     "vertex": "materials.vert",
@@ -84,7 +84,7 @@
       "mass": 3
     },
     {
-      "name": "Ball3",
+      "name": "Ball 3",
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv3.jpg",
@@ -168,7 +168,7 @@
       "mass": 3
     },
     {
-      "name": "Ball 8",
+      "name": "Ball 9",
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv9.jpg",

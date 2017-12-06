@@ -69,6 +69,7 @@ class PhysicsWorld {
 		std::vector<int>* currentBallIndices;
 		
 		static GameWorld::ctx* game;
+		static Menu::Options m_options;
 	
 	private:
 

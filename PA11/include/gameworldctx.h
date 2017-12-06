@@ -29,6 +29,8 @@ namespace GameWorld
         int eightBall;
         bool isNextShotOK = true;
         bool isTurnChange = true;
+        bool isGameOver = false;
+        bool isPlayer1 = true;
     };
 }
 

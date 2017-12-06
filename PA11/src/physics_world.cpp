@@ -230,61 +230,155 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
-	static int lostBalls[3] = {0,0,0};
-	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped (balls/plunger)
+
+	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
 	static long long score = 0;
+	static bool resting = true;
 
-	if(Menu::singleBall())
+	if(PhysicsWorld::game != nullptr)
 	{
-		(*tempWorld).currentBallIndices = &((*tempWorld).singleBallIndex);
-	}
-	else
-	{
-		(*tempWorld).currentBallIndices = &((*tempWorld).ballIndices);
+		int sunkBall = 0;
+//		bool sunkCueBall;
+//		bool sunk8Ball;
+		float maxSpeed = .02;
+		if(!PhysicsWorld::game->isGameOver)
+		{
+			btVector3 velocity;
+			btScalar speed;
+			// Check Stripes Resting
+			for(int i = 0; i< PhysicsWorld::game->ballStripes.size(); i++)
+			{
+				velocity = (*(tempWorld->getLoadedBodies()))[(PhysicsWorld::game->ballStripes[i])]->getLinearVelocity();
+				speed = velocity.length();
+				if(speed > maxSpeed) {resting = false;}
+				if(PhysicsWorld::game->sunkStripes[i]){sunkBall++;}
+			}
+			// Check Solids Resting
+			for(int i = 0; i< PhysicsWorld::game->ballSolids.size(); i++)
+            {
+				velocity = (*(tempWorld->getLoadedBodies()))[(PhysicsWorld::game->ballSolids[i])]->getLinearVelocity();
+				speed = velocity.length();
+				if(speed > maxSpeed) {resting = false;}
+				if(PhysicsWorld::game->sunkSolids[i]){sunkBall++;}
+			}
+			// Check cue-ball and 8-ball resting
+			velocity = (*(tempWorld->getLoadedBodies()))[(PhysicsWorld::game->cueBall)]->getLinearVelocity();
+			speed = velocity.length();
+			if(speed > maxSpeed) {resting = false;}
+			velocity = (*(tempWorld->getLoadedBodies()))[(PhysicsWorld::game->eightBall)]->getLinearVelocity();
+			speed = velocity.length();
+			if(speed > maxSpeed) {resting = false;}
+
+			if(resting)
+			{
+				if(!PhysicsWorld::game->isNextShotOK)
+				{
+					// ToDo: Check if game is win/loss -> activate win/loss
+					if(PhysicsWorld::game->isTurnChange)
+					{
+						// ToDo: Change turns (in menu)
+					}
+					// ToDo::Place out of bounds balls
+					// ToDo: Place out of bounds Cue-Ball
+						// if cue-ball out of bounds
+							// if opposing has balls sunk
+								// pull a sunk ball
+								// place sunk ball at footspot
+							// place cue-ball in kitchen (later: have player set cue-ball
+				}
+			}
+
+		}
 	}
 
-	// Traverse all the balls and check if they are out of bounds on speed or location
-	for(int i = 0; i<tempWorld->currentBallIndices->size(); i++)
+	// Traverse all the striped balls and check if they are out of bounds on speed or location
+	for(int i = 0; i< PhysicsWorld::game->ballStripes.size(); i++)
 	{
+
+//        std::cout << "ball indices: " << i << std::endl;
         // Clamp the velocity to help prevent tunneling
-		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getLinearVelocity();
+		btVector3 velocity = (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getLinearVelocity();
 		btScalar speed = velocity.length();
 		if(speed > mMaxSpeed)
 		{
 			velocity *= mMaxSpeed/speed;
-			(*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(velocity);
+			(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->setLinearVelocity(velocity);
 		}
 
         // Ball location trigger
-		if((*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->getCenterOfMassPosition().z() < -16.5) {
-			static bool gameOver = false;
+		if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().y() < -.1)
+		{
+			// if fell through table - is in pocket
+			if(PhysicsWorld::game->sunkStripes[i] != true && PhysicsWorld::game->oobStripes[i] != true)
+			{
+				if
+				(
+					// ToDo: check for more accurate board size (ball must be in bounds)
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().x() <= 4.5 &&
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().x() >= -4.5 &&
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().z() < 6 &&
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().z() > -6
+				)
+				{
 
-            // Game in progress/started
-            // Game logic for ball in pocket
+					std::cout << "ball sunk: " << i+9 << std::endl;
+					btTransform ballTransform;
+					ballTransform.setIdentity();
+					ballTransform.setOrigin(btVector3(i, 0, 0));
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->setWorldTransform(ballTransform);
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->setLinearVelocity(btVector3(0, 0, 0));
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->setAngularVelocity(btVector3(0, 0, 0));
+					if(PhysicsWorld::game->sunkStripes[i] != true)
+					{
+						PhysicsWorld::game->sunkStripes[i] = true;
+					}
+				}
+				else
+				{
 
-            // Place ball in correct place when fallthrough
+					std::cout << "ball oob: " << i+9 << std::endl;
+					PhysicsWorld::game->oobStripes[i] = true;
+				}
+			}
+		}
 
-//            btTransform ballTransform;
-//            ballTransform.setIdentity();
-//            ballTransform.setOrigin(btVector3(-48, 2, 0));
-//            (*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setWorldTransform(
-//                    ballTransform);
-//            (*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setLinearVelocity(
-//                    btVector3(0, 0, 0));
-//            (*(tempWorld->getLoadedBodies()))[(*tempWorld->currentBallIndices)[i]]->setAngularVelocity(
-//                    btVector3(0, 0, 0));
+		// Ball location trigger
+		if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().y() < -.1)
+		{
+			// if fell through table - is in pocket
+			if(PhysicsWorld::game->sunkStripes[i] != true && PhysicsWorld::game->oobStripes[i] != true)
+			{
+				if
+						(
+					// ToDo: check for more accurate board size (ball must be in bounds)
+						(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().x() <= 4.5 &&
+						(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().x() >= -4.5 &&
+						(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().z() < 6 &&
+						(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().z() > -6
+						)
+				{
 
-            // Some gameover logic
-//            if(!gameOver)
-//            {
-//                std::cout << "Game Over" << std::endl;
-//                std::cout << "Final Score: " << score << std::endl;
-//                score = 0;
-//                gameOver = true;
-//            }
+					std::cout << "ball sunk: " << i+9 << std::endl;
+					btTransform ballTransform;
+					ballTransform.setIdentity();
+					ballTransform.setOrigin(btVector3(i, 0, 0));
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->setWorldTransform(ballTransform);
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->setLinearVelocity(btVector3(0, 0, 0));
+					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->setAngularVelocity(btVector3(0, 0, 0));
+					if(PhysicsWorld::game->sunkSolids[i] != true)
+					{
+						PhysicsWorld::game->sunkSolids[i] = true;
+					}
+				}
+				else
+				{
 
+					std::cout << "ball oob: " << i+9 << std::endl;
+					PhysicsWorld::game->oobSolids[i] = true;
+				}
+			}
 		}
 	}
 
@@ -323,26 +417,17 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					}
 				}
 
-				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
-					score += 125;
-					*obj2->ctx.bumperLight = 500;
-					obj2->ctx.expansionTimer = 250;
-					obj2->ctx.tempScale = obj2->ctx.scale * 1.1f;
-					
-				} else if(obj2->ctx.shape == 1 && obj1->ctx.bumperLight != nullptr) {
-					score += 125;
-					*obj1->ctx.bumperLight = 500;
-					obj1->ctx.expansionTimer = 250;
-					obj1->ctx.tempScale = obj1->ctx.scale * 1.1f;
-				}
-				else if((obj1->ctx.shape == 1) && (obj2->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
-				{
-					score+= 50;
-				}
-				else if((obj2->ctx.shape == 1) && (obj1->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
-				{
-					score+= 50;
-				}
+//				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
+//					score += 125;
+//					*obj2->ctx.bumperLight = 500;
+//					obj2->ctx.expansionTimer = 250;
+//					obj2->ctx.tempScale = obj2->ctx.scale * 1.1f;
+//
+//				}
+//				else if((obj1->ctx.shape == 1) && (obj2->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
+//				{
+//					score+= 50;
+//				}
 
 			}
 		}

@@ -1,5 +1,8 @@
-#include <model.h>
 #include "main.h"
+
+
+// Holds Game Data
+GameWorld::ctx *gameCtx = new GameWorld::ctx;
 
 int main(int argc, char** argv) {
 	
@@ -16,7 +19,8 @@ int main(int argc, char** argv) {
 	//Stores the properties of our engine, such as window name/size, fullscreen, and shader info
 	Engine::Context ctx;
 	ctx.gameWorldCtx = gameCtx;
-	
+
+	PhysicsWorld::game = gameCtx;
 	//Do command line arguments
 	json config;
 	int exit = processConfig(argc, argv, config, ctx);
@@ -116,29 +120,35 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 
 			// Ball Indices
 			// Assumes ordered 1-15, cue-ball last (16)
-			if(objCtx.name.find("Ball"))
+
+            // Doesn't work??!
+            std::string findStr = "all";
+			//if(objCtx.name.find(findStr))
+            if(j > 0)
 			{
-				if(k < 8)
+
+				if(k < 7)
 				{
+//                    std::cout << objCtx.name << std::endl;
 					gameCtx->ballSolids.push_back(j);
 				}
-				else if (k == 8)
+				else if (k == 7)
 				{
 					gameCtx->eightBall = j;
 				}
-				else if (k > 8 && k <= 15)
+				else if (k > 7 && k <= 14)
 				{
 					gameCtx->ballStripes.push_back(j);
 				}
-				else if (k == 16)
+				else if (k == 15)
 				{
 					gameCtx->cueBall = j;
 				}
 
+//				std::cout << objCtx.name << std::endl;
 				k++;
 			}
 			j++;
-
 		}
 
 		// Set Initial Balls to not sunk and not out of bounds

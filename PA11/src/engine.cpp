@@ -251,6 +251,9 @@ void Engine::eventHandler(unsigned dt) {
 					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
 					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
+
+					// ToDo: Check for cue ball being picked
+					ctx.gameWorldCtx->isNextShotOK = false;
 				}
 				mouseDown = false;
 				mouseTimer = 0;
