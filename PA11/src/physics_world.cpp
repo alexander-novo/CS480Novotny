@@ -291,7 +291,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 				{
                     std::cout << "playerShot ready" << std::endl;
 					PhysicsWorld::game->isNextShotOK = true;
-                    PhysicsWorld::game->isTurnChange = true;
+
 					// ToDo: Check if game is win/loss -> activate win/loss
 
 					// ToDo::Place out of bounds balls
@@ -303,12 +303,16 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 							// place cue-ball in kitchen (later: have player set cue-ball
 				}
 
-                if(PhysicsWorld::game->isTurnChange)
+                if(PhysicsWorld::game->isTurnChange && !PhysicsWorld::game->turnSwapped)
                 {
                     PhysicsWorld::game->isPlayer1 = !PhysicsWorld::game->isPlayer1;
-                    PhysicsWorld::game->isTurnChange = false;
+					PhysicsWorld::game->turnSwapped = true;
                 }
 
+				if(PhysicsWorld::game->turnSwapped)
+				{
+					PhysicsWorld::game->isTurnChange = true;
+				}
 			}
 
 		}
@@ -395,7 +399,14 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 
 					if(!PhysicsWorld::game->isPlayer1Solids && !PhysicsWorld::game->isPlayer1Stripes)
 					{
-						PhysicsWorld::game->isPlayer1Stripes = true;
+						if(PhysicsWorld::game->isPlayer1)
+						{
+							PhysicsWorld::game->isPlayer1Stripes = true;
+						}
+						else
+						{
+							PhysicsWorld::game->isPlayer1Solids = true;
+						}
 					}
 					if(PhysicsWorld::game->isPlayer1Stripes)
 					{
@@ -455,7 +466,14 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 
 					if(!PhysicsWorld::game->isPlayer1Solids && !PhysicsWorld::game->isPlayer1Stripes)
 					{
-						PhysicsWorld::game->isPlayer1Solids = true;
+						if(PhysicsWorld::game->isPlayer1)
+						{
+							PhysicsWorld::game->isPlayer1Solids = true;
+						}
+						else
+						{
+							PhysicsWorld::game->isPlayer1Stripes = true;
+						}
 					}
 					if(PhysicsWorld::game->isPlayer1Solids)
 					{

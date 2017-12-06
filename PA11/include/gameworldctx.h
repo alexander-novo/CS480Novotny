@@ -35,6 +35,7 @@ namespace GameWorld
         bool isPlayer1Solids = false;
         bool isPlayer1Win = false;
         bool isPlayer1Loss = false;
+        bool turnSwapped = true;
     };
 }
 
