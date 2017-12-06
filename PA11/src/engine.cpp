@@ -44,8 +44,6 @@ bool Engine::Initialize() {
 
 	Object::menu = m_menu;
 
-	PhysicsWorld::game = _ctx.gameWorldCtx;
-
 	// Set the time
 	m_currentTimeMillis = GetCurrentTimeMillis();
 
