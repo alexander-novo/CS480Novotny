@@ -216,7 +216,8 @@ Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
 	int id = pixel.a;
 	
 	Object* re = nullptr;
-	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
+    // i set to 1 to ignore picking of table
+	for (int i = 1; i < gameWorldCtx->worldObjects.size(); i++) {
 		if (gameWorldCtx->worldObjects[i]->ctx.id == id) {
 			re = gameWorldCtx->worldObjects[i];
 			break;
