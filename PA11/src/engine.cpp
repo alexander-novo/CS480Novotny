@@ -254,7 +254,6 @@ void Engine::eventHandler(unsigned dt) {
 
 					// ToDo: Check for cue ball being picked
 					ctx.gameWorldCtx->isNextShotOK = false;
-					ctx.gameWorldCtx->isBallsAtRest = false;
 				}
 				mouseDown = false;
 				mouseTimer = 0;

@@ -35,7 +35,7 @@ PhysicsWorld::PhysicsWorld() {
 	// ====================== </Initialization> ==================
 	
 	// Earth Gravity in the Y direction
-	dynamicsWorld->setGravity(btVector3(0, -1, 0));
+	dynamicsWorld->setGravity(btVector3(0, -5.6f, 0));
 
 	dynamicsWorld->setInternalTickCallback(myTickCallback, static_cast<void *> (this) );
 
@@ -197,7 +197,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// add friction to object (.5-.8 for steel)
 	// used to reduce the amount of continuous spinning of the ball while on table
 	body->setFriction(0.7f);
-	body->setRollingFriction(0.175f);
+	body->setRollingFriction(0.1f);
 	
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
