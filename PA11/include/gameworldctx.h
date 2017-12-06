@@ -28,9 +28,13 @@ namespace GameWorld
         int cueBall;
         int eightBall;
         bool isNextShotOK = true;
-        bool isTurnChange = true;
+        bool isTurnChange = false;
         bool isGameOver = false;
         bool isPlayer1 = true;
+        bool isPlayer1Stripes = false;
+        bool isPlayer1Solids = false;
+        bool isPlayer1Win = false;
+        bool isPlayer1Loss = false;
     };
 }
 

@@ -1,3 +1,4 @@
+#include <physics_world.h>
 #include "Menu.h"
 
 Menu::Menu(Window& a) : window(a), options(_options) {
@@ -33,21 +34,41 @@ void Menu::update(int dt, float width, float height) {
 
 		ImGui::SetNextWindowSize(ImVec2(100,100), ImGuiCond_FirstUseEver);
 		if (ImGui::Begin("Player Turn", &_options.showPlayers, ImGuiWindowFlags_NoCollapse)) {
-			if (_options.playerCheckBoxDisabled)
-			{
-				// ToDo: Figure out why this function isn't being found
+            if (_options.playerCheckBoxDisabled) {
+                // ToDo: Figure out why this function isn't being found
 //				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
-				ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
-			}
-			ImGui::Checkbox("Player 1", &_options.isPlayer1Turn);
-			ImGui::Checkbox("Player 2", &_options.isPlayer2Turn);
-			if (_options.playerCheckBoxDisabled)
-			{
+                ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+            }
+            if (PhysicsWorld::game->isPlayer1) {
+                _options.isPlayer1Turn = true;
+                _options.isPlayer2Turn = false;
+            } else {
+                _options.isPlayer1Turn = false;
+                _options.isPlayer2Turn = true;
+            }
+            ImGui::Checkbox("Player 1", &_options.isPlayer1Turn);
+            ImGui::Checkbox("Player 2", &_options.isPlayer2Turn);
+
+
+            if (PhysicsWorld::game->isPlayer1Stripes) {
+                _options.isPlayer1Stripes = true;
+            }
+            if (PhysicsWorld::game->isPlayer1Solids) {
+                _options.isPlayer1Solids = true;
+            }
+
+            ImGui::Text("Play 1 is:");
+            ImGui::Checkbox("Solids", &_options.isPlayer1Solids);
+            ImGui::Checkbox("Stripes", &_options.isPlayer1Stripes);
+
+
+            if (_options.playerCheckBoxDisabled) {
 //				ImGui::PopItemFlag();
-				ImGui::PopStyleVar();
-			}
-			ImGui::End();
-		}
+                ImGui::PopStyleVar();
+            }
+
+            ImGui::End();
+        }
 
 	}
 

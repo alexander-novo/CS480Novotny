@@ -39,6 +39,8 @@ class Menu {
 			bool isPlayingMusic = false;
 			bool isPlayingSounds = true;
 			bool isPlayer1Turn = true;
+            bool isPlayer1Stripes = false;
+            bool isPlayer1Solids = false;
 			bool isPlayer2Turn = false;
 			bool playerCheckBoxDisabled = true;
 			
