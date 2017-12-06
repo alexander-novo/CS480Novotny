@@ -3,8 +3,11 @@
 
 #include <map>
 
+#include "physics_world.h"
 #include "graphics_headers.h"
 #include "window.h"
+#include "imgui.h"
+#include "imgui_internal.h"
 
 #define MENU_SHADER_VERTEX   0
 #define MENU_SHADER_FRAGMENT 1

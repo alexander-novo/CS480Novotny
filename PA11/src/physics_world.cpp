@@ -229,12 +229,6 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	if (objCtx->shape == 1)   // SPHERE
 	{
 		ballIndices.push_back(bodyIndex);
-
-		// Keep first Ball as Single
-		if(singleBallIndex.size() == 0)
-		{
-			singleBallIndex.push_back(bodyIndex);
-		}
 	}
 
 	// TODO: add check for if it exists

@@ -65,11 +65,8 @@ class PhysicsWorld {
 		std::vector<btRigidBody*>* getLoadedBodies();
 		
 		std::vector<int> ballIndices;
-		std::vector<int> singleBallIndex;
-		std::vector<int>* currentBallIndices;
 		
 		static GameWorld::ctx* game;
-		static Menu::Options m_options;
 	
 	private:
 

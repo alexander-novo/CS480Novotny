@@ -1,4 +1,3 @@
-#include <physics_world.h>
 #include "Menu.h"
 
 Menu::Menu(Window& a) : window(a), options(_options) {
@@ -37,8 +36,8 @@ void Menu::update(int dt, float width, float height) {
             if (_options.playerCheckBoxDisabled) {
                 // ToDo: Figure out why this function isn't being found
 	            // It's in ImGui_internal, which means we don't have access to it - Alex
-	            
-				//ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
+
+				ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
                 ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
             }
             if (PhysicsWorld::game->isPlayer1) {
@@ -65,7 +64,7 @@ void Menu::update(int dt, float width, float height) {
 
 
             if (_options.playerCheckBoxDisabled) {
-//				ImGui::PopItemFlag();
+				ImGui::PopItemFlag();
                 ImGui::PopStyleVar();
             }
 
