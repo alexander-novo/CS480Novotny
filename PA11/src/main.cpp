@@ -152,7 +152,7 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 		}
 
 		// Set Initial Balls to not sunk and not out of bounds
-		for (int i = 0; i<8; i++) {
+		for (int i = 0; i<7; i++) {
 			gameCtx->oobSolids[i] = false;
 			gameCtx->oobStripes[i] = false;
 			gameCtx->sunkSolids[i] = false;

@@ -52,7 +52,9 @@ PhysicsWorld::PhysicsWorld() {
 	floorPlane->setCollisionFlags(flags);
 	floorPlane->setActivationState(DISABLE_DEACTIVATION);
 	floorPlane->setFriction(0.15f);
-	addBody(floorPlane);
+	int everythingElseCollidesWith = COL_BALL | COL_STICK | COL_EVERYTHING_ELSE;
+	dynamicsWorld->addRigidBody(floorPlane, COL_EVERYTHING_ELSE, everythingElseCollidesWith);
+
 }
 
 PhysicsWorld::~PhysicsWorld() {
@@ -74,7 +76,8 @@ PhysicsWorld::~PhysicsWorld() {
 	delete collisionConfiguration;
 	delete dispatcher;
 	delete solver;
-	delete dynamicsWorld;
+	//todo: floor is not a loaded body currently and thus not deleted - causes dynamics world delete to segfault
+//	delete dynamicsWorld;
 	
 	broadphase = nullptr;
 	collisionConfiguration = nullptr;
@@ -319,7 +322,6 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					PhysicsWorld::game->isTurnChange = true;
 				}
 			}
-
 		}
 	}
 
@@ -358,6 +360,30 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setWorldTransform(ballTransform);
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setLinearVelocity(btVector3(0, 0, 0));
 					(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->eightBall]->setAngularVelocity(btVector3(0, 0, 0));
+                    if(PhysicsWorld::game->isPlayer1)
+                    {
+                        int numBallsSunk = 0;
+                        for(int i = 0; i<7; i++)
+                        {
+                            if(PhysicsWorld::game->isPlayer1Stripes && PhysicsWorld::game->sunkStripes[i])
+                            {
+                                numBallsSunk++;
+                            }
+                            else if (PhysicsWorld::game->isPlayer1Solids && PhysicsWorld::game->sunkSolids[i])
+                            {
+                                numBallsSunk++;
+                            }
+                        }
+                        if(numBallsSunk >= 7)
+                        {
+                            PhysicsWorld::game->isPlayer1Win = true;
+                        }
+                        else
+                        {
+                            PhysicsWorld::game->isPlayer1Loss = true;
+                        }
+
+                    }
 				}
 				else
 				{
@@ -371,6 +397,55 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			}
 		}
 	}
+
+    // cue ball Checks
+    {
+        // Clamp the velocity to help prevent tunneling
+        btVector3 velocity = (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getLinearVelocity();
+        btScalar speed = velocity.length();
+        if(speed > mMaxSpeed)
+        {
+            velocity *= mMaxSpeed/speed;
+            (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setLinearVelocity(velocity);
+        }
+
+        // Stripes Ball location trigger
+        if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().y() < -.1)
+        {
+            // if fell through table - is in pocket
+            if(!PhysicsWorld::game->isGameOver)
+            {
+                PhysicsWorld::game->isGameOver = true;
+                // ToDo: check for more accurate board size (ball must be in bounds)
+                if
+                        (
+                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().x() <= 4.5 &&
+                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().x() >= -4.5 &&
+                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().z() < 6 &&
+                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().z() > -6
+                        )
+                {
+
+                    std::cout << "ball sunk: Cue Ball " << std::endl;
+                    btTransform ballTransform;
+                    ballTransform.setIdentity();
+                    ballTransform.setOrigin(btVector3(0, 0, 0));
+                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setWorldTransform(ballTransform);
+                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setLinearVelocity(btVector3(0, 0, 0));
+                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setAngularVelocity(btVector3(0, 0, 0));
+                }
+                else
+                {
+
+                    std::cout << "ball oob: Cue Ball" << std::endl;
+                    if(PhysicsWorld::game->isPlayer1)
+                    {
+                        // ToDo: isScratch
+                    }
+                }
+            }
+        }
+    }
 
 	// Traverse all the striped balls and check if they are out of bounds on speed or location
 	for(int i = 0; i< PhysicsWorld::game->ballStripes.size(); i++)
