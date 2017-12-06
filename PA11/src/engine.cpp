@@ -311,34 +311,6 @@ void Engine::eventHandler(unsigned dt) {
 				// Pause Game
 				m_menu->pause();
 				break;
-			case SDLK_LEFT:
-				if(m_menu->options.paused) break;
-				Mix_PlayChannel(-1, Window::flipperSound, 0);
-				break;
-			case SDLK_RIGHT:
-				if( m_menu->options.paused) break;
-				Mix_PlayChannel(-1, Window::flipperSound, 0);
-				break;
-
-			case SDLK_SPACE:
-			{
-				break;
-			}
-		}
-	}
-	else if(m_event.type == SDL_KEYUP)
-	{
-		switch(m_event.key.keysym.sym)
-		{
-			case SDLK_SPACE:
-			{
-				break;
-			}
-			case SDLK_LEFT:
-				break;
-			case SDLK_RIGHT:
-				break;
-
 		}
 	}
 }
@@ -383,6 +355,8 @@ void Engine::NewGame() {
 			body->setAngularVelocity(btVector3(0, 0, 0));
 		}
 	}
+	
+	_ctx.mode = MODE_PLACE_CUE;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
 	//_ctx.physWorld->update(20);
