@@ -307,7 +307,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			(*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->setLinearVelocity(velocity);
 		}
 
-        // Ball location trigger
+        // Stripes Ball location trigger
 		if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballStripes[i]]->getCenterOfMassPosition().y() < -.1)
 		{
 			// if fell through table - is in pocket
@@ -344,11 +344,11 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 			}
 		}
 
-		// Ball location trigger
+		// Solids Ball location trigger
 		if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->ballSolids[i]]->getCenterOfMassPosition().y() < -.1)
 		{
 			// if fell through table - is in pocket
-			if(PhysicsWorld::game->sunkStripes[i] != true && PhysicsWorld::game->oobStripes[i] != true)
+			if(PhysicsWorld::game->sunkSolids[i] != true && PhysicsWorld::game->sunkSolids[i] != true)
 			{
 				if
 						(
@@ -360,7 +360,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 						)
 				{
 
-					std::cout << "ball sunk: " << i+9 << std::endl;
+					std::cout << "ball sunk: " << i+1 << std::endl;
 					btTransform ballTransform;
 					ballTransform.setIdentity();
 					ballTransform.setOrigin(btVector3(i, 0, 0));
@@ -375,7 +375,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 				else
 				{
 
-					std::cout << "ball oob: " << i+9 << std::endl;
+					std::cout << "ball oob: " << i+1 << std::endl;
 					PhysicsWorld::game->oobSolids[i] = true;
 				}
 			}
@@ -385,53 +385,53 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 
 	// This section is to detect collisions
 	// (for bumper interactions/scoring)
-	int numManifolds = world->getDispatcher()->getNumManifolds();
-	for (int i = 0; i < numManifolds; i++)
-	{
-		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
-		const btCollisionObject* obA = contactManifold->getBody0();
-		const btCollisionObject* obB = contactManifold->getBody1();
-		
-		if(obA->getUserIndex() == -1 || obB->getUserIndex() == -1) continue;
-
-
-		int numContacts = contactManifold->getNumContacts();
-		for (int j = 0; j < numContacts; j++)
-		{
-			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance() < 0.1f)
-			{
-				const btVector3& ptA = pt.getPositionWorldOnA();
-				const btVector3& ptB = pt.getPositionWorldOnB();
-				const btVector3& normalOnB = pt.m_normalWorldOnB;
-				
-				Object* obj1 = nullptr;
-				Object* obj2 = nullptr;
-
-				for(auto& obj : PhysicsWorld::game->worldObjects ) {
-					if(obj->ctx.physicsBody->getUserIndex() == obA->getUserIndex()) {
-						obj1 = obj;
-					}
-					if(obj->ctx.physicsBody->getUserIndex() == obB->getUserIndex()) {
-						obj2 = obj;
-					}
-				}
-
-//				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
-//					score += 125;
-//					*obj2->ctx.bumperLight = 500;
-//					obj2->ctx.expansionTimer = 250;
-//					obj2->ctx.tempScale = obj2->ctx.scale * 1.1f;
+//	int numManifolds = world->getDispatcher()->getNumManifolds();
+//	for (int i = 0; i < numManifolds; i++)
+//	{
+//		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+//		const btCollisionObject* obA = contactManifold->getBody0();
+//		const btCollisionObject* obB = contactManifold->getBody1();
 //
+//		if(obA->getUserIndex() == -1 || obB->getUserIndex() == -1) continue;
+//
+//
+//		int numContacts = contactManifold->getNumContacts();
+//		for (int j = 0; j < numContacts; j++)
+//		{
+//			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+//			if (pt.getDistance() < 0.1f)
+//			{
+//				const btVector3& ptA = pt.getPositionWorldOnA();
+//				const btVector3& ptB = pt.getPositionWorldOnB();
+//				const btVector3& normalOnB = pt.m_normalWorldOnB;
+//
+//				Object* obj1 = nullptr;
+//				Object* obj2 = nullptr;
+//
+//				for(auto& obj : PhysicsWorld::game->worldObjects ) {
+//					if(obj->ctx.physicsBody->getUserIndex() == obA->getUserIndex()) {
+//						obj1 = obj;
+//					}
+//					if(obj->ctx.physicsBody->getUserIndex() == obB->getUserIndex()) {
+//						obj2 = obj;
+//					}
 //				}
-//				else if((obj1->ctx.shape == 1) && (obj2->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
-//				{
-//					score+= 50;
-//				}
-
-			}
-		}
-	}
+//
+////				if(obj1->ctx.shape == 1 && obj2->ctx.bumperLight != nullptr) { // Cylinder Bumpers
+////					score += 125;
+////					*obj2->ctx.bumperLight = 500;
+////					obj2->ctx.expansionTimer = 250;
+////					obj2->ctx.tempScale = obj2->ctx.scale * 1.1f;
+////
+////				}
+////				else if((obj1->ctx.shape == 1) && (obj2->ctx.isBounceType == true) && (pt.getDistance() < 0.0f)) // Other Bumpers
+////				{
+////					score+= 50;
+////				}
+//
+//			}
+//		}
+//	}
 }
 
 #endif
