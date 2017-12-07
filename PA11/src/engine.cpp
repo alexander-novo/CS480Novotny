@@ -242,7 +242,6 @@ void Engine::eventHandler(unsigned dt) {
 				Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y, &pickedPosition);
 				if(picked != nullptr) {
 					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
-					glmImpVector.y = 0;
 					glmImpVector = glm::normalize(glmImpVector);
 					glmImpVector *= 1 + mouseTimer / 200;
 					
