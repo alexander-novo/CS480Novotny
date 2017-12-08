@@ -44,28 +44,24 @@ void Object::Init_GL(std::unordered_map<std::string, std::string> const * dictio
 }
 
 void Object::Update(float dt) {
-	if(ctx.hasPhysics)
-	{
-		btTransform transformObject;
-		ctx.physicsBody->getMotionState()->getWorldTransform(transformObject);
+	btTransform transformObject;
+	ctx.physicsBody->getMotionState()->getWorldTransform(transformObject);
 
-		//16 element matrix
-		float mat[16];
-		transformObject.getOpenGLMatrix(mat);
-		modelMat = glm::make_mat4(mat);
-		if(ctx.expansionTimer == 0) {
-			modelMat = glm::scale(modelMat, ctx.scale);
-		} else {
-			modelMat = glm::scale(modelMat, ctx.tempScale);
-			ctx.expansionTimer -= dt;
-			if(ctx.expansionTimer < 0) {
-				ctx.expansionTimer = 0;
-			}
+	//16 element matrix
+	float mat[16];
+	transformObject.getOpenGLMatrix(mat);
+	modelMat = glm::make_mat4(mat);
+	if(ctx.expansionTimer == 0) {
+		modelMat = glm::scale(modelMat, ctx.scale);
+	} else {
+		modelMat = glm::scale(modelMat, ctx.tempScale);
+		ctx.expansionTimer -= dt;
+		if(ctx.expansionTimer < 0) {
+			ctx.expansionTimer = 0;
 		}
-
-		
-		_position = glm::vec3(modelMat * glm::vec4(0.0, 0.0, 0.0, 1.0));
 	}
+	
+	_position = glm::vec3(modelMat * glm::vec4(0.0, 0.0, 0.0, 1.0));
 }
 
 const glm::mat4& Object::GetModel() const {

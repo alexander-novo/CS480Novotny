@@ -2,6 +2,7 @@
 #define GRAPHICS_H
 
 #include <iostream>
+#include <algorithm>
 
 #include "graphics_headers.h"
 #include "object.h"

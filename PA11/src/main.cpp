@@ -178,8 +178,15 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader, Shader* defaultAltShader, PhysicsWorld* physWorld) {
 	
 	PhysicsWorld::Context objectPhysics;
+	objectPhysics.flags = &ctx.flags;
+	
 	if (config.find("name") != config.end()) {
 		ctx.name = config["name"];
+	}
+	
+	for(auto& i : config["flags"]) {
+		std::string thing = i;
+		ctx.flags.push_back(thing);
 	}
 	
 	if (config.find("shape") != config.end()) {
@@ -210,13 +217,6 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	}
 	if (config.find("depth") != config.end()) {
 		objectPhysics.lengthZ = config["depth"];
-	}
-	if (config.find("isKinematic") != config.end()) {
-		objectPhysics.isKinematic = config["isKinematic"];
-	}
-	if (config.find("isBounceType") != config.end()) {
-		objectPhysics.isBounceType = config["isBounceType"];
-		ctx.isBounceType = objectPhysics.isBounceType;
 	}
 	
 	std::string filename;
@@ -251,15 +251,6 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 	if (config.find("mass") != config.end()) {
 		ctx.mass = config["mass"];
 		objectPhysics.mass = ctx.mass;
-	}
-	
-	//Check if the object is a static or dynamic object
-	if (config.find("isDynamic") != config.end()) {
-		ctx.isDynamic = config["isDynamic"];
-		objectPhysics.isDynamic = ctx.isDynamic;
-	} else {
-		ctx.isDynamic = false;
-		objectPhysics.isDynamic = ctx.isDynamic;
 	}
 	
 	if (config.find("radius") != config.end()) {
@@ -353,12 +344,6 @@ int loadObjectContext(json& config, Object::Context& ctx, Shader* defaultShader,
 		ctx.shader = Shader::load("shaders/" + vertexLocation, "shaders/" + fragLocation);
 	} else {
 		ctx.shader = defaultShader;
-	}
-	
-	if (config.find("isAlt") != config.end()) {
-		ctx.isAlt = config["isAlt"];
-	} else {
-		ctx.isAlt = false;
 	}
 	
 	if (config.find("alt_shaders") != config.end()) {

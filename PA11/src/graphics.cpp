@@ -349,7 +349,11 @@ void Graphics::renderPick() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
-		gameWorldCtx->worldObjects[i]->RenderID(pickShader);
+		auto& flags = gameWorldCtx->worldObjects[i]->ctx.flags;
+		
+		if(std::find(flags.begin(), flags.end(), "pickable") != flags.end()) {
+			gameWorldCtx->worldObjects[i]->RenderID(pickShader);
+		}
 	}
 }
 

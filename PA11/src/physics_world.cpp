@@ -103,11 +103,11 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	xPos = objCtx->xLoc;
 	yPos = objCtx->yLoc;
 	zPos = objCtx->zLoc;
-	if (objCtx->isDynamic == false) {
+	bool isDynamic = std::find(objCtx->flags->begin(), objCtx->flags->end(), "dynamic") != objCtx->flags->end();
+	if (!isDynamic) {
 		mass = 0;
 		inertia = {0, 0, 0};
 	}
-	
 	
 	btTransform transform;
 	transform.setIdentity();
@@ -149,7 +149,7 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 		newShape = new btStaticPlaneShape(planeNormal, planeConstant);
 	}
 		// create shape from mesh
-	else if (!(objCtx->isDynamic)) {
+	else if (!isDynamic) {
 		newShape = new btBvhTriangleMeshShape(objTriMesh, true);
 	} else {
 		newShape = new btConvexTriangleMeshShape(objTriMesh, true);
@@ -182,7 +182,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	body->setUserIndex(loadedBodies.size());
 
 	// Set the body to a kinematic object if it is one
-	if (objCtx->isKinematic) {
+	bool isKinematic = std::find(objCtx->flags->begin(), objCtx->flags->end(), "kinematic") != objCtx->flags->end();
+	if (isKinematic) {
 		flags = body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT;
 		body->setActivationState(DISABLE_DEACTIVATION);
 		body->setCollisionFlags(flags);

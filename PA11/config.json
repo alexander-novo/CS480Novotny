@@ -41,9 +41,7 @@
       "name": "Floor",
       "model": "PoolTable.obj",
       "collision-mesh": "PoolTopSmall.obj",
-      "isDynamic": false,
-      "isKinematic": true,
-      "isBounceType": false,
+      "flags": ["kinematic", "pickable"],
       "location": {
         "z": 0,
         "x": 0,
@@ -60,7 +58,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv1.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -74,7 +72,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv2.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -88,7 +86,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv3.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -102,7 +100,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv4.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -116,7 +114,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv5.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -130,7 +128,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv6.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -144,7 +142,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv7.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -158,7 +156,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv8.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -172,7 +170,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv9.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -186,7 +184,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv10.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -200,7 +198,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv11.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -214,7 +212,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv12.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -228,7 +226,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv13.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -242,7 +240,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv14.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -256,7 +254,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluv15.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic"],
       "radius": 0.1,
       "location": {
         "z": 0,
@@ -270,7 +268,7 @@
       "shape": "sphere",
       "model": "Ball1.obj",
       "texture": "PoolBalluvCue.jpg",
-      "isDynamic": true,
+      "flags": ["dynamic", "cue", "pickable"],
       "radius": 0.1,
       "location": {
         "z": 0,
