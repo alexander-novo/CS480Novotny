@@ -75,7 +75,8 @@ class Engine {
 
 		Menu *m_menu;
 		
-		bool mouseDown;
+		bool leftDown = false;
+		bool rightDown = false;
 		int mouseTimer = 0;
 		glm::vec2 clickedLocation;
 		

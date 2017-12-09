@@ -1,7 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(_ctx.width), windowHeight(_ctx.height), mouseDown(false) {}
+Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(_ctx.width), windowHeight(_ctx.height) {}
 
 Engine::~Engine() {
 	if(m_window != nullptr)
@@ -71,7 +71,7 @@ void Engine::Run() {
 		static Texture* billboardTex = Texture::load("textures/Green_Ring.png");
 		static Texture* billboardTex2 = Texture::load("textures/Red_Ring.png");
 		
-		if(mouseDown && ctx.mode == MODE_TAKE_SHOT) {
+		if(leftDown && ctx.mode == MODE_TAKE_SHOT) {
 #define MAX_RADIUS 0.2f
 #define MAX_ZOOM 0.2f
 #define MAX_AMPLITUDE 0.15f
@@ -216,25 +216,27 @@ void Engine::eventHandler(unsigned dt) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
 			{
-				mouseDown = true;
+				leftDown = true;
 				clickedLocation.x = m_event.button.x;
 				clickedLocation.y = _ctx.height - m_event.button.y;
-				
-				switch(ctx.mode) {
-					case MODE_PLACE_CUE:
-						_ctx.mode = MODE_TAKE_SHOT;
-						btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
-						m_graphics->getCamView()->lookAt = glm::vec3(trans.x(), trans.y(), trans.z());
-						break;
-				}
 				break;
 			}
+			case SDL_BUTTON_RIGHT:
+				rightDown = true;
+				break;
 		}
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
 				switch(ctx.mode) {
-					case MODE_TAKE_SHOT:
+					case MODE_PLACE_CUE: {
+						_ctx.mode = MODE_TAKE_SHOT;
+						btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](
+								ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
+						m_graphics->getCamView()->lookAt = glm::vec3(trans.x(), trans.y(), trans.z());
+						break;
+					}
+					case MODE_TAKE_SHOT: {
 						glm::vec3 pickedPosition;
 						Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y,
 						                                               &pickedPosition);
@@ -247,13 +249,16 @@ void Engine::eventHandler(unsigned dt) {
 							btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
 							picked->ctx.physicsBody->applyImpulse(impVector, locVector);
 							
-							// ToDo: Check for cue ball being picked
 							ctx.gameWorldCtx->isNextShotOK = false;
 							ctx.gameWorldCtx->turnSwapped = false;
 						}
 						break;
+					}
 				}
-				mouseDown = false;
+				leftDown = false;
+				break;
+			case SDL_BUTTON_RIGHT:
+				rightDown = false;
 				mouseTimer = 0;
 				break;
 		}
@@ -303,12 +308,13 @@ void Engine::eventHandler(unsigned dt) {
 				break;
 		}
 		
-		//TODO: move this somewhere else (maybe WASD?)
-//		float xscale = 360.0f / _ctx.width;
-//		float yscale = 180.0f / _ctx.height;
-//
-//		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
-//		m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
+		if(rightDown) {
+			float xscale = -360.0f / _ctx.width;
+			float yscale = 180.0f / _ctx.height;
+	
+			m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
+			m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
+		}
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
