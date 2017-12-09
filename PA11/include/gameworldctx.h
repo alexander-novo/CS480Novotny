@@ -11,32 +11,32 @@
 class Object;
 
 // A safe space to store the config of our main world
-namespace GameWorld
-{
-    struct ctx
-    {
+namespace GameWorld {
+	struct ctx {
 //        Object *surfacePlane;
 //        bool surfaceIsDynamic = false;
-        std::vector<Object *> worldObjects;
-        std::vector<int> ballSolids;
-        std::vector<int> ballStripes;
-        bool sunkSolids[7];
-        bool sunkStripes[7];
-        // oob = out of bounds
-        bool oobStripes[7];
-        bool oobSolids[7];
-        int cueBall;
-        int eightBall;
-        bool isNextShotOK = true;
-        bool isTurnChange = true;
-        bool isGameOver = false;
-        bool isPlayer1 = true;
-        bool isPlayer1Stripes = false;
-        bool isPlayer1Solids = false;
-        bool isPlayer1Win = false;
-        bool isPlayer1Loss = false;
-        bool turnSwapped = true;
-    };
+		std::vector<Object*> worldObjects;
+		std::vector<int> ballSolids;
+		std::vector<int> ballStripes;
+		bool sunkSolids[7];
+		bool sunkStripes[7];
+		// oob = out of bounds
+		bool oobStripes[7];
+		bool oobSolids[7];
+		int cueBall;
+		int eightBall;
+		bool isNextShotOK = true;
+		bool isTurnChange = true;
+		bool isGameOver = false;
+		bool isPlayer1 = true;
+		bool isPlayer1Stripes = false;
+		bool isPlayer1Solids = false;
+		bool isPlayer1Win = false;
+		bool isPlayer1Loss = false;
+		bool turnSwapped = true;
+		
+		int kMod = -1; //For which side of the table we are placing the cue ball onto
+	};
 }
 
 #endif //AMEWORLDCTX_H

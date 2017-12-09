@@ -71,7 +71,7 @@ void Engine::Run() {
 		static Texture* billboardTex = Texture::load("textures/Green_Ring.png");
 		static Texture* billboardTex2 = Texture::load("textures/Red_Ring.png");
 		
-		if(mouseDown) {
+		if(mouseDown && ctx.mode == MODE_TAKE_SHOT) {
 #define MAX_RADIUS 0.2f
 #define MAX_ZOOM 0.2f
 #define MAX_AMPLITUDE 0.15f
@@ -219,51 +219,94 @@ void Engine::eventHandler(unsigned dt) {
 				mouseDown = true;
 				clickedLocation.x = m_event.button.x;
 				clickedLocation.y = _ctx.height - m_event.button.y;
-				break;
-			}
-			case SDL_BUTTON_RIGHT:
-			{
-				unsigned seed = GetCurrentTimeMillis();
-				std::default_random_engine generator(seed);
-				std::uniform_int_distribution<int> distribution(-50,50);
-				btVector3 pushIt(0,0,2500);
-				_ctx.gameWorldCtx->worldObjects[1]->ctx.physicsBody->applyCentralImpulse(pushIt);
-				for(int i = 1; i < _ctx.gameWorldCtx->worldObjects.size(); i++)
-				{
-					btVector3 shootIt(distribution(generator),0,distribution(generator));
-					_ctx.gameWorldCtx->worldObjects[i]->ctx.physicsBody->applyCentralImpulse(shootIt);
+				
+				switch(ctx.mode) {
+					case MODE_PLACE_CUE:
+						_ctx.mode = MODE_TAKE_SHOT;
+						break;
 				}
+				break;
 			}
 		}
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
-				glm::vec3 pickedPosition;
-				Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y, &pickedPosition);
-				if(picked != nullptr) {
-					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
-					glmImpVector = glm::normalize(glmImpVector);
-					glmImpVector *= 1 + mouseTimer / 200;
-					
-					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
-					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
-					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
-
-					// ToDo: Check for cue ball being picked
-					ctx.gameWorldCtx->isNextShotOK = false;
-					ctx.gameWorldCtx->turnSwapped = false;
+				switch(ctx.mode) {
+					case MODE_TAKE_SHOT:
+						glm::vec3 pickedPosition;
+						Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y,
+						                                               &pickedPosition);
+						if (picked != nullptr) {
+							glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
+							glmImpVector = glm::normalize(glmImpVector);
+							glmImpVector *= 1 + mouseTimer / 200;
+							
+							btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
+							btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
+							picked->ctx.physicsBody->applyImpulse(impVector, locVector);
+							
+							// ToDo: Check for cue ball being picked
+							ctx.gameWorldCtx->isNextShotOK = false;
+							ctx.gameWorldCtx->turnSwapped = false;
+						}
+						break;
 				}
 				mouseDown = false;
 				mouseTimer = 0;
 				break;
 		}
 	}
-	else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
-		float xscale = 360.0f / _ctx.width;
-		float yscale = 180.0f / _ctx.height;
-
-		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
-		m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
+	else if (m_event.type == SDL_MOUSEMOTION) {
+		switch(ctx.mode) {
+			case MODE_PLACE_CUE:
+				float yPos = 0.1; //Radius - maybe load this from config?
+				glm::vec3 upVector = glm::vec3(0.0, 1.0, 0.0);
+				glm::vec3 cameraPos = m_graphics->getCamView()->eyePos;
+				glm::vec3 lookTowards = glm::normalize(m_graphics->getCamView()->lookAt - cameraPos);
+				glm::vec3 upVectorOrtho = glm::normalize(upVector - glm::dot(upVector, lookTowards) * lookTowards);
+				glm::vec3 rightVector = glm::cross(lookTowards, upVectorOrtho);
+				
+				float near_frust_height = tan(FOV / 2) * NEAR_FRUSTRUM;
+				float near_frust_width = near_frust_height * windowWidth / windowHeight;
+				float clickedHeight = 1 - m_event.motion.y * 2.0f / windowHeight; //1 at top of window, -1 at bottom
+				float clickedWidth  = m_event.motion.x * 2.0f / windowWidth - 1;  //1 at right of window, -1 at left
+				
+				glm::vec3 pointVector = NEAR_FRUSTRUM * lookTowards
+				                        + clickedHeight * near_frust_height * upVectorOrtho
+				                        + clickedWidth * near_frust_width * rightVector;
+				
+				float length = (yPos - cameraPos.y) / pointVector.y;
+				float xPos = cameraPos.x + pointVector.x * length;
+				float zPos = cameraPos.z + pointVector.z * length;
+				
+				static float xMax = 0.546552 * 5;//vertex position (from obj file) times table scale
+				static float zMax = 1.07326 * 5;
+				static float zMin = zMax / 2; //For the kitchen
+				
+				int kMod = ctx.gameWorldCtx->kMod;
+				
+				//Clamp kitchen
+				xPos = (xPos > xMax) ? xMax : ((xPos < -1 * xMax) ? -1 * xMax : xPos);
+				zPos = (zPos > kMod * zMin) ? kMod * zMin : ((zPos < kMod * zMax) ? kMod * zMax : zPos);
+				
+				btTransform ballTransform;
+				ballTransform.setIdentity();
+				ballTransform.setOrigin(btVector3(xPos, yPos, zPos));
+				
+				btRigidBody* ball = ctx.physWorld->getLoadedBodies()->operator[](ctx.gameWorldCtx->cueBall);
+				ball->setWorldTransform(ballTransform);
+				ball->setLinearVelocity(btVector3(0.0, 0.0, 0.0));
+				ball->setAngularVelocity(btVector3(0.0, 0.0, 0.0));
+				
+				break;
+		}
+		
+		//TODO: move this somewhere else (maybe WASD?)
+//		float xscale = 360.0f / _ctx.width;
+//		float yscale = 180.0f / _ctx.height;
+//
+//		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
+//		m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
@@ -284,7 +327,7 @@ void Engine::eventHandler(unsigned dt) {
 				_ctx.height = m_event.window.data2;
 
 				//Update our projection matrix in case the aspect ratio is different now
-				m_graphics->getCamView()->GetProjection() = glm::perspective( 45.0f,
+				m_graphics->getCamView()->GetProjection() = glm::perspective( FOV,
 																			  float(windowWidth)/float(windowHeight),
 																			  NEAR_FRUSTRUM,
 																			  FAR_FRUSTRUM);
@@ -351,6 +394,7 @@ void Engine::NewGame() {
 			ballTransform.setOrigin(btVector3(xCoord, yOrigin, i * height + zOrigin));
 			
 			body = (*(_ctx.physWorld->getLoadedBodies()))[_ctx.physWorld->ballIndices[i * (i + 1) / 2 + j]];
+
 			body->setWorldTransform(ballTransform);
 			body->setLinearVelocity(btVector3(0, 0, 0));
 			body->setAngularVelocity(btVector3(0, 0, 0));
@@ -358,6 +402,7 @@ void Engine::NewGame() {
 	}
 	
 	_ctx.mode = MODE_PLACE_CUE;
+	_ctx.gameWorldCtx->kMod = -1;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
 	//_ctx.physWorld->update(20);
