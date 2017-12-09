@@ -223,6 +223,8 @@ void Engine::eventHandler(unsigned dt) {
 				switch(ctx.mode) {
 					case MODE_PLACE_CUE:
 						_ctx.mode = MODE_TAKE_SHOT;
+						btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
+						m_graphics->getCamView()->lookAt = glm::vec3(trans.x(), trans.y(), trans.z());
 						break;
 				}
 				break;
