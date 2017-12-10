@@ -403,12 +403,28 @@ void Engine::NewGame() {
 	std::vector<int> randBallIndices;
 	int randIndex;
 	
+	int randStripe = tempBallIndices[rand() % 7 + 9];
+	int randSolid = tempBallIndices[rand() % 7 + 1];
 	while(!tempBallIndices.empty()) {
 		randIndex = rand() % tempBallIndices.size();
-		if(tempBallIndices[randIndex] != ctx.gameWorldCtx->cueBall) {
+		if(tempBallIndices[randIndex] != ctx.gameWorldCtx->cueBall &&
+				tempBallIndices[randIndex] != ctx.gameWorldCtx->eightBall &&
+				tempBallIndices[randIndex] != randStripe &&
+				tempBallIndices[randIndex] != randSolid) {
 			randBallIndices.push_back(tempBallIndices[randIndex]);
 		}
 		tempBallIndices.erase(tempBallIndices.begin() + randIndex);
+	}
+	
+	//Eight ball is always in the middle
+	randBallIndices.insert(randBallIndices.begin() + 4, ctx.gameWorldCtx->eightBall);
+	//One stripe and one solid always on back corners
+	if(rand() % 2 == 0) {
+		randBallIndices.insert(randBallIndices.begin() + 10, randStripe);
+		randBallIndices.push_back(randSolid);
+	} else {
+		randBallIndices.insert(randBallIndices.begin() + 10, randSolid);
+		randBallIndices.push_back(randStripe);
 	}
 	
 	for(int i = 0; i < 5; i++) {
