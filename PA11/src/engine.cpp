@@ -71,7 +71,7 @@ void Engine::Run() {
 		static Texture* billboardTex = Texture::load("textures/Green_Ring.png");
 		static Texture* billboardTex2 = Texture::load("textures/Red_Ring.png");
 		
-		if(leftDown && ctx.mode == MODE_TAKE_SHOT) {
+		if(leftDown && ctx.gameWorldCtx->mode == MODE_TAKE_SHOT) {
 #define MAX_RADIUS 0.2f
 #define MAX_ZOOM 0.2f
 #define MAX_AMPLITUDE 0.15f
@@ -103,6 +103,7 @@ void Engine::Run() {
 			NewGame();
 			newGame = true;
 		}
+		
 		m_graphics->Update(m_DT);
 		if(!m_menu->options.paused) _ctx.physWorld->update(m_DT);
 
@@ -183,8 +184,7 @@ void Engine::Keyboard(unsigned dt) {
 		// New Game
 		NewGame();
 	}
-
-
+	
 	//Width of spotlight
 	if( keyState[SDL_SCANCODE_UP]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle < M_PI / 2) {
@@ -194,6 +194,7 @@ void Engine::Keyboard(unsigned dt) {
 			}
 		}
 	}
+	
 	if(keyState[SDL_SCANCODE_DOWN]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle > 0) {
 			m_graphics->spotLights[0]->angle -= M_PI / 180;
@@ -228,9 +229,9 @@ void Engine::eventHandler(unsigned dt) {
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
-				switch(ctx.mode) {
+				switch(ctx.gameWorldCtx->mode) {
 					case MODE_PLACE_CUE: {
-						_ctx.mode = MODE_TAKE_SHOT;
+						_ctx.gameWorldCtx->mode = MODE_TAKE_SHOT;
 						btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](
 								ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
 						m_graphics->getCamView()->lookAt = glm::vec3(trans.x(), trans.y(), trans.z());
@@ -251,6 +252,7 @@ void Engine::eventHandler(unsigned dt) {
 							
 							ctx.gameWorldCtx->isNextShotOK = false;
 							ctx.gameWorldCtx->turnSwapped = false;
+							_ctx.gameWorldCtx->mode = MODE_WAIT_NEXT;
 						}
 						break;
 					}
@@ -264,7 +266,7 @@ void Engine::eventHandler(unsigned dt) {
 		}
 	}
 	else if (m_event.type == SDL_MOUSEMOTION) {
-		switch(ctx.mode) {
+		switch(ctx.gameWorldCtx->mode) {
 			case MODE_PLACE_CUE:
 				float yPos = 0.1; //Radius - maybe load this from config?
 				glm::vec3 upVector = glm::vec3(0.0, 1.0, 0.0);
@@ -286,7 +288,7 @@ void Engine::eventHandler(unsigned dt) {
 				float xPos = cameraPos.x + pointVector.x * length;
 				float zPos = cameraPos.z + pointVector.z * length;
 				
-				static float xMax = 0.546552 * 5;//vertex position (from obj file) times table scale
+				static float xMax = 0.546552 * 5; //vertex position (from obj file) times table scale
 				static float zMax = 1.07326 * 5;
 				static float zMin = zMax / 2; //For the kitchen
 				
@@ -294,7 +296,11 @@ void Engine::eventHandler(unsigned dt) {
 				
 				//Clamp kitchen
 				xPos = (xPos > xMax) ? xMax : ((xPos < -1 * xMax) ? -1 * xMax : xPos);
-				zPos = (zPos > kMod * zMin) ? kMod * zMin : ((zPos < kMod * zMax) ? kMod * zMax : zPos);
+				if(kMod == 1) {
+					zPos = (zPos < kMod * zMin) ? kMod * zMin : ((zPos > kMod * zMax) ? kMod * zMax : zPos);
+				} else {
+					zPos = (zPos > kMod * zMin) ? kMod * zMin : ((zPos < kMod * zMax) ? kMod * zMax : zPos);
+				}
 				
 				btTransform ballTransform;
 				ballTransform.setIdentity();
@@ -382,7 +388,7 @@ long long Engine::GetCurrentTimeMillis() {
 	return ret;
 }
 
-
+//TODO Reset player scores and sunk balls etc.
 void Engine::NewGame() {
 	static float radius = 0.1; //todo maybe load from config?
 	static float height = sqrt(3) * radius;
@@ -397,7 +403,7 @@ void Engine::NewGame() {
 	std::vector<int> randBallIndices;
 	int randIndex;
 	
-	while(tempBallIndices.size() > 0) {
+	while(!tempBallIndices.empty()) {
 		randIndex = rand() % tempBallIndices.size();
 		randBallIndices.push_back(tempBallIndices[randIndex]);
 		tempBallIndices.erase(tempBallIndices.begin() + randIndex);
@@ -419,7 +425,7 @@ void Engine::NewGame() {
 		}
 	}
 	
-	_ctx.mode = MODE_PLACE_CUE;
+	_ctx.gameWorldCtx->mode = MODE_PLACE_CUE;
 	_ctx.gameWorldCtx->kMod = -1;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on

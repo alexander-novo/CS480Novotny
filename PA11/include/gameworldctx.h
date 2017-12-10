@@ -10,6 +10,11 @@
 
 class Object;
 
+#define MODE_NONE      0 //Nothing is currently happening - only in between games
+#define MODE_PLACE_CUE 1 //Someone should be placing the cue ball
+#define MODE_TAKE_SHOT 2 //Someone is taking their shot
+#define MODE_WAIT_NEXT 3 //We're waiting for the balls to come to rest and for the next turn to begin
+
 // A safe space to store the config of our main world
 namespace GameWorld {
 	struct ctx {
@@ -34,6 +39,8 @@ namespace GameWorld {
 		bool isPlayer1Win = false;
 		bool isPlayer1Loss = false;
 		bool turnSwapped = true;
+		
+		int mode = MODE_NONE;
 		
 		int kMod = -1; //For which side of the table we are placing the cue ball onto
 	};

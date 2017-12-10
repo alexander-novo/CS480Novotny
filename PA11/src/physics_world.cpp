@@ -249,14 +249,14 @@ void PhysicsWorld::update(float dt) {
 // On each physics tick, clamp the ball velocities
 static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 {
-
 	// This section clamps the velocity (mMaxSpeed) of objects that are set to be clamped
 	PhysicsWorld *tempWorld = static_cast<PhysicsWorld *>(world->getWorldUserInfo());
 	int mMaxSpeed = 200;
-
-	static bool resting = true;
-
-	resting = true;
+	
+	//All of the stuff below doesn't need to be checked if we aren't waiting for the next shot
+	if(PhysicsWorld::game->mode != MODE_WAIT_NEXT) return;
+	
+	bool resting = true;
 	if(PhysicsWorld::game != nullptr)
 	{
 		int sunkBall = 0;
@@ -266,7 +266,7 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 		// i.e. place out of bounds balls back on table
 		//		prep cue ball placement on scratch/new game
 		//		swap players on turn change
-		if(!PhysicsWorld::game->isGameOver)
+		if(!PhysicsWorld::game->isGameOver && PhysicsWorld::game->mode == MODE_WAIT_NEXT)
 		{
 			btVector3 velocity;
 			btScalar speed;
@@ -323,6 +323,8 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
 					// place sunk ball at footspot
 					// place cue-ball in kitchen (later: have player set cue-ball
 				}
+				
+				PhysicsWorld::game->mode = MODE_TAKE_SHOT;
 			}
 		}
 	}
@@ -431,49 +433,21 @@ static void myTickCallback(btDynamicsWorld *world, btScalar timeStep)
     // cue ball Checks
     {
         // Clamp the velocity to help prevent tunneling
-        btVector3 velocity = (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getLinearVelocity();
+	    btRigidBody* cue = (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall];
+        btVector3 velocity = cue->getLinearVelocity();
         btScalar speed = velocity.length();
         if(speed > mMaxSpeed)
         {
             velocity *= mMaxSpeed/speed;
-            (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setLinearVelocity(velocity);
+	        cue->setLinearVelocity(velocity);
         }
 
         // Stripes Ball location trigger
-        if((*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().y() < -.1)
+        if(cue->getCenterOfMassPosition().y() < -.1)
         {
-            // if fell through table - is in pocket
-            if(!PhysicsWorld::game->isGameOver)
-            {
-                PhysicsWorld::game->isGameOver = true;
-                // ToDo: check for more accurate board size (ball must be in bounds)
-                if
-                        (
-                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().x() <= 4.5 &&
-                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().x() >= -4.5 &&
-                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().z() < 6 &&
-                        (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->getCenterOfMassPosition().z() > -6
-                        )
-                {
-
-                    std::cout << "ball sunk: Cue Ball " << std::endl;
-                    btTransform ballTransform;
-                    ballTransform.setIdentity();
-                    ballTransform.setOrigin(btVector3(0, 0, 0));
-                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setWorldTransform(ballTransform);
-                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setLinearVelocity(btVector3(0, 0, 0));
-                    (*(tempWorld->getLoadedBodies()))[PhysicsWorld::game->cueBall]->setAngularVelocity(btVector3(0, 0, 0));
-                }
-                else
-                {
-
-                    std::cout << "ball oob: Cue Ball" << std::endl;
-                    if(PhysicsWorld::game->isPlayer1)
-                    {
-                        // ToDo: isScratch
-                    }
-                }
-            }
+	        PhysicsWorld::game->mode = MODE_PLACE_CUE;
+	        PhysicsWorld::game->kMod = (cue->getCenterOfMassPosition().z() > 0)
+			        ? 1 : -1;
         }
     }
 
