@@ -405,7 +405,9 @@ void Engine::NewGame() {
 	
 	while(!tempBallIndices.empty()) {
 		randIndex = rand() % tempBallIndices.size();
-		randBallIndices.push_back(tempBallIndices[randIndex]);
+		if(tempBallIndices[randIndex] != ctx.gameWorldCtx->cueBall) {
+			randBallIndices.push_back(tempBallIndices[randIndex]);
+		}
 		tempBallIndices.erase(tempBallIndices.begin() + randIndex);
 	}
 	

@@ -126,37 +126,33 @@ int processConfig(int argc, char** argv, json& config, Engine::Context& ctx) {
 			//if(objCtx.name.find(findStr))
             if(j > 0)
 			{
-
-				if(k < 7)
-				{
-//                    std::cout << objCtx.name << std::endl;
-					gameCtx->ballSolids.push_back(j);
-				}
-				else if (k == 7)
-				{
-					gameCtx->eightBall = j;
-				}
-				else if (k > 7 && k <= 14)
-				{
-					gameCtx->ballStripes.push_back(j);
-				}
-				else if (k == 15)
+				
+				if (k == 0)
 				{
 					gameCtx->cueBall = j;
 				}
-
-//				std::cout << objCtx.name << std::endl;
+				else if(k < 8)
+				{
+					gameCtx->ballSolids.push_back(j);
+				}
+				else if (k == 8)
+				{
+					gameCtx->eightBall = j;
+				}
+				else if (k > 8 && k <= 15)
+				{
+					gameCtx->ballStripes.push_back(j);
+				}
+				
 				k++;
 			}
 			j++;
 		}
 
 		// Set Initial Balls to not sunk and not out of bounds
-		for (int i = 0; i<7; i++) {
-			gameCtx->oobSolids[i] = false;
-			gameCtx->oobStripes[i] = false;
-			gameCtx->sunkSolids[i] = false;
-			gameCtx->sunkStripes[i] = false;
+		for (int i = 0; i < 16; i++) {
+			gameCtx->oob[i] = false;
+			gameCtx->sunk[i] = false;
 		}
 
 		

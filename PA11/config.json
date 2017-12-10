@@ -54,6 +54,20 @@
       "mass": 0
     },
     {
+      "name": "Cue Ball",
+      "shape": "sphere",
+      "model": "Ball1.obj",
+      "texture": "PoolBalluvCue.jpg",
+      "flags": ["dynamic", "cue", "pickable"],
+      "radius": 0.1,
+      "location": {
+        "z": 0,
+        "x": 1.83,
+        "y": 0.15
+      },
+      "mass": 3
+    },
+    {
       "name": "Ball 1",
       "shape": "sphere",
       "model": "Ball1.obj",
@@ -259,20 +273,6 @@
       "location": {
         "z": 0,
         "x": 1.53,
-        "y": 0.15
-      },
-      "mass": 3
-    },
-    {
-      "name": "Cue Ball",
-      "shape": "sphere",
-      "model": "Ball1.obj",
-      "texture": "PoolBalluvCue.jpg",
-      "flags": ["dynamic", "cue", "pickable"],
-      "radius": 0.1,
-      "location": {
-        "z": 0,
-        "x": 1.83,
         "y": 0.15
       },
       "mass": 3

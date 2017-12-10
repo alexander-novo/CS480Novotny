@@ -23,11 +23,8 @@ namespace GameWorld {
 		std::vector<Object*> worldObjects;
 		std::vector<int> ballSolids;
 		std::vector<int> ballStripes;
-		bool sunkSolids[7];
-		bool sunkStripes[7];
-		// oob = out of bounds
-		bool oobStripes[7];
-		bool oobSolids[7];
+		bool sunk[16];
+		bool oob[16];  //out of bounds
 		int cueBall;
 		int eightBall;
 		bool isNextShotOK = true;
