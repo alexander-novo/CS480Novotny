@@ -387,7 +387,7 @@ void Engine::NewGame() {
 	static float radius = 0.1; //todo maybe load from config?
 	static float height = sqrt(3) * radius;
 	static float yOrigin = radius;
-	static float zOrigin = -0.25f;
+	static float zOrigin = 1.07326 * 2.5; //Vertex from obj file times scale divided by 2
 	
 	float xCoord;
 	btTransform ballTransform;
