@@ -250,6 +250,10 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 	//All of the stuff below doesn't need to be checked if we aren't waiting for the next shot
 	if (PhysicsWorld::game->mode != MODE_WAIT_NEXT) return;
 	
+	btRigidBody* ball;
+	btVector3 velocity;
+	btScalar speed;
+	
 	bool resting = true;
 	if (PhysicsWorld::game != nullptr) {
 		int sunkBall = 0;
@@ -260,8 +264,6 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 		//		prep cue ball placement on scratch/new game
 		//		swap players on turn change
 		if (!PhysicsWorld::game->isGameOver && PhysicsWorld::game->mode == MODE_WAIT_NEXT) {
-			btVector3 velocity;
-			btScalar speed;
 			// Check Stripes Resting
 			for (int i = 0; i < tempWorld->ballIndices.size(); i++) {
 				velocity = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]]->getLinearVelocity();
@@ -301,15 +303,11 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 		}
 	}
 	
-	btRigidBody* ball;
-	btVector3 velocity;
-	btScalar speed;
-	
 	for (int i = 0; i < tempWorld->ballIndices.size(); i++) {
 		// Clamp the velocity to help prevent tunneling
 		ball = (*(tempWorld->getLoadedBodies()))[tempWorld->ballIndices[i]];
-		btVector3 velocity = ball->getLinearVelocity();
-		btScalar speed = velocity.length();
+		velocity = ball->getLinearVelocity();
+		speed = velocity.length();
 		if (speed > mMaxSpeed) {
 			velocity *= mMaxSpeed / speed;
 			ball->setLinearVelocity(velocity);
