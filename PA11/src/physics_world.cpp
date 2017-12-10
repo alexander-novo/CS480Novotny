@@ -227,7 +227,8 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 
 	// Assuming all spheres are balls - add to list of balls in field
 	// Used to find which objects to clamp the velocity on
-	if (objCtx->shape == 1)   // SPHERE
+	bool isCue = std::find(objCtx->flags->begin(), objCtx->flags->end(), "cue") != objCtx->flags->end();
+	if (objCtx->shape == 1 && !isCue)   // SPHERE
 	{
 		ballIndices.push_back(bodyIndex);
 	}

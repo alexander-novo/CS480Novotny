@@ -393,6 +393,16 @@ void Engine::NewGame() {
 	btTransform ballTransform;
 	btRigidBody* body;
 	
+	std::vector<int> tempBallIndices = _ctx.physWorld->ballIndices;
+	std::vector<int> randBallIndices;
+	int randIndex;
+	
+	while(tempBallIndices.size() > 0) {
+		randIndex = rand() % tempBallIndices.size();
+		randBallIndices.push_back(tempBallIndices[randIndex]);
+		tempBallIndices.erase(tempBallIndices.begin() + randIndex);
+	}
+	
 	for(int i = 0; i < 5; i++) {
 		float width = i * radius * 2;
 		for(int j = 0; j <= i; j++) {
@@ -401,7 +411,7 @@ void Engine::NewGame() {
 			ballTransform.setIdentity();
 			ballTransform.setOrigin(btVector3(xCoord, yOrigin, i * height + zOrigin));
 			
-			body = (*(_ctx.physWorld->getLoadedBodies()))[_ctx.physWorld->ballIndices[i * (i + 1) / 2 + j]];
+			body = (*(_ctx.physWorld->getLoadedBodies()))[randBallIndices[i * (i + 1) / 2 + j]];
 
 			body->setWorldTransform(ballTransform);
 			body->setLinearVelocity(btVector3(0, 0, 0));
