@@ -200,7 +200,7 @@ void Graphics::Update(unsigned int dt) {
 	}
 	
 	//Calculate where our camera should be and update the View matrix
-	camView->calculateCamera();
+	camView->calculateCamera(dt);
 }
 
 Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {

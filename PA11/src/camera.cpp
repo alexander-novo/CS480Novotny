@@ -1,12 +1,8 @@
 #include "camera.h"
 
-Camera::Camera(Menu& menu) : m_menu(menu) {
-	cameraMode = CAMERA_MODE_FOLLOW;
-}
+Camera::Camera(Menu& menu) : m_menu(menu) {}
 
-Camera::~Camera() {
-
-}
+Camera::~Camera() {}
 
 bool Camera::Initialize(int w, int h) {
 	//--Init the view and projection matrices
@@ -24,7 +20,15 @@ bool Camera::Initialize(int w, int h) {
 	return true;
 }
 
-void Camera::calculateCamera() {
+void Camera::calculateCamera(unsigned dt) {
+	
+	if(movingTime > 0) {
+		float moveTime = dt > movingTime ? movingTime : dt;
+		glm::vec3 moveVec = movingTowards * (moveTime / movingTime);
+		lookAt += moveVec;
+		movingTowards -= moveVec;
+		movingTime -= moveTime;
+	}
 	
 	//What we're looking at
 	glm::vec3 lookVec = lookAt;
@@ -65,6 +69,11 @@ void Camera::calculateCamera() {
 	lookAt -= shakeFactor;
 	
 	tempZoom = 1;
+}
+
+void Camera::moveTowards(glm::vec3 towards, unsigned time) {
+	movingTowards = towards - lookAt;
+	movingTime = time;
 }
 
 glm::mat4& Camera::GetProjection() {

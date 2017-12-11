@@ -59,6 +59,8 @@ void Engine::Run() {
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
+		
+		bool wasTakeShot = ctx.gameWorldCtx->mode == MODE_TAKE_SHOT;
 
 		while (SDL_PollEvent(&m_event) != 0) {
 			eventHandler(m_DT);
@@ -118,6 +120,12 @@ void Engine::Run() {
 		}
 		if(m_menu->options.shouldStartNewGame) {
 			NewGame();
+		}
+		
+		if(!wasTakeShot && ctx.gameWorldCtx->mode == MODE_TAKE_SHOT) {
+			btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](
+					ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
+			m_graphics->getCamView()->moveTowards(glm::vec3(trans.x(), trans.y(), trans.z()), 1000);
 		}
 
 		//Render everything
@@ -232,9 +240,6 @@ void Engine::eventHandler(unsigned dt) {
 				switch(ctx.gameWorldCtx->mode) {
 					case MODE_PLACE_CUE: {
 						_ctx.gameWorldCtx->mode = MODE_TAKE_SHOT;
-						btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](
-								ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
-						m_graphics->getCamView()->lookAt = glm::vec3(trans.x(), trans.y(), trans.z());
 						break;
 					}
 					case MODE_TAKE_SHOT: {
