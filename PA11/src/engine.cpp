@@ -1,7 +1,7 @@
 
 #include "engine.h"
 
-Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(_ctx.width), windowHeight(_ctx.height), mouseDown(false) {}
+Engine::Engine(const Context &a) : _ctx(a), ctx(_ctx), windowWidth(_ctx.width), windowHeight(_ctx.height) {}
 
 Engine::~Engine() {
 	if(m_window != nullptr)
@@ -59,6 +59,8 @@ void Engine::Run() {
 	while (m_running) {
 		// Update the DT
 		m_DT = getDT();
+		
+		bool wasTakeShot = ctx.gameWorldCtx->mode == MODE_TAKE_SHOT;
 
 		while (SDL_PollEvent(&m_event) != 0) {
 			eventHandler(m_DT);
@@ -71,7 +73,7 @@ void Engine::Run() {
 		static Texture* billboardTex = Texture::load("textures/Green_Ring.png");
 		static Texture* billboardTex2 = Texture::load("textures/Red_Ring.png");
 		
-		if(mouseDown) {
+		if(leftDown && ctx.gameWorldCtx->mode == MODE_TAKE_SHOT) {
 #define MAX_RADIUS 0.2f
 #define MAX_ZOOM 0.2f
 #define MAX_AMPLITUDE 0.15f
@@ -103,6 +105,7 @@ void Engine::Run() {
 			NewGame();
 			newGame = true;
 		}
+		
 		m_graphics->Update(m_DT);
 		if(!m_menu->options.paused) _ctx.physWorld->update(m_DT);
 
@@ -117,6 +120,12 @@ void Engine::Run() {
 		}
 		if(m_menu->options.shouldStartNewGame) {
 			NewGame();
+		}
+		
+		if(!wasTakeShot && ctx.gameWorldCtx->mode == MODE_TAKE_SHOT) {
+			btVector3 trans = ctx.physWorld->getLoadedBodies()->operator[](
+					ctx.gameWorldCtx->cueBall)->getWorldTransform().getOrigin();
+			m_graphics->getCamView()->moveTowards(glm::vec3(trans.x(), trans.y(), trans.z()), 1000);
 		}
 
 		//Render everything
@@ -183,8 +192,7 @@ void Engine::Keyboard(unsigned dt) {
 		// New Game
 		NewGame();
 	}
-
-
+	
 	//Width of spotlight
 	if( keyState[SDL_SCANCODE_UP]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle < M_PI / 2) {
@@ -194,6 +202,7 @@ void Engine::Keyboard(unsigned dt) {
 			}
 		}
 	}
+	
 	if(keyState[SDL_SCANCODE_DOWN]) {
 		if(m_graphics->spotLights.size() >= 1 && m_graphics->spotLights[0]->angle > 0) {
 			m_graphics->spotLights[0]->angle -= M_PI / 180;
@@ -216,55 +225,107 @@ void Engine::eventHandler(unsigned dt) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
 			{
-				mouseDown = true;
+				leftDown = true;
 				clickedLocation.x = m_event.button.x;
 				clickedLocation.y = _ctx.height - m_event.button.y;
 				break;
 			}
 			case SDL_BUTTON_RIGHT:
-			{
-				unsigned seed = GetCurrentTimeMillis();
-				std::default_random_engine generator(seed);
-				std::uniform_int_distribution<int> distribution(-50,50);
-				btVector3 pushIt(0,0,2500);
-				_ctx.gameWorldCtx->worldObjects[1]->ctx.physicsBody->applyCentralImpulse(pushIt);
-				for(int i = 1; i < _ctx.gameWorldCtx->worldObjects.size(); i++)
-				{
-					btVector3 shootIt(distribution(generator),0,distribution(generator));
-					_ctx.gameWorldCtx->worldObjects[i]->ctx.physicsBody->applyCentralImpulse(shootIt);
-				}
-			}
+				rightDown = true;
+				break;
 		}
 	} else if (m_event.type == SDL_MOUSEBUTTONUP) {
 		switch (m_event.button.button) {
 			case SDL_BUTTON_LEFT:
-				glm::vec3 pickedPosition;
-				Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y, &pickedPosition);
-				if(picked != nullptr) {
-					glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
-					glmImpVector.y = 0;
-					glmImpVector = glm::normalize(glmImpVector);
-					glmImpVector *= 1 + mouseTimer / 200;
-					
-					btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
-					btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
-					picked->ctx.physicsBody->applyImpulse(impVector, locVector);
-
-					// ToDo: Check for cue ball being picked
-					ctx.gameWorldCtx->isNextShotOK = false;
-					ctx.gameWorldCtx->turnSwapped = false;
+				switch(ctx.gameWorldCtx->mode) {
+					case MODE_PLACE_CUE: {
+						_ctx.gameWorldCtx->mode = MODE_TAKE_SHOT;
+						break;
+					}
+					case MODE_TAKE_SHOT: {
+						glm::vec3 pickedPosition;
+						Object* picked = m_graphics->getObjectOnScreen(clickedLocation.x, clickedLocation.y,
+						                                               &pickedPosition);
+						if (picked != nullptr) {
+							glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
+							glmImpVector = glm::normalize(glmImpVector);
+							glmImpVector *= 1 + mouseTimer / 200;
+							
+							btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
+							btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
+							picked->ctx.physicsBody->applyImpulse(impVector, locVector);
+							
+							ctx.gameWorldCtx->isNextShotOK = false;
+							ctx.gameWorldCtx->turnSwapped = false;
+							_ctx.gameWorldCtx->mode = MODE_WAIT_NEXT;
+						}
+						break;
+					}
 				}
-				mouseDown = false;
+				leftDown = false;
+				break;
+			case SDL_BUTTON_RIGHT:
+				rightDown = false;
 				mouseTimer = 0;
 				break;
 		}
 	}
-	else if (m_event.type == SDL_MOUSEMOTION && mouseDown) {
-		float xscale = 360.0f / _ctx.width;
-		float yscale = 180.0f / _ctx.height;
-
-		m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
-		m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
+	else if (m_event.type == SDL_MOUSEMOTION) {
+		switch(ctx.gameWorldCtx->mode) {
+			case MODE_PLACE_CUE:
+				float yPos = 0.1; //Radius - maybe load this from config?
+				glm::vec3 upVector = glm::vec3(0.0, 1.0, 0.0);
+				glm::vec3 cameraPos = m_graphics->getCamView()->eyePos;
+				glm::vec3 lookTowards = glm::normalize(m_graphics->getCamView()->lookAt - cameraPos);
+				glm::vec3 upVectorOrtho = glm::normalize(upVector - glm::dot(upVector, lookTowards) * lookTowards);
+				glm::vec3 rightVector = glm::cross(lookTowards, upVectorOrtho);
+				
+				float near_frust_height = tan(FOV / 2) * NEAR_FRUSTRUM;
+				float near_frust_width = near_frust_height * windowWidth / windowHeight;
+				float clickedHeight = 1 - m_event.motion.y * 2.0f / windowHeight; //1 at top of window, -1 at bottom
+				float clickedWidth  = m_event.motion.x * 2.0f / windowWidth - 1;  //1 at right of window, -1 at left
+				
+				glm::vec3 pointVector = NEAR_FRUSTRUM * lookTowards
+				                        + clickedHeight * near_frust_height * upVectorOrtho
+				                        + clickedWidth * near_frust_width * rightVector;
+				
+				float length = (yPos - cameraPos.y) / pointVector.y;
+				float xPos = cameraPos.x + pointVector.x * length;
+				float zPos = cameraPos.z + pointVector.z * length;
+				
+				static float xMax = 0.546552 * 5; //vertex position (from obj file) times table scale
+				static float zMax = 1.07326 * 5;
+				static float zMin = zMax / 2; //For the kitchen
+				
+				int kMod = ctx.gameWorldCtx->kMod;
+				
+				//Clamp kitchen
+				xPos = (xPos > xMax) ? xMax : ((xPos < -1 * xMax) ? -1 * xMax : xPos);
+				if(kMod == 1) {
+					zPos = (zPos < kMod * zMin) ? kMod * zMin : ((zPos > kMod * zMax) ? kMod * zMax : zPos);
+				} else {
+					zPos = (zPos > kMod * zMin) ? kMod * zMin : ((zPos < kMod * zMax) ? kMod * zMax : zPos);
+				}
+				
+				btTransform ballTransform;
+				ballTransform.setIdentity();
+				ballTransform.setOrigin(btVector3(xPos, yPos, zPos));
+				
+				btRigidBody* ball = ctx.physWorld->getLoadedBodies()->operator[](ctx.gameWorldCtx->cueBall);
+				ball->setWorldTransform(ballTransform);
+				ball->setLinearVelocity(btVector3(0.0, 0.0, 0.0));
+				ball->setAngularVelocity(btVector3(0.0, 0.0, 0.0));
+				
+				break;
+		}
+		
+		if(rightDown) {
+			float xscale = -360.0f / _ctx.width;
+			float yscale = 180.0f / _ctx.height;
+	
+			m_menu->setRotation(m_menu->options.rotation + m_event.motion.xrel * xscale);
+			m_menu->setElevation(m_menu->options.elevation + m_event.motion.yrel * yscale);
+		}
 	}
 
 	else if (m_event.type == SDL_MOUSEWHEEL && !ImGui::GetIO().WantCaptureMouse) {
@@ -285,7 +346,7 @@ void Engine::eventHandler(unsigned dt) {
 				_ctx.height = m_event.window.data2;
 
 				//Update our projection matrix in case the aspect ratio is different now
-				m_graphics->getCamView()->GetProjection() = glm::perspective( 45.0f,
+				m_graphics->getCamView()->GetProjection() = glm::perspective( FOV,
 																			  float(windowWidth)/float(windowHeight),
 																			  NEAR_FRUSTRUM,
 																			  FAR_FRUSTRUM);
@@ -332,16 +393,44 @@ long long Engine::GetCurrentTimeMillis() {
 	return ret;
 }
 
-
+//TODO Reset player scores and sunk balls etc.
 void Engine::NewGame() {
 	static float radius = 0.1; //todo maybe load from config?
 	static float height = sqrt(3) * radius;
 	static float yOrigin = radius;
-	static float zOrigin = -0.25f;
+	static float zOrigin = 1.07326 * 2.5; //Vertex from obj file times scale divided by 2
 	
 	float xCoord;
 	btTransform ballTransform;
 	btRigidBody* body;
+	
+	std::vector<int> tempBallIndices = _ctx.physWorld->ballIndices;
+	std::vector<int> randBallIndices;
+	int randIndex;
+	
+	int randStripe = tempBallIndices[rand() % 7 + 9];
+	int randSolid = tempBallIndices[rand() % 7 + 1];
+	while(!tempBallIndices.empty()) {
+		randIndex = rand() % tempBallIndices.size();
+		if(tempBallIndices[randIndex] != ctx.gameWorldCtx->cueBall &&
+				tempBallIndices[randIndex] != ctx.gameWorldCtx->eightBall &&
+				tempBallIndices[randIndex] != randStripe &&
+				tempBallIndices[randIndex] != randSolid) {
+			randBallIndices.push_back(tempBallIndices[randIndex]);
+		}
+		tempBallIndices.erase(tempBallIndices.begin() + randIndex);
+	}
+	
+	//Eight ball is always in the middle
+	randBallIndices.insert(randBallIndices.begin() + 4, ctx.gameWorldCtx->eightBall);
+	//One stripe and one solid always on back corners
+	if(rand() % 2 == 0) {
+		randBallIndices.insert(randBallIndices.begin() + 10, randStripe);
+		randBallIndices.push_back(randSolid);
+	} else {
+		randBallIndices.insert(randBallIndices.begin() + 10, randSolid);
+		randBallIndices.push_back(randStripe);
+	}
 	
 	for(int i = 0; i < 5; i++) {
 		float width = i * radius * 2;
@@ -351,14 +440,16 @@ void Engine::NewGame() {
 			ballTransform.setIdentity();
 			ballTransform.setOrigin(btVector3(xCoord, yOrigin, i * height + zOrigin));
 			
-			body = (*(_ctx.physWorld->getLoadedBodies()))[_ctx.physWorld->ballIndices[i * (i + 1) / 2 + j]];
+			body = (*(_ctx.physWorld->getLoadedBodies()))[randBallIndices[i * (i + 1) / 2 + j]];
+
 			body->setWorldTransform(ballTransform);
 			body->setLinearVelocity(btVector3(0, 0, 0));
 			body->setAngularVelocity(btVector3(0, 0, 0));
 		}
 	}
 	
-	_ctx.mode = MODE_PLACE_CUE;
+	_ctx.gameWorldCtx->mode = MODE_PLACE_CUE;
+	_ctx.gameWorldCtx->kMod = -1;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
 	//_ctx.physWorld->update(20);

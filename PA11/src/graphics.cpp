@@ -200,7 +200,7 @@ void Graphics::Update(unsigned int dt) {
 	}
 	
 	//Calculate where our camera should be and update the View matrix
-	camView->calculateCamera();
+	camView->calculateCamera(dt);
 }
 
 Object* Graphics::getObjectOnScreen(int x, int y, glm::vec3* location) {
@@ -349,7 +349,11 @@ void Graphics::renderPick() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	for (int i = 0; i < gameWorldCtx->worldObjects.size(); i++) {
-		gameWorldCtx->worldObjects[i]->RenderID(pickShader);
+		auto& flags = gameWorldCtx->worldObjects[i]->ctx.flags;
+		
+		if(std::find(flags.begin(), flags.end(), "pickable") != flags.end()) {
+			gameWorldCtx->worldObjects[i]->RenderID(pickShader);
+		}
 	}
 }
 

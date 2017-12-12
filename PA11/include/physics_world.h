@@ -35,9 +35,6 @@ class PhysicsWorld {
 			float mass = 0;
 			float inertia = 0;
 			int shape = 0;
-			bool isDynamic = false;
-			bool isKinematic = false;
-			bool isBounceType = false;
 			float xLoc = 0;
 			float yLoc = 0;
 			float zLoc = 0;
@@ -49,8 +46,9 @@ class PhysicsWorld {
 			float scaleY = 1;
 			float scaleZ = 1;
 			float scale = 1.0f;
+			
+			std::vector<std::string>* flags;
 
-			bool hasPhysics = true;
 			btRigidBody* physicsBody;
 		};
 		

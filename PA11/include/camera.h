@@ -5,7 +5,8 @@
 #include "Menu.h"
 
 #define NEAR_FRUSTRUM 0.1f
-#define FAR_FRUSTRUM 25.0f
+#define FAR_FRUSTRUM 50.0f
+#define FOV 45.0f
 
 #define CAMERA_MODE_FOLLOW 1
 #define CAMERA_MODE_FREE   2
@@ -29,21 +30,20 @@ class Camera {
 		glm::mat4& GetView();
 		
 		//Calculate where the camera should be, and the corresponding View matrix
-		void calculateCamera();
+		void calculateCamera(unsigned dt);
 		
 		Menu& m_menu;
 		
 		CameraDirection* getCameraDirection();
-		// bool setMenu(Menu& menu);
 		
 		//Keeps track of where the camera is and what it's looking at
 		glm::vec3 lookAt = glm::vec3(0.0, 0.0, 0.0);
 		glm::vec3 eyePos;
 		
-		//Camera mode - see macros above
-		int cameraMode;
 		float tempZoom = 1;
 		glm::vec2 screenShake = glm::vec2(0.0, 0.0);
+		
+		void moveTowards(glm::vec3 towards, unsigned time);
 	
 	private:
 		
@@ -57,6 +57,9 @@ class Camera {
 		
 		glm::mat4 projection;
 		glm::mat4 view;
+		
+		glm::vec3 movingTowards = glm::vec3(0.0, 0.0, 0.0);
+		unsigned movingTime = 0;
 };
 
 #endif /* CAMERA_H */

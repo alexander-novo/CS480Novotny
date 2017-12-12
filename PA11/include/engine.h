@@ -17,11 +17,6 @@
 #define ENGINE_HEIGHT_DEFAULT 600
 #define ENGINE_FULLSCREEN_DEFAULT false
 
-#define MODE_NONE      0 //Nothing is currently happening - only in between games
-#define MODE_PLACE_CUE 1 //Someone should be placing the cue ball
-#define MODE_TAKE_SHOT 2 //Someone is taking their shot
-#define MODE_WAIT_NEXT 3 //We're waiting for the balls to come to rest and for the next turn to begin
-
 class Engine {
 	public:
 		struct Context {
@@ -29,7 +24,6 @@ class Engine {
 			int width = ENGINE_WIDTH_DEFAULT;
 			int height = ENGINE_HEIGHT_DEFAULT;
 			bool fullscreen = ENGINE_FULLSCREEN_DEFAULT;
-			int mode = MODE_NONE;
 			
 			PhysicsWorld *physWorld;
 			GameWorld::ctx *gameWorldCtx;
@@ -75,7 +69,8 @@ class Engine {
 
 		Menu *m_menu;
 		
-		bool mouseDown;
+		bool leftDown = false;
+		bool rightDown = false;
 		int mouseTimer = 0;
 		glm::vec2 clickedLocation;
 		

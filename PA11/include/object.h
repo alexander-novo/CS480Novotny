@@ -20,9 +20,7 @@ class Object {
 	public:
 		//The characteristics of a particular planet that can be changed at any time
 		struct Context {
-			bool isDynamic;
-			bool isBall = false;
-			bool isAlt = false;
+			std::vector<std::string> flags;
 			
 			unsigned* bumperLight = nullptr;
 			
@@ -50,8 +48,6 @@ class Object {
 			
 			int id = 0;
 			
-			bool hasPhysics = true;
-			bool isBounceType = false;
 			btRigidBody* physicsBody;
 			int rigidBodyIndex = 0;
 			
