@@ -45,6 +45,7 @@ class Menu {
             bool isPlayer1Stripes = false;
             bool isPlayer1Solids = false;
 			bool isPlayer2Turn = false;
+			bool isShotReady = true;
 			bool playerCheckBoxDisabled = true;
 			
 			int shaderType = MENU_SHADER_FRAGMENT; //The current shader we should be rendering with

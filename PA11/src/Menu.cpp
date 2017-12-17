@@ -31,8 +31,8 @@ void Menu::update(int dt, float width, float height) {
 
 	if(_options.showPlayers) {
 
-		ImGui::SetNextWindowSize(ImVec2(200,200));
-		if (ImGui::Begin("Player Turn", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+		ImGui::SetNextWindowSize(ImVec2(200,250));
+		if (ImGui::Begin("Pool Table", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) {
             if (_options.playerCheckBoxDisabled) {
                 ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
                 ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
@@ -44,6 +44,14 @@ void Menu::update(int dt, float width, float height) {
                 _options.isPlayer1Turn = false;
                 _options.isPlayer2Turn = true;
             }
+			if (PhysicsWorld::game->isNextShotOK)
+			{
+				_options.isShotReady = true;
+			} else
+			{
+				_options.isShotReady = false;
+			}
+			ImGui::Text("Player Turn:");
             ImGui::Checkbox("Player 1", &_options.isPlayer1Turn);
             ImGui::Checkbox("Player 2", &_options.isPlayer2Turn);
 
@@ -55,15 +63,20 @@ void Menu::update(int dt, float width, float height) {
                 _options.isPlayer1Solids = true;
             }
 
-            ImGui::Text("Play 1 is:");
+            ImGui::Text("Player 1 is:");
             ImGui::Checkbox("Solids", &_options.isPlayer1Solids);
             ImGui::Checkbox("Stripes", &_options.isPlayer1Stripes);
+
+            ImGui::Text("Ready for shot:");
+            ImGui::SameLine();
+			ImGui::Checkbox("", &_options.isShotReady);
 
 
             if (_options.playerCheckBoxDisabled) {
 				ImGui::PopItemFlag();
                 ImGui::PopStyleVar();
             }
+//			ImGui::Button("New Game", ImVec2(40,10));
 
             ImGui::End();
         }
