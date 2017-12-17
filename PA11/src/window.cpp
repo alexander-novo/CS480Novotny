@@ -89,3 +89,16 @@ void Window::Swap()
 SDL_Window* Window::getSDL_Window() const {
   return gWindow;
 }
+
+void Window::PlayMusic(bool isPlaying)
+{
+  if(isPlaying)
+  {
+    Mix_PlayMusic(bgMusicSound,-1);;
+    isPlayingMusic = true;
+  } else
+  {
+    Mix_HaltMusic();
+    isPlayingMusic = false;
+  }
+}

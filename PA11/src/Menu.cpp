@@ -29,6 +29,16 @@ void Menu::update(int dt, float width, float height) {
 		ImGui::EndMainMenuBar();
 	}
 
+	if(_options.isPlayingMusic && !window.isPlayingMusic)
+	{
+		window.PlayMusic(_options.isPlayingMusic);
+	}
+	else if(!_options.isPlayingMusic && window.isPlayingMusic)
+	{
+		window.PlayMusic(_options.isPlayingMusic);
+	}
+
+
 	if(_options.showPlayers) {
 
 		ImGui::SetNextWindowSize(ImVec2(200,300));
@@ -105,10 +115,10 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::Text("Music");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
 				ImGui::Checkbox("Music", &_options.isPlayingMusic);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Check to enable music");
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Enable/Disable music");
 				ImGui::SameLine();
 				ImGui::Checkbox("Sounds", &_options.isPlayingSounds);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Check to enable sounds");
+				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Enable/Disable sounds");
 
 				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::ColorPicker3("Ambient Lighting", &_options.ambientColor.r, ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_RGB | ImGuiColorEditFlags_PickerHueBar);

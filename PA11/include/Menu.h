@@ -39,7 +39,7 @@ class Menu {
 			bool shouldStartNewGame = false;
 
 			int singleBall = 1; //Whether to play with 1 ball or 3
-			bool isPlayingMusic = false;
+			bool isPlayingMusic = true;
 			bool isPlayingSounds = true;
 			bool isPlayer1Turn = true;
             bool isPlayer1Stripes = false;

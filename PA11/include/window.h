@@ -22,6 +22,8 @@ class Window
 		~Window();
 		bool Initialize(const string &name, int* width, int* height);
 		void Swap();
+		void PlayMusic(bool isPlaying);
+		bool isPlayingMusic = true;
 
 		SDL_Window* getSDL_Window() const;
 
