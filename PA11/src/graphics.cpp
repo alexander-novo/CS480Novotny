@@ -198,6 +198,26 @@ void Graphics::Update(unsigned int dt) {
 			}
 		}
 	}
+
+	if(gameWorldCtx->isGameOver)
+	{
+		if(gameWorldCtx->isPlayer1Win)
+		{
+			static Texture* billboardPlayer1Win = Texture::load("textures/player1win.png");
+			billboardPlayer1Win->initGL();
+			addGuiBillboard(glm::vec3(0,-.5f, .3f), billboardPlayer1Win);
+		}
+		else
+		{
+			static Texture* billboardPlayer2Win = Texture::load("textures/player2win.png");
+			billboardPlayer2Win->initGL();
+			addGuiBillboard(glm::vec3(0,-.5f, .3f), billboardPlayer2Win);
+		}
+
+		static Texture* billboardGameOver = Texture::load("textures/gameover.png");
+		billboardGameOver->initGL();
+		addGuiBillboard(glm::vec3(0,0, .5f), billboardGameOver);
+	}
 	
 	//Calculate where our camera should be and update the View matrix
 	camView->calculateCamera(dt);
@@ -421,7 +441,7 @@ void Graphics::renderBillboards() {
 	if(billboards.size() > 0) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		float aspectRatio = windowHeight / float(windowWidth);
+		float aspectRatio = -( windowHeight / float(windowWidth));
 		for (const auto& i : billboards) {
 			i.second->bind(GL_COLOR_TEXTURE);
 			billboardShader->uniform1i("gSampler", GL_COLOR_TEXTURE_OFFSET);

@@ -77,11 +77,11 @@ void Engine::Run() {
 #define MAX_RADIUS 0.2f
 #define MAX_ZOOM 0.2f
 #define MAX_AMPLITUDE 0.15f
-#define MAX_TIME 3.0f
+#define MAX_TIME 2.0f
 			
 			billboardTex->initGL();
 			billboardTex2->initGL();
-			
+
 			float billRadius = min(mouseTimer / 1000.0f / (MAX_TIME / MAX_RADIUS), MAX_RADIUS);
 			Texture* billTex = (billRadius == MAX_RADIUS) ? billboardTex2 : billboardTex;
 			
@@ -89,11 +89,12 @@ void Engine::Run() {
 			                                      clickedLocation.y / _ctx.height * 2 - 1,
 			                                      billRadius),
 			                            billTex);
+
 			m_graphics->getCamView()->tempZoom *= 1 - min(mouseTimer / 1000.0f / (MAX_TIME / MAX_ZOOM), MAX_ZOOM);
 			
 			float amplitude = min(float(pow(mouseTimer / 1000.0f / (MAX_TIME / sqrt(MAX_AMPLITUDE)), 2)), MAX_AMPLITUDE);
 			float theta = mouseTimer / 50.0f;
-			float shakeRadius = amplitude * sin(theta);
+			float shakeRadius = 0;//amplitude * sin(theta);
 			
 			m_graphics->getCamView()->screenShake = glm::vec2(shakeRadius * cos(theta), shakeRadius * sin(theta));
 			mouseTimer += m_DT;
@@ -249,7 +250,9 @@ void Engine::eventHandler(unsigned dt) {
 						if (picked != nullptr) {
 							glm::vec3 glmImpVector = picked->position - m_graphics->getCamView()->eyePos;
 							glmImpVector = glm::normalize(glmImpVector);
-							glmImpVector *= 1 + mouseTimer / 200;
+							glmImpVector *= min(1 + mouseTimer / 100, 25);
+							// reduce vertical impulse direction some
+							glmImpVector.y *= .95;
 							
 							btVector3 impVector(glmImpVector.x, glmImpVector.y, glmImpVector.z);
 							btVector3 locVector(pickedPosition.x, pickedPosition.y, pickedPosition.z);
@@ -450,6 +453,10 @@ void Engine::NewGame() {
 	
 	_ctx.gameWorldCtx->mode = MODE_PLACE_CUE;
 	_ctx.gameWorldCtx->kMod = -1;
+	_ctx.gameWorldCtx->isGameOver = false;
+	_ctx.gameWorldCtx->isPlayer1 = true;
+	_ctx.gameWorldCtx->isPlayer1Win = false;
+	_ctx.gameWorldCtx->isPlayer1Loss = false;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
 	//_ctx.physWorld->update(20);
