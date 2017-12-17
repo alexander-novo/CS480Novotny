@@ -166,9 +166,9 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, newShape, inertia);
 	
 	if (objCtx->shape == 1) {
-		info.m_restitution = 0.75f;
+		info.m_restitution = 1.0f;
 	} else {
-		info.m_restitution = 0.7f;
+		info.m_restitution = 0.4f;
 	}
 	
 	
@@ -199,11 +199,11 @@ int PhysicsWorld::createObject(std::string objectName, btTriangleMesh* objTriMes
 	// used to reduce the amount of continuous spinning of the ball while on table
 	
 	//"Correct" friction
-	//body->setFriction(0.125f);
-	//body->setRollingFriction(0.05f);
+	body->setFriction(0.9f);
+	body->setRollingFriction(0.075f);
 	
-	body->setFriction(0.7f);
-	body->setRollingFriction(0.1f);
+//	body->setFriction(0.7f);
+//	body->setRollingFriction(0.1f);
 	
 	//body->setGravity( btVector3(0,-4, 0));
 	// add the object's body to the physics world
@@ -385,6 +385,13 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 					
 					std::cout << "ball oob: " << i << std::endl;
 					PhysicsWorld::game->oob[i] = true;
+					btTransform ballTransform;
+					ballTransform.setIdentity();
+					ballTransform.setOrigin(btVector3(i, 0, 0));
+
+					ball->setWorldTransform(ballTransform);
+					ball->setLinearVelocity(btVector3(0, 0, 0));
+					ball->setAngularVelocity(btVector3(0, 0, 0));
 				}
 			}
 		}
