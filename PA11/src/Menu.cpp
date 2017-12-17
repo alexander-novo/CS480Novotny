@@ -31,7 +31,7 @@ void Menu::update(int dt, float width, float height) {
 
 	if(_options.showPlayers) {
 
-		ImGui::SetNextWindowSize(ImVec2(200,250));
+		ImGui::SetNextWindowSize(ImVec2(200,300));
 		if (ImGui::Begin("Pool Table", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) {
             if (_options.playerCheckBoxDisabled) {
                 ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
@@ -76,7 +76,10 @@ void Menu::update(int dt, float width, float height) {
 				ImGui::PopItemFlag();
                 ImGui::PopStyleVar();
             }
-//			ImGui::Button("New Game", ImVec2(40,10));
+			if(ImGui::Button("New Game", ImVec2(100,30)))
+			{
+				isNewGame = true;
+			}
 
             ImGui::End();
         }

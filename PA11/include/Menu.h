@@ -73,7 +73,7 @@ class Menu {
 
 		// Allow callback to see game mode type
 		static int singleBall(int singleBall = -1);
-		
+		bool isNewGame = false;
 		//Read-only menu options
 		const Options& options;
 	private:

@@ -100,11 +100,17 @@ void Engine::Run() {
 			mouseTimer += m_DT;
 		}
 
+		if(m_menu->isNewGame == true)
+		{
+			newGame = false;
+		}
+
 		if(!newGame)
 		{
 			// Start new game
 			NewGame();
 			newGame = true;
+			m_menu->isNewGame = false;
 		}
 		
 		m_graphics->Update(m_DT);
@@ -457,6 +463,7 @@ void Engine::NewGame() {
 	_ctx.gameWorldCtx->isPlayer1 = true;
 	_ctx.gameWorldCtx->isPlayer1Win = false;
 	_ctx.gameWorldCtx->isPlayer1Loss = false;
+	_ctx.gameWorldCtx->isNextShotOK = true;
 
 	//For testing purposes - uncomment to see ball placement without physics, then press P to turn physics on
 	//_ctx.physWorld->update(20);
