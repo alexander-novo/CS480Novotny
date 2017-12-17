@@ -102,16 +102,6 @@ void Menu::update(int dt, float width, float height) {
 			
 			if(ImGui::CollapsingHeader("Game Options")) {
 
-				ImGui::Text("Play Style");
-				ImGui::Indent(MENU_OPTIONS_INDENT);
-				
-				ImGui::RadioButton("One Ball", &_options.singleBall, 1);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with a single ball at a time");
-				ImGui::SameLine();
-				ImGui::RadioButton("Multi-Ball", &_options.singleBall, 0);
-				if(ImGui::IsItemHovered()) ImGui::SetTooltip("Play with 3 balls on the board at once!");
-
-				ImGui::Unindent(MENU_OPTIONS_INDENT);
 				ImGui::Text("Music");
 				ImGui::Indent(MENU_OPTIONS_INDENT);
 				ImGui::Checkbox("Music", &_options.isPlayingMusic);

@@ -38,7 +38,7 @@ make
 
 # Controls
 
-`right click` - Drag to rotate camera, click object to shoot object forward some   
+`right click` - Hold and drag to rotate camera 
 `left click` - Click and hold on the cue ball to power up a shot   
 `Scroll wheel` - Zoom in and out      
 `N` - To start a new game.   
