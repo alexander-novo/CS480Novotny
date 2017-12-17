@@ -69,8 +69,6 @@ PhysicsWorld::~PhysicsWorld() {
 		delete collisionShape;
 	}
 	
-	// TODO: Destroy models also -> switch to vector instead of map
-	
 	// Remove World
 	delete broadphase;
 	delete collisionConfiguration;
@@ -277,25 +275,22 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 					PhysicsWorld::game->isPlayer1 = !PhysicsWorld::game->isPlayer1;
 					PhysicsWorld::game->turnSwapped = true;
 					PhysicsWorld::game->isTurnChange = true;
+
 				} else {
 					PhysicsWorld::game->turnSwapped = true;
 					PhysicsWorld::game->isTurnChange = true;
 				}
 				
 				if (!PhysicsWorld::game->isNextShotOK && PhysicsWorld::game->turnSwapped) {
-					std::cout << "playerShot ready" << std::endl;
+					//std::cout << "playerShot ready" << std::endl;
 					PhysicsWorld::game->isNextShotOK = true;
-					
-					
-					// ToDo: Check if game is win/loss -> activate win/loss
-					
+
 					// ToDo::Place out of bounds balls
-					// ToDo: Place out of bounds Cue-Ball
 					// if cue-ball out of bounds
-					// if opposing has balls sunk
-					// pull a sunk ball
-					// place sunk ball at footspot
-					// place cue-ball in kitchen (later: have player set cue-ball
+					// 	if opposing has balls sunk
+					// 	pull a sunk ball
+					// 	place sunk ball at footspot
+					// 	place cue-ball in kitchen (later: have player set cue-ball
 				}
 				
 				PhysicsWorld::game->mode = MODE_TAKE_SHOT;
@@ -347,11 +342,16 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 						for(int i = beginIndex; i < beginIndex + 7; i++) {
 							if(PhysicsWorld::game->sunk[i]) numSunk++;
 						}
-						
+
+						int playerWinner = (((numSunk == 7 && PhysicsWorld::game->isPlayer1) || !(numSunk == 7 || PhysicsWorld::game->isPlayer1)) ? 1 : 2);
 						std::cout << "Player "
-						          << (((numSunk == 7 && PhysicsWorld::game->isPlayer1) || !(numSunk == 7 || PhysicsWorld::game->isPlayer1)) ? 1 : 2)
+						          << playerWinner
 						          << " wins!" << std::endl;
-						
+						PhysicsWorld::game->isGameOver = true;
+						if(playerWinner == 1)
+						{
+							PhysicsWorld::game->isPlayer1Win = true;
+						}
 						PhysicsWorld::game->mode = MODE_NONE;
 						return;
 					}
@@ -364,7 +364,8 @@ static void myTickCallback(btDynamicsWorld* world, btScalar timeStep) {
 							PhysicsWorld::game->isPlayer1Solids = true;
 						}
 					}
-					
+
+					// Player's ball is sunk, so set variables to not swap turns
 					if ((PhysicsWorld::game->isPlayer1 && PhysicsWorld::game->isPlayer1Solids && i < 8) ||
 							!(PhysicsWorld::game->isPlayer1 || PhysicsWorld::game->isPlayer1Solids || i < 8)) {
 						PhysicsWorld::game->isTurnChange = false;
