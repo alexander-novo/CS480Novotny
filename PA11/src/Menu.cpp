@@ -41,7 +41,7 @@ void Menu::update(int dt, float width, float height) {
 
 	if(_options.showPlayers) {
 
-		ImGui::SetNextWindowSize(ImVec2(200,300));
+		ImGui::SetNextWindowSize(ImVec2(200,250));
 		if (ImGui::Begin("Pool Table", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar)) {
             if (_options.playerCheckBoxDisabled) {
                 ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true); //PushItemFlag(ImGuiItemFlags_Disabled, true);
