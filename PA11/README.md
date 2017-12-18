@@ -38,18 +38,16 @@ make
 
 # Controls
 
+`esc` - Close program 
 `right click` - Hold and drag to rotate camera 
 `left click` - Click and hold on the cue ball to power up a shot   
+`left click` - Places cue ball at start or after scratch
 `Scroll wheel` - Zoom in and out      
 `N` - To start a new game.   
 `P` - To pause the game.   
 `O` - Options menu.   
 `WASD` - Horizontal camera Movement
 `Shift/Ctrl` - Vertical camera movement.   
-
-
-# Menu
-
 
 
 # Command Line Parameters
